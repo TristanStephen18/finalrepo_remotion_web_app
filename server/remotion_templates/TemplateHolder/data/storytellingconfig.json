@@ -1,0 +1,10 @@
+{
+  "voiceoverPath": "story.mp3",
+  "duration": 2,
+  "fontSize": 42,
+  "fontFamily": "Inter, sans-serif",
+  "fontColor": "#ffffff",
+  "sentenceBgColor": "#ff8c00",
+  "backgroundVideo": "videos/398a8795-e421-4315-ae16-79a8e9695808.mp4",
+  "backgroundMusicPath": "bgmusic/bg11.mp3"
+}

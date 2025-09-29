@@ -1,0 +1,47 @@
+{
+  "data": [
+    {
+      "name": "iPhone 15",
+      "value": 980.5
+    },
+    {
+      "name": "Samsung Galaxy S24",
+      "value": 955.75
+    },
+    {
+      "name": "Google Pixel 8",
+      "value": 890.25
+    },
+    {
+      "name": "OnePlus 12",
+      "value": 875
+    },
+    {
+      "name": "Xiaomi 14",
+      "value": 910.9
+    },
+    {
+      "name": "Sony Xperia 1 V",
+      "value": 930.3
+    },
+    {
+      "name": "Motorola Edge+",
+      "value": 880
+    }
+  ],
+  "title": "Monthly Smartphone Unit Sales",
+  "titleFontColor": "white",
+  "backgroundImage": "https://pixabay.com/get/gd6cc0e3661d0a5e367fe5f922ff93524cb9a827a85d1322e92078d10fc57c9d811e73c857483b82b92e33d63f6aad9483e25eb3f939d3ea324e8c69fd796f926_640.jpg",
+  "accent": "#3B82F6",
+  "subtitle": "April 2024: Leading Brands and Models",
+  "currency": "",
+  "titleFontSize": 78,
+  "subtitleFontSize": 48,
+  "subtitleColor": "white",
+  "barHeight": 100,
+  "barGap": 36,
+  "barLabelFontSize": 36,
+  "barValueFontSize": 36,
+  "fontFamily": "Kode Mono, monospace",
+  "duration": 9
+}

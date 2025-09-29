@@ -1,0 +1,77 @@
+{
+  "backgroundImage": "https://pixabay.com/get/gd5825d9c8ca41584cedab0f9361b692174cb5d817d89d2ebefc5bd4aa843c004439e5ed8c57543b3570b7d32ad2b70f317b7ae9668625b419ac18894222a90a3_640.jpg",
+  "title": "Sales Performance",
+  "titleFontSize": 93,
+  "titleFontColor": "white",
+  "titleFontFamily": "'Russo One', sans-serif",
+  "subtitle": "Monthly Revenue and Growth Rate",
+  "subtitleFontSize": 36,
+  "subtitleFontColor": "white",
+  "subtitleFontFamily": "'Russo One', sans-serif",
+  "cardsData": [
+    {
+      "front": {
+        "label": "Total Revenue",
+        "value": "$1,250,000",
+        "color": "#FF0000"
+      },
+      "back": {
+        "label": "Previous Month Revenue",
+        "value": "$1,100,000",
+        "color": "#FFA500"
+      }
+    },
+    {
+      "front": {
+        "label": "Month-over-Month Growth",
+        "value": "13.6%",
+        "color": "#008000"
+      },
+      "back": {
+        "label": "Target Growth Rate",
+        "value": "10%",
+        "color": "#800080"
+      }
+    },
+    {
+      "front": {
+        "label": "Average Order Value",
+        "value": "$150",
+        "color": "#0000FF"
+      },
+      "back": {
+        "label": "Last Month AOV",
+        "value": "$135",
+        "color": "#4B0082"
+      }
+    },
+    {
+      "front": {
+        "label": "Conversion Rate",
+        "value": "4.5%",
+        "color": "#FF6347"
+      },
+      "back": {
+        "label": "Previous Month Conversion",
+        "value": "4.1%",
+        "color": "#DA70D6"
+      }
+    }
+  ],
+  "cardWidth": 360,
+  "cardHeight": 220,
+  "cardBorderRadius": 28,
+  "cardBorderColor": "#FFD700",
+  "cardLabelColor": "#FFFFFF",
+  "cardLabelFontSize": 30.5,
+  "cardContentFontFamily": "'Russo One', sans-serif",
+  "cardGrid": {
+    "rows": 2,
+    "cols": 2
+  },
+  "delayStart": 0.5,
+  "delayStep": 1,
+  "cardColorBack": "#333333",
+  "cardColorFront": "#4CAF50",
+  "valueFontSize": 42
+}

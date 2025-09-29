@@ -1,0 +1,23 @@
+{
+  "language_code": "eng",
+  "segments": [
+    {
+      "text": "Hello EveryNyan!!! How are you? Fine, thank you. ",
+      "start_time": 0,
+      "end_time": 4.179563,
+      "speaker": {
+        "id": "person_2",
+        "name": "person 2"
+      }
+    },
+    {
+      "text": "Oh my ghadd!",
+      "start_time": 4.179563,
+      "end_time": 5.328938,
+      "speaker": {
+        "id": "person_1",
+        "name": "person 1"
+      }
+    }
+  ]
+}

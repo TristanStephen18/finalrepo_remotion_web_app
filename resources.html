@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image & Video Search (Pixabay + Unsplash)</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f8f9fa; margin: 0; }
+    header { background: #333; color: #fff; padding: 15px; text-align: center; }
+    .tabs { display: flex; background: #444; }
+    .tab { flex: 1; padding: 12px; text-align: center; cursor: pointer; color: #ddd; }
+    .tab.active { background: #222; color: #fff; font-weight: bold; }
+    .tab-content { display: none; padding: 20px; }
+    .tab-content.active { display: block; }
+    .search-bar { margin-bottom: 15px; }
+    input[type="text"] { padding: 8px; width: 220px; }
+    button { padding: 8px 12px; margin-left: 5px; cursor: pointer; }
+    .gallery { display: flex; flex-wrap: wrap; gap: 15px; }
+    .gallery img, .gallery video { width: 300px; border-radius: 8px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Free Image & Video Search (Pixabay + Unsplash)</h1>
+</header>
+
+<div class="tabs">
+  <div class="tab active" data-tab="pixabay-images">Pixabay Images</div>
+  <div class="tab" data-tab="pixabay-videos">Pixabay Videos</div>
+  <div class="tab" data-tab="unsplash">Unsplash Images</div>
+</div>
+
+<!-- Pixabay Images -->
+<div id="pixabay-images" class="tab-content active">
+  <div class="search-bar">
+    <input type="text" id="pixabayImageSearch" placeholder="Search Pixabay images (e.g. nature)">
+    <button onclick="loadPixabayImages()">Search</button>
+  </div>
+  <div id="pixabayImageGallery" class="gallery"></div>
+</div>
+
+<!-- Pixabay Videos -->
+<div id="pixabay-videos" class="tab-content">
+  <div class="search-bar">
+    <input type="text" id="pixabayVideoSearch" placeholder="Search Pixabay videos (e.g. travel)">
+    <button onclick="loadPixabayVideos()">Search</button>
+  </div>
+  <div id="pixabayVideoGallery" class="gallery"></div>
+</div>
+
+<!-- Unsplash Images -->
+<div id="unsplash" class="tab-content">
+  <div class="search-bar">
+    <input type="text" id="unsplashSearch" placeholder="Search Unsplash images (e.g. city)">
+    <button onclick="loadUnsplash()">Search</button>
+  </div>
+  <div id="unsplashGallery" class="gallery"></div>
+</div>
+
+<script>
+  // --- API KEYS ---
+  const PIXABAY_KEY = "52412553-aa8dc9e9fdecb826823168719";
+  const UNSPLASH_KEY = "E4HvNlEtWgiEj8rq2MV_4KfR5HbV8oHIz8OietjlwaM";
+
+  // --- Tab switching ---
+  document.querySelectorAll(".tab").forEach(tab => {
+    tab.addEventListener("click", () => {
+      document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById(tab.dataset.tab).classList.add("active");
+    });
+  });
+
+  // --- Pixabay Images ---
+  function loadPixabayImages() {
+    const query = document.getElementById("pixabayImageSearch").value || "nature";
+    fetch(`https://pixabay.com/api/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&image_type=photo&per_page=9`)
+      .then(res => res.json())
+      .then(data => {
+        const gallery = document.getElementById("pixabayImageGallery");
+        gallery.innerHTML = "";
+        data.hits.forEach(img => {
+          const el = document.createElement("img");
+          el.src = img.webformatURL;
+          el.alt = query;
+          gallery.appendChild(el);
+        });
+      });
+  }
+
+  // --- Pixabay Videos ---
+  function loadPixabayVideos() {
+    const query = document.getElementById("pixabayVideoSearch").value || "travel";
+    fetch(`https://pixabay.com/api/videos/?key=${PIXABAY_KEY}&q=${encodeURIComponent(query)}&per_page=6`)
+      .then(res => res.json())
+      .then(data => {
+        const gallery = document.getElementById("pixabayVideoGallery");
+        gallery.innerHTML = "";
+        data.hits.forEach(video => {
+          const el = document.createElement("video");
+          el.src = video.videos.medium.url;
+          el.controls = true;
+          gallery.appendChild(el);
+        });
+      });
+  }
+
+  // --- Unsplash Images ---
+  function loadUnsplash() {
+    const query = document.getElementById("unsplashSearch").value || "mountains";
+    fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(query)}&per_page=9&client_id=${UNSPLASH_KEY}`)
+      .then(res => res.json())
+      .then(data => {
+        const gallery = document.getElementById("unsplashGallery");
+        gallery.innerHTML = "";
+        data.results.forEach(img => {
+          const el = document.createElement("img");
+          el.src = img.urls.small;
+          el.alt = query;
+          gallery.appendChild(el);
+        });
+      });
+  }
+
+  // --- Load defaults ---
+  loadPixabayImages();
+  loadPixabayVideos();
+  loadUnsplash();
+</script>
+
+</body>
+</html>
