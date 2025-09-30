@@ -148,44 +148,55 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   }, [uploadFilter]);
 
   const renderRootFolders = () => (
-    <Box
-      sx={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-        gap: 3,
-        mt: 4,
-        textAlign: "center",
-      }}
-    >
-      {[
-        { key: "templates", label: "My Templates" },
-        { key: "media", label: "My Media" },
-        { key: "datasets", label: "My Datasets" },
-      ].map((f) => (
-        <Box
-          key={f.key}
-          onClick={() => setCurrentFolder(f.key as FolderType)}
-          sx={{
-            cursor: "pointer",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            p: 2,
-            borderRadius: 2,
-            transition: "0.2s",
-            "&:hover": {
-              bgcolor: "rgba(25,118,210,0.08)",
-              transform: "translateY(-2px)",
-            },
-          }}
-        >
-          <FolderIcon sx={{ fontSize: 100, color: "#1976d2" }} />
-          <Typography variant="body2" fontWeight="bold" mt={1}>
-            {f.label}
-          </Typography>
-        </Box>
-      ))}
+    <Box sx={{ mt: 2 }}>
+      <Typography
+        variant="h6"
+        fontWeight="bold"
+        textAlign="left"
+        gutterBottom
+      >
+        Choose a folder
+      </Typography>
+
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
+          gap: 7,
+          mt: 1,
+          textAlign: "center",
+        }}
+      >
+        {[
+          { key: "templates", label: "My Templates" },
+          { key: "media", label: "My Media" },
+          { key: "datasets", label: "My Datasets" },
+        ].map((f) => (
+          <Box
+            key={f.key}
+            onClick={() => setCurrentFolder(f.key as FolderType)}
+            sx={{
+              cursor: "pointer",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              p: 2,
+              borderRadius: 2,
+              transition: "0.2s",
+              "&:hover": {
+                bgcolor: "rgba(25,118,210,0.08)",
+                transform: "translateY(-2px)",
+              },
+            }}
+          >
+            <FolderIcon sx={{ fontSize: 150, color: "#1976d2" }} />
+            <Typography variant="body2" fontWeight="bold" mt={1}>
+              {f.label}
+            </Typography>
+          </Box>
+        ))}
+      </Box>
     </Box>
   );
 
@@ -513,7 +524,6 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
 
   const renderDatasets = () => (
     <Box sx={{ mt: 4 }}>
-      {/* Header with title + search */}
       <Box
         sx={{
           display: "flex",
@@ -555,8 +565,8 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
         <Box
           sx={{
             display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-            gap: 2,
+            gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
+            gap: 1,
           }}
         >
           {filteredDatasets.map((dataset, idx) => {
@@ -573,7 +583,8 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                   cursor: "pointer",
                   transition: "0.2s",
                   position: "relative",
-                  bgcolor: isSelected ? "#faf3f3ff" : "transparent",
+                  bgcolor: isSelected ? "#ecdfdfff" : "transparent",
+                  border: isSelected ? "1px solid black" : "transparent",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
@@ -854,12 +865,9 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
             zIndex: 2000,
           }}
         >
-          {/* Count */}
           <Typography variant="body2" fontWeight={600}>
             {selectedDatasets.length} selected
           </Typography>
-
-          {/* Select / Unselect All */}
           <Button
             variant="outlined"
             size="small"
@@ -878,7 +886,6 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
               : "Select All"}
           </Button>
 
-          {/* Cancel */}
           <Button
             variant="outlined"
             size="small"
@@ -888,8 +895,6 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
           >
             Cancel
           </Button>
-
-          {/* Delete */}
           <Button
             variant="contained"
             color="error"

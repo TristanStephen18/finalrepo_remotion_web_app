@@ -24,7 +24,7 @@ export function useFileUpload(
     fieldName = "image",
     saveRecord = true,
     recordUrl = "/useruploads",
-    type, // 👈 required now, must be "image" | "video"
+    type,
   } = options;
 
   const [isUploading, setIsUploading] = useState(false);
@@ -39,7 +39,6 @@ export function useFileUpload(
       setError(null);
 
       try {
-        // 🔹 Step 1: Upload file
         const formData = new FormData();
         formData.append(fieldName, file);
 
@@ -56,7 +55,6 @@ export function useFileUpload(
         const fileUrl = data.url;
         setUploadedUrl(fileUrl);
 
-        // 🔹 Step 2: Save record in Neon DB
         if (saveRecord && fileUrl) {
           const saveResponse = await fetch(recordUrl, {
             method: "POST",

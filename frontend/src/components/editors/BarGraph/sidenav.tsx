@@ -31,10 +31,8 @@ export const BarGraphNavs: React.FC<SidenavProps> = ({
         transition: "width 0.3s",
         overflow: "hidden",
         position: "relative",
-        // height: "100vh", // ensures the bottom button sticks
       }}
     >
-      {/* Collapse Toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
         style={{
@@ -50,7 +48,6 @@ export const BarGraphNavs: React.FC<SidenavProps> = ({
         {collapsed ? <MenuIcon /> : <ChevronLeftIcon />}
       </button>
 
-      {/* Nav Items */}
       <div style={{ flex: 1 }}>
         {BarChartNavItems.map(({ key, label, icon }) => (
           <button

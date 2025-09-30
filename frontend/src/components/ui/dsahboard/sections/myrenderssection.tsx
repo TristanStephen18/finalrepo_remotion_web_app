@@ -43,12 +43,10 @@ export const MyRendersSection: React.FC<MyRendersSectionProps> = ({
     </Box>
   );
 
-  // Filter renders by selected template
   let filteredRenders = selectedTemplateId === "all"
     ? renders
     : renders.filter((r: RenderItem) => r.templateId === selectedTemplateId);
 
-  // Select all renders
   const handleSelectAllRenders = () => {
     if (selectedRenders.length === filteredRenders.length) {
       setSelectedRenders([]);
@@ -58,13 +56,11 @@ export const MyRendersSection: React.FC<MyRendersSectionProps> = ({
     setSelectAllRenders(!selectAllRenders);
   };
 
-  // Cancel selection
   const handleCancelRenders = () => {
     setSelectedRenders([]);
     setSelectAllRenders(false);
   };
 
-  // Sort renders by date
   filteredRenders = filteredRenders.slice().sort((a, b) => {
     const aDate = a.renderedAt ? new Date(a.renderedAt).getTime() : 0;
     const bDate = b.renderedAt ? new Date(b.renderedAt).getTime() : 0;
@@ -136,7 +132,6 @@ export const MyRendersSection: React.FC<MyRendersSectionProps> = ({
           </FormControl>
         </Box>
       </Box>
-      {/* Scrollable renders grid/list */}
       <Box sx={{ flex: 1, overflowY: 'auto', pt: 2, px: 2 }}>
         {layout === 'grid' ? (
           <Box sx={{
@@ -178,7 +173,6 @@ export const MyRendersSection: React.FC<MyRendersSectionProps> = ({
                     );
                   }}
                 >
-                  {/* Checkbox overlay */}
                   {(selectedRenders.length > 0) && (
                     <Box
                       sx={{
@@ -226,7 +220,6 @@ export const MyRendersSection: React.FC<MyRendersSectionProps> = ({
                       Rendered: {formattedDate}
                     </Typography>
                   </Box>
-                  {/* Media fills card */}
                   <Box sx={{ width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#111' }}>
                     {render.type === "mp4" || render.type === "webm" ? (
                       <video
@@ -245,7 +238,6 @@ export const MyRendersSection: React.FC<MyRendersSectionProps> = ({
                       <span>Unknown type</span>
                     )}
                   </Box>
-                  {/* Download button at top right overlay */}
                   <a
                     href={render.outputUrl}
                     download
@@ -274,7 +266,7 @@ export const MyRendersSection: React.FC<MyRendersSectionProps> = ({
             })}
           </Box>
         ) : (
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 3 }}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
             {filteredRenders.map((render) => {
               const isSelected = selectedRenders.includes(render.id);
               const formattedDate = render.renderedAt
@@ -311,7 +303,6 @@ export const MyRendersSection: React.FC<MyRendersSectionProps> = ({
                     );
                   }}
                 >
-                  {/* Checkbox overlay */}
                   {(selectedRenders.length > 0) && (
                     <Box
                       sx={{

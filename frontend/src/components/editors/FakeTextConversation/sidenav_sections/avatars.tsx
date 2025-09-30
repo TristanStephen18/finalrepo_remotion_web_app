@@ -7,8 +7,8 @@ export const AvatarSelector: React.FC<{
   >;
 }> = ({ avatars, setAvatars }) => {
   const colorMap = {
-    left: "#0b63ff", // blue
-    right: "#ff4fa3", // pink
+    left: "#0b63ff", 
+    right: "#ff4fa3", 
   };
 
   const categories = {
@@ -38,7 +38,6 @@ export const AvatarSelector: React.FC<{
     } else if (!avatars.right) {
       setAvatars((prev) => ({ ...prev, right: src }));
     } else {
-      // Replace right if both taken
       setAvatars((prev) => ({ ...prev, right: src }));
     }
   };
@@ -65,7 +64,6 @@ export const AvatarSelector: React.FC<{
         Right&nbsp;Person.
       </p>
 
-      {/* Selected avatars summary */}
       <div
         style={{
           marginBottom: 16,
@@ -115,7 +113,6 @@ export const AvatarSelector: React.FC<{
         </p>
       </div>
 
-      {/* Category lists */}
       {Object.entries(categories).map(([cat, images]) => (
         <div key={cat} style={{ marginBottom: 20 }}>
           <h4

@@ -38,7 +38,7 @@ export const CurveLineTrendDataPanel: React.FC<DataPanelProps> = ({
     background: "#fafafa",
     fontSize: 14,
     flex: 1,
-    minWidth: 0, // <-- lets flexbox shrink without overflow
+    minWidth: 0,
     boxSizing: "border-box",
   };
 
@@ -68,11 +68,9 @@ export const CurveLineTrendDataPanel: React.FC<DataPanelProps> = ({
 
   return (
     <div style={{ width: "100%" }}>
-      {/* Data Card */}
       <div style={cardStyle}>
         <h3 style={{ marginBottom: "1rem", color: "#0077ff" }}>Dataset</h3>
 
-        {/* Data Type Selector */}
         <div style={{ marginBottom: "1rem" }}>
           <label
             style={{
@@ -103,7 +101,6 @@ export const CurveLineTrendDataPanel: React.FC<DataPanelProps> = ({
           </select>
         </div>
 
-        {/* Data Table */}
         <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
           {data.map((point, index) => (
             <div
@@ -112,7 +109,7 @@ export const CurveLineTrendDataPanel: React.FC<DataPanelProps> = ({
                 display: "flex",
                 gap: "0.5rem",
                 alignItems: "center",
-                flexWrap: "wrap", // <-- makes it stack when container shrinks
+                flexWrap: "wrap", 
               }}
             >
               <input
@@ -121,7 +118,7 @@ export const CurveLineTrendDataPanel: React.FC<DataPanelProps> = ({
                 onChange={(e) => updateRow(index, "label", Number(e.target.value))}
                 style={{
                   ...inputStyle,
-                  flex: "0 1 100px", // flexible min width, but grows
+                  flex: "0 1 100px", 
                   maxWidth: "150px",
                 }}
               />
@@ -148,7 +145,6 @@ export const CurveLineTrendDataPanel: React.FC<DataPanelProps> = ({
           ))}
         </div>
 
-        {/* Add Row Button */}
         <button
           onClick={addRow}
           style={{

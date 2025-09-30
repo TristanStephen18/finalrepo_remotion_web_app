@@ -68,7 +68,6 @@ router.delete("/:id", requireAuth, async (req: AuthRequest, res) => {
   }
 });
 
-// Get all datasets for the authenticated user
 router.get("/", requireAuth, async (req: AuthRequest, res) => {
   const userId = req.user?.userId;
   if (!userId) {

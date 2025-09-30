@@ -1,30 +1,30 @@
+// hooks/useFileUpload.ts
 import { useState, useCallback } from "react";
-import { detectFileType } from "../../utils/filetypedetector";
 
-interface useDatasetUploadOptions {
-  uploadUrl?: string;
-  fieldName?: string;
-  saveRecord?: boolean;
-  recordUrl?: string;
-  template: string;
+interface UseFileUploadOptions {
+  uploadUrl?: string;  // file upload endpoint
+  fieldName?: string;  // form field name
+  saveRecord?: boolean; // whether to save in DB
+  recordUrl?: string;   // DB insert endpoint
+  type: "image" | "video"; // must be image or video
 }
 
-interface useDatasetUploadResult {
+interface UseFileUploadResult {
   isUploading: boolean;
   error: string | null;
   uploadedUrl: string | null;
-  uploadFile: (file: File) => Promise<{ fileUrl: any; jsonData: any } | null>;
+  uploadFile: (file: File) => Promise<string | null>;
 }
 
-export function useDatasetUpload(
-  options: useDatasetUploadOptions
-): useDatasetUploadResult {
+export function useProfileFileUpload(
+  options: UseFileUploadOptions
+): UseFileUploadResult {
   const {
-    uploadUrl = "/uploadhandler/upload-datasets",
-    fieldName = "file",
+    uploadUrl = "/uploadhandler/upload-image",
+    fieldName = "image",
     saveRecord = true,
-    recordUrl = "/datasets",
-    template,
+    recordUrl = "/auth/update-profile-picture",
+    type,
   } = options;
 
   const [isUploading, setIsUploading] = useState(false);
@@ -33,13 +33,10 @@ export function useDatasetUpload(
 
   const uploadFile = useCallback(
     async (file: File) => {
-      let saveData;
       if (!file) return null;
 
       setIsUploading(true);
       setError(null);
-
-      const type = detectFileType(file);
 
       try {
         const formData = new FormData();
@@ -60,42 +57,36 @@ export function useDatasetUpload(
 
         if (saveRecord && fileUrl) {
           const saveResponse = await fetch(recordUrl, {
-            method: "POST",
+            method: "PUT",
             headers: {
               "Content-Type": "application/json",
               Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
             },
-            body: JSON.stringify({ url: fileUrl, type, template }),
+            body: JSON.stringify({ profile_pic: fileUrl }),
           });
 
           if (!saveResponse.ok) {
             throw new Error(
-              `Failed to save upload: ${
-                saveResponse.status
-              } ${await saveResponse.text()}`
+              `Failed to upload profile picture: ${saveResponse.status} ${await saveResponse.text()}`
             );
           }
 
-          saveData = await saveResponse.json();
-          //   console.log(saveResponse);
-          console.log("✅ Upload saved to DB:", saveData);
+          const saveData = await saveResponse.json();
+          console.log("Profile updated in database:", saveData);
         }
 
-        return { fileUrl, jsonData: saveData.extractedData };
+        return fileUrl;
       } catch (err) {
         console.error("Upload failed:", err);
         const msg =
           err instanceof Error ? err.message : "Unknown upload error occurred.";
         setError(msg);
-        alert(
-          "There was an error encountered while extracting the data from your file. Please try again"
-        );
         return null;
       } finally {
         setIsUploading(false);
       }
     },
-    [uploadUrl, fieldName, saveRecord, recordUrl]
+    [uploadUrl, fieldName, saveRecord, recordUrl, type]
   );
 
   return { isUploading, error, uploadedUrl, uploadFile };

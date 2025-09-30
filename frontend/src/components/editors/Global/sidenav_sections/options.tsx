@@ -98,7 +98,6 @@ export const OptionSectionTrial: React.FC<OptionsProps> = ({
                 transition: "0.3s",
               }}
             />
-            {/* Knob */}
             <span
               style={{
                 position: "absolute",

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../css/Login.css";
 import { useNavigate } from "react-router-dom";
 
@@ -12,6 +12,7 @@ const LoginPage: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [verifiedMsg, setVerifiedMsg] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,6 +57,13 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("verified") === "true") {
+      setVerifiedMsg("✅ Your email has been verified! Please log in.");
+    }
+  }, []);
+
   return (
     <div className="auth__bg">
       <main className="auth__container">
@@ -73,6 +81,12 @@ const LoginPage: React.FC = () => {
             </p>
           </header>
 
+          {verifiedMsg && (
+            <div className="auth__success" role="alert">
+              {verifiedMsg}
+            </div>
+          )}
+
           {error && (
             <div className="auth__error" role="alert">
               {error}
@@ -83,7 +97,6 @@ const LoginPage: React.FC = () => {
             {/* Email */}
             <div className="field">
               <span className="field__icon" aria-hidden>
-                {/* Mail Icon */}
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <path
                     d="M4 6h16v12H4z"
@@ -113,7 +126,6 @@ const LoginPage: React.FC = () => {
             {/* Password */}
             <div className="field">
               <span className="field__icon" aria-hidden>
-                {/* Lock Icon */}
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                   <rect
                     x="5"
@@ -148,7 +160,6 @@ const LoginPage: React.FC = () => {
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
-                  // Eye-off
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M3 3l18 18"
@@ -167,7 +178,6 @@ const LoginPage: React.FC = () => {
                     />
                   </svg>
                 ) : (
-                  // Eye
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                     <path
                       d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"

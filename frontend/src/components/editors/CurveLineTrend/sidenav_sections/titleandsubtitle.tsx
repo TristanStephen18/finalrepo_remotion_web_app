@@ -105,7 +105,6 @@ export const CurveLineTextPanel: React.FC<TextPanelProps> = ({
         </label>
       </div>
 
-      {/* Subtitle Card */}
       <div style={cardStyle}>
         <h3 style={{ marginBottom: "0.75rem", color: "#0077ff" }}>Subtitle</h3>
 
@@ -130,7 +129,6 @@ export const CurveLineTextPanel: React.FC<TextPanelProps> = ({
           />
         </label>
       </div>
-      {/* Font Family Selection */}
       <div style={cardStyle}>
         <div
           style={{ marginBottom: "0.75rem", color: "#ff4fa3", fontWeight: 600 }}

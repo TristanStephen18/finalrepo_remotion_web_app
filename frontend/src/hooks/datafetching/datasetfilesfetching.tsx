@@ -3,6 +3,7 @@ import { useState } from "react";
 export const useDatasetsFetching = () => {
   const [loadingDatasets, setLoadingDatasets] = useState(false);
   const [userDatasets, setUserDatasets] = useState<any[]>([]);
+  const [selectedDatasets, setSelectedDatasets] = useState<number[]>([]);
 
   const fetchUserDatasets = () => {
     setLoadingDatasets(true);
@@ -17,10 +18,31 @@ export const useDatasetsFetching = () => {
       })
       .then((data) => {
         console.log(data);
-        setUserDatasets(data); // Store full dataset objects
+        setUserDatasets(data);
       })
       .catch((err) => console.error("❌ Failed to fetch user uploads:", err))
       .finally(() => setLoadingDatasets(false));
+  };
+
+  const handleDeleteDatasets = async () => {
+    try {
+      await Promise.all(
+        selectedDatasets.map((id) =>
+          fetch(`/datasets/${id}`, {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          })
+        )
+      );
+      setUserDatasets((prev) =>
+        prev.filter((p) => !selectedDatasets.includes(p.id))
+      );
+      setSelectedDatasets([]);
+    } catch (err) {
+      console.error("Error deleting datasets:", err);
+    }
   };
 
   return {
@@ -28,6 +50,9 @@ export const useDatasetsFetching = () => {
     setLoadingDatasets,
     loadingDatasets,
     userDatasets,
-    setUserDatasets
-  }
+    setUserDatasets,
+    selectedDatasets,
+    setSelectedDatasets,
+    handleDeleteDatasets,
+  };
 };

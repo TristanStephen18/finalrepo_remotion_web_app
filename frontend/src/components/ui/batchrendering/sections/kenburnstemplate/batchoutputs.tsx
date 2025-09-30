@@ -1,6 +1,7 @@
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { DownloadIcon } from "lucide-react";
 import type React from "react";
+import { handleDownloadAll } from "../../../../../utils/downloadall";
 
 interface KenBurnsBatchOutputProps {
   isRendering: boolean;
@@ -13,28 +14,17 @@ export const KenBurnsBatchOutputs: React.FC<KenBurnsBatchOutputProps> = ({
 }) => {
   return (
     <Box>
-      {/* Title + Download button row */}
       <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
         <Typography variant="h5" fontWeight={700} sx={{ flexGrow: 1 }}>
           Batch Outputs ({combinations.length})
         </Typography>
-
-        {/* Show only when rendering is done and at least one video is ready */}
         {!isRendering && combinations.some((c) => c.exportUrl) && (
           <Button
             variant="contained"
             color="primary"
             startIcon={<DownloadIcon />}
             onClick={() => {
-              combinations.forEach((c, i) => {
-                if (c.exportUrl) {
-                  const link = document.createElement("a");
-                  link.href = c.exportUrl;
-                  console.log(c.exportUrl);
-                  link.download = `batch_output_${i + 1}.mp4`;
-                  link.click();
-                }
-              });
+              handleDownloadAll(combinations, "kenburnsswipe")
             }}
           >
             Download All

@@ -6,6 +6,7 @@ import {
   integer,
   jsonb,
   uuid,
+  boolean
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -15,8 +16,9 @@ export const users = pgTable("users", {
   passwordHash: text("password_hash"),
   provider: text("provider"),
   providerId: text("provider_id"),
-  profilePicture: text("profile_picture"), // URL of user's profile picture
+  profilePicture: text("profile_picture"), 
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  verified: boolean("verified").default(false).notNull(),
 });
 
 export const templates = pgTable("templates", {

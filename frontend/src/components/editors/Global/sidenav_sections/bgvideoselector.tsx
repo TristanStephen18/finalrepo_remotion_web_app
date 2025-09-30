@@ -102,7 +102,6 @@ export const BackgroundVideoSelectorPanel: React.FC<BgProps> = ({
         </div>
       </div>
 
-      {/* Tab Content */}
       <div
         style={{ maxHeight: "420px", overflowY: "auto", paddingBottom: "1rem" }}
       >

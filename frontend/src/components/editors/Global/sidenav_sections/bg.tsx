@@ -20,7 +20,6 @@ export interface BgProps {
 }
 
 const DEFAULT_TABS = ["philosophy", "colors", "sceneries"];
-// const REFRESH_INTERVAL = 60 * 1000; // 1 minute auto-refresh
 
 export const BackgroundSecTrial: React.FC<BgProps> = ({
   backgroundImage,
@@ -52,7 +51,6 @@ export const BackgroundSecTrial: React.FC<BgProps> = ({
     >
       <h3 style={{ marginBottom: "0.75rem", color: "#0077ff" }}>Background</h3>
 
-      {/* Main Tabs: Upload / Default / Online */}
       <div
         style={{
           display: "flex",
@@ -85,7 +83,6 @@ export const BackgroundSecTrial: React.FC<BgProps> = ({
         ))}
       </div>
 
-      {/* Upload Tab */}
       {activeMainTab === "upload" && (
         <div>
           <label
@@ -169,7 +166,6 @@ export const BackgroundSecTrial: React.FC<BgProps> = ({
         </div>
       )}
 
-      {/* Default Tab (all images combined) */}
       {activeMainTab === "default" && (
         <div
           style={{
@@ -214,7 +210,6 @@ export const BackgroundSecTrial: React.FC<BgProps> = ({
         </div>
       )}
 
-      {/* Online Tab */}
       {activeMainTab === "online" && (
         <div>
           <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem" }}>

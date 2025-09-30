@@ -1,40 +1,40 @@
 {
   "intro": {
-    "title": "Unveiling the Past",
-    "subtitle": "Explore the Events That Shaped Our World"
+    "title": "The Earth's Features",
+    "subtitle": "A glimpse into the diverse geological formations and climates."
   },
   "outro": {
-    "title": "Unveiling the Past",
-    "subtitle": "Explore the Events That Shaped Our World"
+    "title": "The Earth's Features",
+    "subtitle": "A glimpse into the diverse geological formations and climates."
   },
   "facts": [
     {
-      "title": "The Pyramids",
-      "description": "Ancient wonders built for pharaohs, their construction still debated."
+      "title": "Grand Canyon",
+      "description": "A massive canyon carved by the Colorado River over millions of years in Arizona, USA."
     },
     {
-      "title": "Roman Empire",
-      "description": "A vast civilization that left an indelible mark on law, language, and architecture."
+      "title": "Victoria Falls",
+      "description": "One of the largest waterfalls in the world, located on the border of Zambia and Zimbabwe."
     },
     {
-      "title": "World War II",
-      "description": "A global conflict that reshaped geopolitical landscapes and societal structures."
+      "title": "Mount Kilimanjaro",
+      "description": "Africa's highest peak, a dormant volcano in Tanzania."
     },
     {
-      "title": "The Renaissance",
-      "description": "A period of great artistic, cultural, and scientific rebirth in Europe."
+      "title": "Permafrost",
+      "description": "Permanently frozen ground found in the Arctic regions, crucial for climate studies."
     },
     {
-      "title": "The Silk Road",
-      "description": "Ancient trade routes that connected East and West, fostering cultural exchange."
+      "title": "Equator",
+      "description": "The imaginary line that divides the Earth into the Northern and Southern Hemispheres."
     }
   ],
-  "backgroundImage": "https://pixabay.com/get/g78c9f71222b286616ae280f946184b6ac3167fba610b09376834664926de44e51a2987215fb27cca24b178c654582bf1d31f05065257df39d71fd6313f726def_640.jpg",
+  "backgroundImage": "https://pixabay.com/get/gd45b2955955042844cf637f918d74100316001d574e812557b9d40353b03cbd1b6e9fd5fbee05ca255cff79a22983c1a59729f1f02df2e57f96bb297f2bb5010_640.jpg",
   "fontSizeTitle": 68,
   "fontSizeSubtitle": 49,
   "fontFamilyTitle": "'Asimovian', sans-serif",
   "fontColorTitle": "lightyellow",
   "fontColorSubtitle": "lightyellow",
   "fontFamilySubtitle": "'Asimovian', sans-serif",
-  "duration": 14
+  "duration": 28
 }

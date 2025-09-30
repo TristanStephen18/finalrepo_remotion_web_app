@@ -1,23 +1,19 @@
 import { Router } from "express";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-import { eq, and } from 'drizzle-orm';
+import { eq, and } from "drizzle-orm";
 import { users } from "../../db/schema.ts";
 import { JWT_EXPIRES_IN, JWT_SECRET } from "./config.ts";
 import { db } from "../../db/client.ts";
 import { requireAuth } from "../../utils/authmiddleware.ts";
-import type { AuthRequest } from '../../utils/authmiddleware.ts';
+import type { AuthRequest } from "../../utils/authmiddleware.ts";
+import { sendEmailVerification } from "../apis/nodemailer.ts";
 
 const router = Router();
 
-/**
- * SIGNUP
- */
 router.post("/signup", async (req, res) => {
-  console.log("creating an account");
   try {
     const { email, password, name } = req.body;
-
     if (!email || !password || !name) {
       return res.status(400).json({ error: "Missing required fields" });
     }
@@ -40,45 +36,61 @@ router.post("/signup", async (req, res) => {
         passwordHash,
         provider: "local",
         providerId: "",
-        profilePicture: "pfp.jpg", 
+        profilePicture: "pfp.jpg",
+        verified: false,
       })
       .returning();
 
-    const token = jwt.sign({ userId: newUser.id }, JWT_SECRET, {
-      expiresIn: JWT_EXPIRES_IN,
-    });
+    const protocol = req.protocol;
+    const host = req.get("host");
+    const baseUrl = `${protocol}://${host}`;
+    await sendEmailVerification(newUser.id, email, baseUrl);
 
-    res.json({
-      message: "Signup successful",
-      token,
-      user: {
-        id: newUser.id,
-        email: newUser.email,
-        name: newUser.name,
-        profilePicture: newUser.profilePicture,
-      },
-    });
+    res.json({ message: "Signup successful. Please verify your email." });
   } catch (err) {
     console.error("Signup error:", err);
     res.status(500).json({ error: "Internal server error" });
   }
 });
 
-/**
- * LOGIN
- */
+router.get("/verify", async (req, res) => {
+  const { token } = req.query;
+
+  if (!token || typeof token !== "string") {
+    return res.status(400).json({ error: "Invalid verification link" });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: number };
+
+    await db
+      .update(users)
+      .set({ verified: true })
+      .where(eq(users.id, decoded.userId));
+
+    res.redirect("/login?verified=true");
+  } catch (err) {
+    console.error("Verification error:", err);
+    res.status(400).json({ error: "Invalid or expired token" });
+  }
+});
+
 router.post("/login", async (req, res) => {
   try {
     const { email, password } = req.body;
-
     if (!email || !password) {
       return res.status(400).json({ error: "Missing email or password" });
     }
 
     const [user] = await db.select().from(users).where(eq(users.email, email));
-
     if (!user || !user.passwordHash) {
       return res.status(400).json({ error: "Invalid credentials" });
+    }
+
+    if (!user.verified) {
+      return res
+        .status(403)
+        .json({ error: "Please verify your email before logging in." });
     }
 
     const valid = await bcrypt.compare(password, user.passwordHash);
@@ -109,10 +121,7 @@ router.get("/", requireAuth, async (req: AuthRequest, res) => {
   }
 
   try {
-    const user = await db
-      .select()
-      .from(users)
-      .where(eq(users.id, userId));
+    const user = await db.select().from(users).where(eq(users.id, userId));
 
     res.json(user);
   } catch (err: any) {
@@ -132,45 +141,49 @@ router.put(
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    const [existing] = await db
+    try{
+      const [existing] = await db
       .select()
       .from(users)
       .where(eq(users.id, userId));
 
     if (!existing) {
-      return res.status(404).json({ error: "Project not found" });
+      return res.status(404).json({ error: "User not found" });
     }
 
-    // Update props and/or video url
     const [updated] = await db
       .update(users)
       .set({ profilePicture: profile_pic })
       .where(eq(users.id, Number(userId)))
       .returning();
 
-    res.json({ message: "User profile picture updated successfully", user: updated });
+    res.json({
+      message: "User profile picture updated successfully",
+      user: updated,
+    });
+    }catch(error){
+      console.log(error);
+      res.status(500).json({message: "There was a problem updating your profile picture"})
+    }
   }
 );
 
+router.put("/update-username", requireAuth, async (req: AuthRequest, res) => {
+  const { username } = req.body;
+  const userId = req.user?.userId;
 
-router.put(
-  "/update-username",
-  requireAuth,
-  async (req: AuthRequest, res) => {
-    const { username } = req.body;
-    const userId = req.user?.userId;
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
 
-    if (!userId) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
-
+  try {
     const [existing] = await db
       .select()
       .from(users)
       .where(eq(users.id, userId));
 
     if (!existing) {
-      return res.status(404).json({ error: "Project not found" });
+      return res.status(404).json({ error: "User not found" });
     }
     const [updated] = await db
       .update(users)
@@ -179,8 +192,43 @@ router.put(
       .returning();
 
     res.json({ message: "Username updated successfully", user: updated });
+  } catch (error: any) {
+    res.status(500).json({ message: "Thre was an error updating your username" });
   }
-);
+});
+
+router.put("/update-password", requireAuth, async (req: AuthRequest, res) => {
+  const { oldPassword, newPassword } = req.body;
+  const userId = req.user?.userId;
+
+  if (!userId) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  try {
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const valid = await bcrypt.compare(oldPassword, user.passwordHash);
+    if (!valid) {
+      return res.status(400).json({ error: "Old password is incorrect" });
+    }
+
+    const newPasswordHash = await bcrypt.hash(newPassword, 10);
+
+    await db
+      .update(users)
+      .set({ passwordHash: newPasswordHash })
+      .where(eq(users.id, Number(userId)));
+
+    res.json({ message: "Password updated successfully" });
+  } catch (err) {
+    console.error("Password update error:", err);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 
 export default router;

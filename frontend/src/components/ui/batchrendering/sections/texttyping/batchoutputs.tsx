@@ -4,6 +4,7 @@ import type React from "react";
 import { BACKGROUNDS } from "../../../../../data/texttypingbg";
 import { FONTS } from "../../../../../data/texttypingfonts";
 import { AUDIO_FILES } from "../../../../../data/texttypingaudios";
+import { handleDownloadAll } from "../../../../../utils/downloadall";
 
 interface TextTypingTemplateBatchOutputsSectionInterface {
   isRendering: boolean;
@@ -27,14 +28,7 @@ export const TextTypingTemplateBatchOutputsSection: React.FC<
             color="primary"
             startIcon={<DownloadIcon />}
             onClick={() => {
-              combinations.forEach((c, i) => {
-                if (c.exportUrl) {
-                  const link = document.createElement("a");
-                  link.href = c.exportUrl;
-                  link.download = `batch_output_${i + 1}.mp4`;
-                  link.click();
-                }
-              });
+              handleDownloadAll(combinations, "texttyping")
             }}
           >
             Download All

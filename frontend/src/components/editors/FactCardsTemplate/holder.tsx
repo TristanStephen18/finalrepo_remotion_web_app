@@ -64,7 +64,6 @@ export const FactCardsEditor: React.FC = () => {
   const [exportUrl, setExportUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
 
-  // 🟢 Loading overlay state
   const [isLoading, setIsLoading] = useState(false);
   const [messageIndex, setMessageIndex] = useState(0);
   const messages = [
@@ -82,7 +81,6 @@ export const FactCardsEditor: React.FC = () => {
     return () => clearInterval(interval);
   }, [isLoading]);
 
-  // 🔹 Resizable panel
   const [panelWidth, setPanelWidth] = useState(defaultpanelwidth);
   const [isResizing, setIsResizing] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -119,7 +117,6 @@ export const FactCardsEditor: React.FC = () => {
     }
   }, [uploadedUrl]);
 
-  // 🟢 Export
   const handleExport = async (format: string) => {
     setIsExporting(true);
     try {
@@ -184,7 +181,6 @@ export const FactCardsEditor: React.FC = () => {
     }
   };
 
-  // 🟢 Project Save Hook
   const {
     setProjectId,
     isSaving,
@@ -213,7 +209,7 @@ export const FactCardsEditor: React.FC = () => {
     videoEndpoint: "/generatevideo/factstemplaterender",
   });
 
-  // 🟢 Load project if editing existing
+
   useEffect(() => {
     if (id) {
       setIsLoading(true);

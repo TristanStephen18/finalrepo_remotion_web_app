@@ -31,9 +31,8 @@ const initialData = [
 ];
 
 export const CurveLineTrendEditor: React.FC = () => {
-  const { id } = useParams(); // will be defined if /project/:id/editor
+  const { id } = useParams();
   const templateId = 5;
-  // const location = useLocation();
   const [projectId, setProjectId] = useState<number | null>(null);
   const [showSaveModal, setShowSaveModal] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -79,20 +78,16 @@ export const CurveLineTrendEditor: React.FC = () => {
   >("text");
   const [collapsed, setCollapsed] = useState(false);
 
-  //   const [isUploading, setIsUploading] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
-  // const [autoSave, setAutoSave] = useState(false);
   const [duration, setDuration] = useState(13);
   const [isLoading, setIsLoading] = useState(false);
 
-  // 🔹 Resizable panel state
-  const [panelWidth, setPanelWidth] = useState(defaultpanelwidth); // default width
+  const [panelWidth, setPanelWidth] = useState(defaultpanelwidth); 
   const [isResizing, setIsResizing] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
-
-  // 🔹 Drag handlers
+  
   useEffect(() => {
     const handleMouseMove = (e: MouseEvent) => {
       if (!isResizing) return;
@@ -138,21 +133,18 @@ export const CurveLineTrendEditor: React.FC = () => {
 
   const handleSave = async () => {
     const currentProps = buildPropsObject();
-    // const currentPropsStr = JSON.stringify(currentProps);
 
     if (projectId) {
-      // ✅ Check if nothing changed since last save
       if (
         lastSavedProps.current &&
         isEqual(lastSavedProps.current, currentProps)
       ) {
-        alert("✅ Your project has already been saved");
+        alert("This design has already been saved");
         return;
       }
 
       setIsSaving(true);
       try {
-        // 🔹 generate video
         const exportRes = await fetch("/generatevideo/curvelinetrend", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -169,7 +161,6 @@ export const CurveLineTrendEditor: React.FC = () => {
         const exportResult = await exportRes.json();
         const projectVidUrl = exportResult.url;
 
-        // 🔹 update project in DB
         const response = await fetch(`/projects/update/${projectId}`, {
           method: "PUT",
           headers: {
@@ -190,13 +181,12 @@ export const CurveLineTrendEditor: React.FC = () => {
 
         const result = await response.json();
 
-        // ✅ store new snapshot
         lastSavedProps.current = currentProps;
 
         setProjectId(result.project.id);
         localStorage.setItem("projectId", result.project.id.toString());
 
-        alert("✅ Project exported and updated successfully!");
+        alert("Design exported and saved successfully!");
       } catch (err: any) {
         console.error(err);
         alert(`❌ Save failed: ${err?.message ?? err}`);
@@ -204,7 +194,6 @@ export const CurveLineTrendEditor: React.FC = () => {
         setIsSaving(false);
       }
     } else {
-      // 🟢 new project → open modal
       setShowSaveModal(true);
     }
   };
@@ -214,11 +203,9 @@ export const CurveLineTrendEditor: React.FC = () => {
     setStatus: (s: string) => void
   ) => {
     try {
-      setStatus("Saving project...");
+      setStatus("Saving design...");
       const currentProps = buildPropsObject();
-      // const currentPropsStr = JSON.stringify(currentProps);
 
-      // 🔹 export video
       const exportRes = await fetch("/generatevideo/curvelinetrend", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -236,7 +223,6 @@ export const CurveLineTrendEditor: React.FC = () => {
       const exportResult = await exportRes.json();
       const projectVidUrl = exportResult.url;
 
-      // 🔹 save to DB
       const response = await fetch("/projects/save", {
         method: "POST",
         headers: {
@@ -261,7 +247,6 @@ export const CurveLineTrendEditor: React.FC = () => {
       const result = await response.json();
       setProjectId(result.project.id);
 
-      // ✅ mark snapshot as saved
       lastSavedProps.current = currentProps;
 
       localStorage.setItem("projectId", result.project.id.toString());
@@ -269,7 +254,7 @@ export const CurveLineTrendEditor: React.FC = () => {
       setStatus("Saved!");
     } catch (err: any) {
       console.error("saveNewProject error", err);
-      throw err; // modal will catch and show message
+      throw err; 
     }
   };
 
@@ -397,7 +382,6 @@ export const CurveLineTrendEditor: React.FC = () => {
           setIsLoading(false);
         });
     } else {
-      // 🟢 User opened from "Templates"
       const saved = localStorage.getItem("curveLineEditorState");
       if (saved) {
         hydrateFromParsed(JSON.parse(saved));
@@ -423,7 +407,7 @@ export const CurveLineTrendEditor: React.FC = () => {
   const [messageIndex, setMessageIndex] = useState(0);
 
   const messages = [
-    "⏳ Preparing your template...",
+    "⏳ Preparing your design...",
 
     "🙇 Sorry for the wait, still working on it...",
     "🚀 Almost there, thanks for your patience!",
@@ -434,7 +418,7 @@ export const CurveLineTrendEditor: React.FC = () => {
 
     const interval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % messages.length);
-    }, 10000); // every 10 seconds
+    }, 10000); 
 
     return () => clearInterval(interval);
   }, [isLoading]);
@@ -475,7 +459,6 @@ export const CurveLineTrendEditor: React.FC = () => {
           setCollapsed={setCollapsed}
         />
 
-        {/* Controls Panel */}
         {!collapsed && (
           <div
             ref={panelRef}
@@ -489,7 +472,6 @@ export const CurveLineTrendEditor: React.FC = () => {
               transition: isResizing ? "none" : "width 0.2s",
             }}
           >
-            {/* Drag Handle */}
             <div
               onMouseDown={() => setIsResizing(true)}
               style={{

@@ -33,7 +33,6 @@ export const CurveLineSideNav: React.FC<SidenavProps> = ({
         position: "relative",
       }}
     >
-      {/* Collapse Toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
         style={{
@@ -49,7 +48,6 @@ export const CurveLineSideNav: React.FC<SidenavProps> = ({
         {collapsed ? <MenuIcon /> : <ChevronLeftIcon />}
       </button>
 
-      {/* Nav Items */}
       <div style={{ flex: 1 }}>
         {CurveLineTrendNavs.map(({ key, label, icon }) => (
           <button

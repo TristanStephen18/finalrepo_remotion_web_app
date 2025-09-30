@@ -1,6 +1,7 @@
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { DownloadIcon } from "lucide-react";
 import type React from "react";
+import { handleDownloadAll } from "../../../../../utils/downloadall";
 
 interface KpiFlipCardsBatchOutputProps {
   isRendering: boolean;
@@ -17,21 +18,13 @@ export const KpiFlipCardsBatchOutputs: React.FC<
           Batch Outputs ({combinations.length})
         </Typography>
 
-        {/* Show only when rendering is done and at least one video is ready */}
         {!isRendering && combinations.some((c) => c.exportUrl) && (
           <Button
             variant="contained"
             color="primary"
             startIcon={<DownloadIcon />}
             onClick={() => {
-              combinations.forEach((c, i) => {
-                if (c.exportUrl) {
-                  const link = document.createElement("a");
-                  link.href = c.exportUrl;
-                  link.download = `batch_output_${i + 1}.mp4`;
-                  link.click();
-                }
-              });
+              handleDownloadAll(combinations, "kpiflipcards")
             }}
           >
             Download All

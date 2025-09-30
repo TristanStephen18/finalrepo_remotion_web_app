@@ -12,12 +12,9 @@ export const AiVoiceSelector: React.FC<{
 
   const handleSelect = (voiceId: VoiceId, sample: string) => {
     if (aiVoice === voiceId) {
-      // unselect if clicked again
       setAiVoice("");
     } else {
       setAiVoice(voiceId);
-
-      // play preview
       if (audioRef.current) {
         audioRef.current.pause();
         audioRef.current.currentTime = 0;
@@ -47,7 +44,6 @@ export const AiVoiceSelector: React.FC<{
         Choose <strong>one voice</strong> for narration.
       </p>
 
-      {/* Selected voice summary */}
       <div
         style={{
           marginBottom: 16,
@@ -135,7 +131,6 @@ export const AiVoiceSelector: React.FC<{
         })}
       </div>
 
-      {/* Update button */}
       <div style={{ marginTop: 24, textAlign: "center" }}>
         <button
           onClick={onUpdateTemplate}

@@ -1,6 +1,7 @@
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { DownloadIcon } from "lucide-react";
 import type React from "react";
+import { handleDownloadAll } from "../../../../../utils/downloadall";
 
 interface BarGraphBatchOutputsSectionInterface {
   isRendering: boolean;
@@ -17,21 +18,13 @@ export const BarGraphBatchOutputsSection: React.FC<
           Batch Outputs ({combinations.length})
         </Typography>
 
-        {/* Show only when rendering is done and at least one video is ready */}
         {!isRendering && combinations.some((c) => c.exportUrl) && (
           <Button
             variant="contained"
             color="primary"
             startIcon={<DownloadIcon />}
             onClick={() => {
-              combinations.forEach((c, i) => {
-                if (c.exportUrl) {
-                  const link = document.createElement("a");
-                  link.href = c.exportUrl;
-                  link.download = `batch_output_${i + 1}.mp4`;
-                  link.click();
-                }
-              });
+              handleDownloadAll(combinations, "bargraph");
             }}
           >
             Download All
@@ -67,12 +60,11 @@ export const BarGraphBatchOutputsSection: React.FC<
                 p: 1,
               }}
             >
-              {/* Video or Placeholder */}
               <Box
                 sx={{
                   width: "100%",
                   aspectRatio: "9 / 16",
-                  maxHeight: 300, // 👈 cap the height
+                  maxHeight: 300,
                   borderRadius: 2,
                   overflow: "hidden",
                   bgcolor: "#f9f9f9",
@@ -112,7 +104,6 @@ export const BarGraphBatchOutputsSection: React.FC<
                 )}
               </Box>
 
-              {/* Meta Info */}
               <Box sx={{ mt: 0.5, textAlign: "center" }}>
                 <Typography
                   variant="body2"

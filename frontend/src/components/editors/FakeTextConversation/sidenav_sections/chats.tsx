@@ -56,7 +56,6 @@ export const MessagesPanel: React.FC<{
               boxShadow: "0 2px 6px rgba(0,0,0,0.04)",
             }}
           >
-            {/* Speaker selector */}
             <label
               style={{
                 display: "block",
@@ -86,7 +85,6 @@ export const MessagesPanel: React.FC<{
               <option value="person_2">Person 2</option>
             </select>
 
-            {/* Message text */}
             <label
               style={{
                 display: "block",
@@ -113,7 +111,6 @@ export const MessagesPanel: React.FC<{
               }}
             />
 
-            {/* Delete button */}
             <button
               onClick={() => handleDelete(index)}
               style={{
@@ -132,7 +129,6 @@ export const MessagesPanel: React.FC<{
         ))}
       </div>
 
-      {/* Add button */}
       <button
         onClick={handleAdd}
         style={{

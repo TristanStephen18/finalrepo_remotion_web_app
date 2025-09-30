@@ -35,7 +35,6 @@ export const FactCardsSidenav: React.FC<SidenavProps> = ({
         position: "relative",
       }}
     >
-      {/* Collapse Toggle */}
       <button
         onClick={() => setCollapsed(!collapsed)}
         style={{

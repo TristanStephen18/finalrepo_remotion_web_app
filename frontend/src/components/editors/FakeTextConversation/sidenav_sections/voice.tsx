@@ -8,7 +8,7 @@ export const VoiceSelector: React.FC<{
   voice2: string;
   setVoice2: React.Dispatch<React.SetStateAction<string>>;
   onUpdateTemplate: () => void;
-  isUpdatingTemplate: boolean; // ✅ new prop
+  isUpdatingTemplate: boolean; 
 }> = ({
   voice1,
   setVoice1,
@@ -56,8 +56,8 @@ export const VoiceSelector: React.FC<{
   };
 
   const colorMap = {
-    voice1: "#0b63ff", // blue
-    voice2: "#ff4fa3", // pink
+    voice1: "#0b63ff", 
+    voice2: "#ff4fa3", 
   };
 
   const bothSelected = !!voice1 && !!voice2;
@@ -84,7 +84,6 @@ export const VoiceSelector: React.FC<{
         Voice&nbsp;2.
       </p>
 
-      {/* Selected voices summary */}
       <div
         style={{
           marginBottom: 16,
@@ -114,7 +113,6 @@ export const VoiceSelector: React.FC<{
         </p>
       </div>
 
-      {/* Voices list */}
       <div
         style={{
           display: "grid",
@@ -183,7 +181,6 @@ export const VoiceSelector: React.FC<{
         })}
       </div>
 
-      {/* Update button */}
       <div style={{ marginTop: 24, textAlign: "center" }}>
         <button
           onClick={onUpdateTemplate}
@@ -203,6 +200,7 @@ export const VoiceSelector: React.FC<{
               bothSelected && !isUpdatingTemplate
                 ? "0 3px 6px rgba(0,0,0,0.1)"
                 : "none",
+            width: "100%"
           }}
         >
           {isUpdatingTemplate ? "⏳ Updating..." : "Update Template"}

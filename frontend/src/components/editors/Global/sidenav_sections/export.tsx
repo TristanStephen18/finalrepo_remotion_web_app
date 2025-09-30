@@ -55,7 +55,6 @@ export const ExportSecTrial: React.FC<ExportProps> = ({
       </div>
 
       <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        {/* MP4 */}
         <button
           onClick={() => handleExport("mp4")}
           disabled={isExporting !== null}
@@ -67,7 +66,6 @@ export const ExportSecTrial: React.FC<ExportProps> = ({
           {isExporting === "mp4" ? "🔄 Exporting..." : "🎥 Export as MP4"}
         </button>
 
-        {/* GIF */}
         <button
           onClick={() => handleExport("gif")}
           disabled={isExporting !== null}
@@ -76,7 +74,6 @@ export const ExportSecTrial: React.FC<ExportProps> = ({
           {isExporting === "gif" ? "🔄 Exporting..." : "🖼️ Export as GIF"}
         </button>
 
-        {/* WebM */}
         <button
           onClick={() => handleExport("webm")}
           disabled={isExporting !== null}

@@ -39,7 +39,6 @@ export const IntroOutroPanel: React.FC<IntroOutroProps> = ({
 
   return (
     <div>
-      {/* Intro Card */}
       <div style={cardStyle}>
         <h3 style={{ marginBottom: "0.75rem", color: "#0077ff" }}>Intro</h3>
 
@@ -69,7 +68,6 @@ export const IntroOutroPanel: React.FC<IntroOutroProps> = ({
         </label>
       </div>
 
-      {/* Outro Card */}
       <div style={cardStyle}>
         <h3 style={{ marginBottom: "0.75rem", color: "#0077ff" }}>Outro</h3>
 

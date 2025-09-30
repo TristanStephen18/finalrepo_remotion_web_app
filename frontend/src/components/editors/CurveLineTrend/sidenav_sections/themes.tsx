@@ -80,11 +80,11 @@ export const PresetPanel: React.FC<PresetPanelProps> = ({
               style={optionStyle(preset === p)}
               onClick={() => setPreset(p)}
             >
-              {/* Swatch Preview */}
+
               <div style={swatchStyle(theme)}>
                 <div style={dotStyle(theme.dot)} />
               </div>
-              {/* Label */}
+
               <div
                 style={{
                   textAlign: "center",

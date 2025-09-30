@@ -170,25 +170,20 @@ export const TypographyPanelBarGraphTemplate: React.FC<TypoSectionProps> = ({
         </Tabs>
       </Box>
       <Box sx={{ flex: 1, overflowY: 'auto', px: 2, pt: 2 }}>
-        {/* Title Tab */}
         {tab === 0 && (
           <Box>
-            {/* <h3 style={{ marginBottom: "1rem", color: "#0077ff" }}>Title</h3> */}
             {renderTextInput("Title Text", title, setTitle, "Enter title...")}
             {renderColorControl("Title Color", titleFontColor, setTitleFontColor)}
             {renderFontSizeControl("Title Size", titleFontSize, setTitleFontSize)}
           </Box>
         )}
-        {/* Subtitle Tab */}
         {tab === 1 && (
           <Box>
-            {/* <h3 style={{ marginBottom: "1rem", color: "#0077ff" }}>Subtitle</h3> */}
             {renderTextInput("Subtitle Text", subtitle, setSubtitle, "Enter subtitle...")}
             {renderColorControl("Subtitle Color", subtitleFontColor, setSubtitleFontColor)}
             {renderFontSizeControl("Subtitle Size", subtitleFontSize, setSubtitleFontSize)}
           </Box>
         )}
-        {/* Font Family Tab */}
         {tab === 2 && (
           <Box>
             <h5 style={{ marginBottom: "1rem", color: "#0077ff" }}>Your chosen font will be applied to the whole template</h5>
@@ -214,10 +209,8 @@ export const TypographyPanelBarGraphTemplate: React.FC<TypoSectionProps> = ({
             </div>
           </Box>
         )}
-        {/* Accent Color Tab */}
         {tab === 3 && (
           <Box>
-            {/* <h3 style={{ marginBottom: "1rem", color: "#0077ff" }}>Accent Color</h3> */}
             {renderColorControl("Accent Color", accent, setAccent)}
           </Box>
         )}

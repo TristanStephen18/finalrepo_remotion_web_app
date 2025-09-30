@@ -98,18 +98,6 @@ export const BarGraphControlsPanel: React.FC<BarGraphControlsPanelProps> = ({
     display: "inline-block",
   };
 
-//   const rangeThumbStyle: React.CSSProperties = {
-//     WebkitAppearance: "none",
-//     appearance: "none",
-//     width: "18px",
-//     height: "18px",
-//     borderRadius: "50%",
-//     background: "linear-gradient(135deg, #ff4fa3 0%, #8a4dff 50%, #0077ff 100%)",
-//     cursor: "pointer",
-//     boxShadow: "0 2px 8px rgba(0, 119, 255, 0.3)",
-//     border: "2px solid white",
-//   };
-
   return (
     <div style={panelStyle}>
       <h3 style={headerStyle}>
@@ -132,7 +120,6 @@ export const BarGraphControlsPanel: React.FC<BarGraphControlsPanelProps> = ({
       </h3>
 
       <div style={controlsGridStyle}>
-        {/* Bar Height Control */}
         <div style={controlGroupStyle}>
           <label style={controlLabelStyle}>
             <span>📏</span>
@@ -160,7 +147,6 @@ export const BarGraphControlsPanel: React.FC<BarGraphControlsPanelProps> = ({
           <div style={valueDisplayStyle}>{barHeight}px</div>
         </div>
 
-        {/* Bar Gap Control */}
         <div style={controlGroupStyle}>
           <label style={controlLabelStyle}>
             <span>↕️</span>
@@ -188,7 +174,6 @@ export const BarGraphControlsPanel: React.FC<BarGraphControlsPanelProps> = ({
           <div style={valueDisplayStyle}>{barGap}px</div>
         </div>
 
-        {/* Label Font Size Control */}
         <div style={controlGroupStyle}>
           <label style={controlLabelStyle}>
             <span>🔤</span>
@@ -216,7 +201,6 @@ export const BarGraphControlsPanel: React.FC<BarGraphControlsPanelProps> = ({
           <div style={valueDisplayStyle}>{barLabelFontSize}px</div>
         </div>
 
-        {/* Value Font Size Control */}
         <div style={controlGroupStyle}>
           <label style={controlLabelStyle}>
             <span>🔢</span>

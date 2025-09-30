@@ -19,12 +19,14 @@ interface SaveProjectModalProps {
 }
 
 const progressMessages = [
-  "Still working on saving your project…",
+  "Still working on saving your design…",
   "Crunching data, almost there…",
   "Polishing up the final details…",
   "Hang tight, just a little longer…",
   "Making sure everything is perfect…",
 ];
+
+type Mode = "editing" | "saving" | "success" | "error";
 
 export const SaveProjectModal: React.FC<SaveProjectModalProps> = ({
   open,
@@ -33,61 +35,54 @@ export const SaveProjectModal: React.FC<SaveProjectModalProps> = ({
   initialTitle = "",
 }) => {
   const [title, setTitle] = useState(initialTitle);
-  const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
-
-  // 🔹 Index for rotating messages
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [messageIndex, setMessageIndex] = useState(0);
+  const [mode, setMode] = useState<Mode>("editing");
 
-  // Reset state when modal opens
   useEffect(() => {
     if (open) {
       setTitle(initialTitle);
       setStatus(null);
-      setError(null);
-      setLoading(false);
+      setErrorMessage(null);
       setMessageIndex(0);
+      setMode("editing");
     }
   }, [open, initialTitle]);
 
-  // 🔹 Rotate messages every 20 seconds while loading
   useEffect(() => {
-    if (!loading) return;
+    if (mode !== "saving") return;
 
     const interval = setInterval(() => {
       setMessageIndex((prev) => (prev + 1) % progressMessages.length);
       setStatus(progressMessages[messageIndex]);
-    }, 20000); // 20 seconds
+    }, 20000);
 
     return () => clearInterval(interval);
-  }, [loading, messageIndex]);
+  }, [mode, messageIndex]);
 
   const handleSaveClick = async () => {
     if (!title.trim()) {
-      setError("Project name is required.");
+      setErrorMessage("Design name is required.");
+      setMode("error");
       return;
     }
-    setError(null);
-    setLoading(true);
+
+    setErrorMessage(null);
+    setMode("saving");
     setStatus("Starting…");
     setMessageIndex(0);
 
     try {
-      // Pass setStatus so caller can override status messages too
       await onSave(title.trim(), (s) => setStatus(s));
-      // success
-      setStatus("Done");
-      setTimeout(() => {
-        setLoading(false);
-        onClose();
-      }, 400);
+      setStatus("Your design was successfully saved! You can now view it in your saved datas!");
+      setMode("success");
     } catch (err: any) {
       console.error("Save failed:", err);
       const message =
         (err && (err.message || (err.error ?? err))) || "Failed to save template";
-      setError(String(message));
-      setLoading(false);
+      setErrorMessage(String(message));
+      setMode("error");
     }
   };
 
@@ -95,7 +90,7 @@ export const SaveProjectModal: React.FC<SaveProjectModalProps> = ({
     <Dialog
       open={open}
       onClose={() => {
-        if (!loading) onClose();
+        if (mode === "editing") onClose();
       }}
       PaperProps={{
         sx: {
@@ -114,60 +109,79 @@ export const SaveProjectModal: React.FC<SaveProjectModalProps> = ({
           pb: 0,
         }}
       >
-        Save this Template?
+        {mode === "success"
+          ? "Success"
+          : mode === "error"
+          ? "Error"
+          : "Save this Design?"}
       </DialogTitle>
 
       <DialogContent sx={{ pt: 2, pb: 1 }}>
-        <TextField
-          label="Give your template a name"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          fullWidth
-          size="small"
-          disabled={loading}
-          error={!!error}
-          helperText={error ?? "Give your template a descriptive name"}
-          autoFocus
-        />
+        {mode === "editing" && (
+          <TextField
+            label="Give your design a name"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            fullWidth
+            size="small"
+            error={!!errorMessage}
+            helperText={errorMessage ?? "Give your design a descriptive name"}
+            autoFocus
+          />
+        )}
 
-        {/* Status / progress */}
-        <Box mt={2} display="flex" alignItems="center" gap={1}>
-          {loading ? (
+        {mode === "saving" && (
+          <Box mt={2} display="flex" alignItems="center" gap={1}>
             <CircularProgress size={18} />
-          ) : (
-            <Box width={18} height={18} />
-          )}
-          <Typography
-            variant="body2"
-            color={status ? "text.primary" : "text.secondary"}
-          >
-            {status ?? "Enter a name and click Save to save this template. "}
+            <Typography variant="body2" color="text.primary">
+              {status}
+            </Typography>
+          </Box>
+        )}
+
+        {mode === "success" && (
+          <Typography variant="body1" color="success.main" sx={{ mt: 1 }}>
+            🎉 {status}
           </Typography>
-        </Box>
+        )}
+
+        {mode === "error" && (
+          <Typography variant="body1" color="error.main" sx={{ mt: 1 }}>
+            ⚠️ {errorMessage}
+          </Typography>
+        )}
       </DialogContent>
 
       <DialogActions sx={{ px: 2, pb: 2 }}>
-        <Button
-          onClick={onClose}
-          disabled={loading}
-          sx={{ borderRadius: 1, textTransform: "none" }}
-        >
-          Cancel
-        </Button>
-
-        <Button
-          onClick={handleSaveClick}
-          variant="contained"
-          disabled={loading}
-          startIcon={loading ? <CircularProgress size={16} /> : null}
-          sx={{
-            borderRadius: 1,
-            textTransform: "none",
-            px: 3,
-          }}
-        >
-          {loading ? "Saving template..." : "Save"}
-        </Button>
+        {mode === "editing" ? (
+          <>
+            <Button
+              onClick={onClose}
+              sx={{ borderRadius: 1, textTransform: "none" }}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSaveClick}
+              variant="contained"
+              sx={{ borderRadius: 1, textTransform: "none", px: 3 }}
+            >
+              Save
+            </Button>
+          </>
+        ) : mode === "saving" ? (
+          <Button disabled variant="outlined" sx={{ borderRadius: 1 }}>
+            Please wait...
+          </Button>
+        ) : (
+          <Button
+            onClick={onClose}
+            variant="contained"
+            sx={{ borderRadius: 1, textTransform: "none", px: 3 }}
+          >
+            Close
+          </Button>
+        )}
       </DialogActions>
     </Dialog>
   );

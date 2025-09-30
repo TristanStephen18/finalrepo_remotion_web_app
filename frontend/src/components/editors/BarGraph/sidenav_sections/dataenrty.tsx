@@ -1,7 +1,5 @@
 import type React from "react";
 import type { BargraphData } from "../../../remotion_compositions/BarGraphTemplate";
-// import { duration } from "@mui/material";
-// import { v4 as uuidv4 } from "uuid";
 
 export interface DataPanelProps {
   data: BargraphData[];
@@ -48,9 +46,7 @@ export const DataPanel: React.FC<DataPanelProps> = ({
   };
 
   const handleAddItem = () => {
-    // console.log(data.entries)
     setData([...data, { name: ``, value: 0 }]);
-    // console.log(data.length)
     console.log(calculateTotatDuration(data.length + 1));
   };
 
@@ -70,7 +66,6 @@ export const DataPanel: React.FC<DataPanelProps> = ({
     const newData = [...data];
 
     if (key === "value") {
-      // Allow only numbers and convert to number type
       const numericValue = value.replace(/[^0-9.]/g, "");
       newData[index][key] = numericValue === "" ? 0 : parseFloat(numericValue);
     } else {

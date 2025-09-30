@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom"; // ✅ for navigation
 import "../css/Login.css";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
@@ -12,8 +11,6 @@ const SignupPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-
-  const navigate = useNavigate();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -56,14 +53,7 @@ const SignupPage: React.FC = () => {
         );
       }
 
-      // const data = await response.json();
-      setSuccess("Signup successful! Redirecting to login...");
-      
-      // redirect after 2 seconds
-      setTimeout(() => {
-        navigate("/login");
-      }, 2000);
-
+      setSuccess("Signup successful! 🎉 Please check your email to verify your account.");
     } catch (err) {
       setError("Signup failed. Please try again.");
     } finally {
@@ -100,107 +90,109 @@ const SignupPage: React.FC = () => {
             </div>
           )}
 
-          <form className="auth__form" onSubmit={onSubmit} noValidate>
-            {/* Username */}
-            <div className="field">
-              <input
-                type="text"
-                placeholder="Username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="input"
-                autoComplete="username"
-                aria-label="Username"
-                required
-              />
-            </div>
-
-            {/* Email */}
-            <div className="field">
-              <input
-                type="email"
-                placeholder="you@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="input"
-                autoComplete="email"
-                aria-label="Email address"
-                required
-              />
-            </div>
-
-            {/* Password */}
-            <div className="field">
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="input"
-                autoComplete="new-password"
-                aria-label="Password"
-                required
-              />
-            </div>
-
-            {/* Verify Password */}
-            <div className="field">
-              <input
-                type="password"
-                placeholder="Verify Password"
-                value={verifyPassword}
-                onChange={(e) => setVerifyPassword(e.target.value)}
-                className="input"
-                autoComplete="new-password"
-                aria-label="Verify Password"
-                required
-              />
-            </div>
-
-            <button
-              className="btn btn--primary"
-              type="submit"
-              disabled={loading}
-            >
-              {loading ? <span className="spinner" aria-hidden /> : "Sign Up"}
-            </button>
-
-            <div className="divider">
-              <span>or continue with</span>
-            </div>
-
-            <div className="socials">
-              <button type="button" className="btn btn--ghost">
-                <img
-                  src="/images/logos/google_logo.png"
-                  alt="Google logo"
-                  width={18}
-                  height={18}
+          {!success && (
+            <form className="auth__form" onSubmit={onSubmit} noValidate>
+              {/* Username */}
+              <div className="field">
+                <input
+                  type="text"
+                  placeholder="Username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  className="input"
+                  autoComplete="username"
+                  aria-label="Username"
+                  required
                 />
-                <span>Google</span>
+              </div>
+
+              {/* Email */}
+              <div className="field">
+                <input
+                  type="email"
+                  placeholder="you@example.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="input"
+                  autoComplete="email"
+                  aria-label="Email address"
+                  required
+                />
+              </div>
+
+              {/* Password */}
+              <div className="field">
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="input"
+                  autoComplete="new-password"
+                  aria-label="Password"
+                  required
+                />
+              </div>
+
+              {/* Verify Password */}
+              <div className="field">
+                <input
+                  type="password"
+                  placeholder="Verify Password"
+                  value={verifyPassword}
+                  onChange={(e) => setVerifyPassword(e.target.value)}
+                  className="input"
+                  autoComplete="new-password"
+                  aria-label="Verify Password"
+                  required
+                />
+              </div>
+
+              <button
+                className="btn btn--primary"
+                type="submit"
+                disabled={loading}
+              >
+                {loading ? <span className="spinner" aria-hidden /> : "Sign Up"}
               </button>
 
-              <button type="button" className="btn btn--ghost">
-                <img
-                  src="/images/logos/github_logo.png"
-                  alt="GitHub logo"
-                  width={18}
-                  height={18}
-                />
-                <span>GitHub</span>
-              </button>
+              <div className="divider">
+                <span>or continue with</span>
+              </div>
 
-              <button type="button" className="btn btn--ghost">
-                <img
-                  src="/images/logos/x_logo.jpg"
-                  alt="X logo"
-                  width={18}
-                  height={18}
-                />
-                <span>Twitter</span>
-              </button>
-            </div>
-          </form>
+              <div className="socials">
+                <button type="button" className="btn btn--ghost">
+                  <img
+                    src="/images/logos/google_logo.png"
+                    alt="Google logo"
+                    width={18}
+                    height={18}
+                  />
+                  <span>Google</span>
+                </button>
+
+                <button type="button" className="btn btn--ghost">
+                  <img
+                    src="/images/logos/github_logo.png"
+                    alt="GitHub logo"
+                    width={18}
+                    height={18}
+                  />
+                  <span>GitHub</span>
+                </button>
+
+                <button type="button" className="btn btn--ghost">
+                  <img
+                    src="/images/logos/x_logo.jpg"
+                    alt="X logo"
+                    width={18}
+                    height={18}
+                  />
+                  <span>Twitter</span>
+                </button>
+              </div>
+            </form>
+          )}
 
           <footer className="auth__footer">
             <span>Already have an account?</span>

@@ -1,10 +1,7 @@
 import type React from "react";
-// import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import { FakeTextSideNavs } from "../../../data/navdata_live_editor";
 import { MenuIcon } from "lucide-react";
-// import { quoteeditornavs } from "../../../data/navdata_live_editor.tsx";
-// import 
 
 
 interface SidenavProps {
@@ -28,7 +25,6 @@ export const FakeTextVideoSideNavigation: React.FC<SidenavProps>=({collapsed, se
           position: "relative",
         }}
       >
-        {/* Collapse Toggle */}
         <button
           onClick={() => setCollapsed(!collapsed)}
           style={{
@@ -44,7 +40,6 @@ export const FakeTextVideoSideNavigation: React.FC<SidenavProps>=({collapsed, se
           {collapsed ? <MenuIcon /> : <ChevronLeftIcon />}
         </button>
 
-        {/* Nav Items */}
         {FakeTextSideNavs.map(({ key, label, icon }) => (
           <button
             key={key}
@@ -69,5 +64,3 @@ export const FakeTextVideoSideNavigation: React.FC<SidenavProps>=({collapsed, se
       </div>
     );
 }
-
-// export default SideNav;

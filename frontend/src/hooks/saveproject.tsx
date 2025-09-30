@@ -1,4 +1,3 @@
-// src/hooks/useProjectSave.ts
 import { useState, useRef } from "react";
 import isEqual from "lodash/isEqual";
 
@@ -8,14 +7,14 @@ interface UseProjectSaveOptions<T> {
   templateId: number;
   buildProps: () => T;
   videoEndpoint: string;
-  filterRenderProps?: (props: T) => Partial<T>; // 👈 NEW
+  filterRenderProps?: (props: T) => Partial<T>; 
 }
 
 export function useProjectSave<T>({
   templateId,
   buildProps,
   videoEndpoint,
-  filterRenderProps, // 👈 NEW
+  filterRenderProps, 
 }: UseProjectSaveOptions<T>) {
   const [projectId, setProjectId] = useState<number | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -37,7 +36,6 @@ export function useProjectSave<T>({
       setIsSaving(true);
       setSaveStatus("saving");
       try {
-        // 🔹 Render API only gets the filtered props
         const exportRes = await fetch(videoEndpoint, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -51,7 +49,6 @@ export function useProjectSave<T>({
         const exportResult = await exportRes.json();
         const projectVidUrl = exportResult.url;
 
-        // 🔹 DB still stores the full props
         const response = await fetch(`/projects/update/${projectId}`, {
           method: "PUT",
           headers: {
@@ -88,7 +85,6 @@ export function useProjectSave<T>({
     }
   };
 
-  // --- Save new project
   const saveNewProject = async (
     titleFromModal: string,
     setStatus: (s: string) => void

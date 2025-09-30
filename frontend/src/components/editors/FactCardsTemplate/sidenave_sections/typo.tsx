@@ -58,7 +58,6 @@ export const TypographyPanelFactsTemplate: React.FC<TypoSectionProps> = ({
     setFontSize: React.Dispatch<React.SetStateAction<number>>
   ) => (
     <Box>
-      {/* Font Family */}
       <div style={{ marginBottom: "1rem" }}>
         <div
           style={{ marginBottom: "0.5rem", color: "#ff4fa3", fontWeight: 600 }}
@@ -79,7 +78,6 @@ export const TypographyPanelFactsTemplate: React.FC<TypoSectionProps> = ({
         />
       </div>
 
-      {/* Font Size */}
       <div>
         <div
           style={{ marginBottom: "0.5rem", color: "#ff4fa3", fontWeight: 600 }}

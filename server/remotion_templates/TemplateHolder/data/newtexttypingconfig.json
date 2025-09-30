@@ -1,13 +1,12 @@
 {
   "phrase": {
     "lines": [
-      "Efficiency is key,",
-      "simplicity is grace"
+      "After awhile you could get used to anything"
     ],
     "category": "business",
-    "mood": "professional"
+    "mood": "minimalist"
   },
-  "backgroundIndex": 24,
-  "fontIndex": 1,
-  "audioIndex": 2
+  "backgroundIndex": 2,
+  "fontIndex": 2,
+  "audioIndex": 1
 }

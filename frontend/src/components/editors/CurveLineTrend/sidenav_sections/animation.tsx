@@ -45,7 +45,6 @@ export const AnimationPanel: React.FC<AnimationPanelProps> = ({
 
   return (
     <div>
-      {/* Animation Speed */}
       <div style={cardStyle}>
         <h3 style={{ marginBottom: "0.75rem", color: "#ff4fa3" }}>
           Animation Speed
@@ -54,9 +53,6 @@ export const AnimationPanel: React.FC<AnimationPanelProps> = ({
           value={animationSpeed}
           onChange={(e) => {
             const increment = 4;
-            // slow = 13
-            // normal = 7 
-            // fast = 4
             setAnimationSpeed(e.target.value as "slow" | "normal" | "fast");
             switch(e.target.value){
               case "slow":
@@ -79,7 +75,6 @@ export const AnimationPanel: React.FC<AnimationPanelProps> = ({
         </select>
       </div>
 
-      {/* Minimal Mode */}
       <div style={cardStyle}>
         <h3 style={{ marginBottom: "0.75rem", color: "#ff4fa3" }}>
           Minimal Mode

@@ -10,15 +10,14 @@ export const ExportModal: React.FC<{
   exportUrl: string | null;
   onExport: (format: string) => void;
 }> = ({ setShowExport, isExporting, exportUrl, onExport }) => {
-  const [format, setFormat] = useState("mp4"); // for next export
-  const [previewFormat, setPreviewFormat] = useState<string | null>(null); // for last completed export
+  const [format, setFormat] = useState("mp4"); 
+  const [previewFormat, setPreviewFormat] = useState<string | null>(null); 
 
-  // 🔹 Detect export format from URL when new export finishes
   useEffect(() => {
     if (exportUrl) {
       const ext = exportUrl.split(".").pop()?.toLowerCase();
       if (ext === "gif" || ext === "mp4" || ext === "webm") {
-        setPreviewFormat(ext); // ✅ only update when new file comes
+        setPreviewFormat(ext); 
       }
     }
   }, [exportUrl]);
@@ -27,11 +26,9 @@ export const ExportModal: React.FC<{
     onExport(format);
   };
 
-  // const suggestedFilename = `export.${format}`;
 
   return (
     <>
-      {/* Backdrop */}
       <div
         onClick={() => setShowExport(false)}
         style={{
@@ -41,7 +38,6 @@ export const ExportModal: React.FC<{
         }}
       />
 
-      {/* Modal */}
       <div
         style={{
           position: "fixed",
@@ -57,7 +53,6 @@ export const ExportModal: React.FC<{
           flexDirection: "column",
         }}
       >
-        {/* Header */}
         <div
           style={{
             display: "flex",
@@ -75,7 +70,6 @@ export const ExportModal: React.FC<{
           />
         </div>
 
-        {/* Format Selector */}
         <Typography
           variant="body2"
           style={{ marginBottom: "0.5rem", fontWeight: 500 }}
@@ -98,7 +92,6 @@ export const ExportModal: React.FC<{
           <option value="webm">WebM</option>
         </select>
 
-        {/* Export Button */}
         <Button
           variant="contained"
           onClick={handleExport}

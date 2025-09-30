@@ -1,47 +1,41 @@
 {
   "data": [
     {
-      "name": "iPhone 15",
-      "value": 980.5
+      "name": "Data1",
+      "value": 124500
     },
     {
-      "name": "Samsung Galaxy S24",
-      "value": 955.75
+      "name": "Data2",
+      "value": 110200
     },
     {
-      "name": "Google Pixel 8",
-      "value": 890.25
+      "name": "Data3",
+      "value": 87300
     },
     {
-      "name": "OnePlus 12",
-      "value": 875
+      "name": "Data4",
+      "value": 76500
     },
     {
-      "name": "Xiaomi 14",
-      "value": 910.9
+      "name": "Data5",
+      "value": 54200
     },
     {
-      "name": "Sony Xperia 1 V",
-      "value": 930.3
-    },
-    {
-      "name": "Motorola Edge+",
-      "value": 880
+      "name": "Data6",
+      "value": 49800
     }
   ],
-  "title": "Monthly Smartphone Unit Sales",
+  "title": "Your title",
   "titleFontColor": "white",
-  "backgroundImage": "https://pixabay.com/get/gd6cc0e3661d0a5e367fe5f922ff93524cb9a827a85d1322e92078d10fc57c9d811e73c857483b82b92e33d63f6aad9483e25eb3f939d3ea324e8c69fd796f926_640.jpg",
+  "backgroundImage": "http://localhost:3000/bgimages/colors/bg9.jpg",
   "accent": "#3B82F6",
-  "subtitle": "April 2024: Leading Brands and Models",
-  "currency": "",
-  "titleFontSize": 78,
-  "subtitleFontSize": 48,
-  "subtitleColor": "white",
+  "subtitle": "Your subtitle",
+  "titleFontSize": 80,
+  "subtitleFontSize": 50,
   "barHeight": 100,
   "barGap": 36,
   "barLabelFontSize": 36,
   "barValueFontSize": 36,
-  "fontFamily": "Kode Mono, monospace",
-  "duration": 9
+  "fontFamily": "Inter, sans-serif",
+  "duration": 8
 }

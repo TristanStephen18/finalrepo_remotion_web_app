@@ -19,9 +19,15 @@ import AddIcon from "@mui/icons-material/Add";
 import HomeIcon from "@mui/icons-material/Home";
 import VideoLibraryIcon from "@mui/icons-material/VideoLibrary";
 
-export type DashboardSection = "home" | "templates" | "projects" | "renders";
+export type DashboardSection =
+  | "home"
+  | "templates"
+  | "projects"
+  | "renders"
+  | "profile";
 
 interface DashboardSidebarNavProps {
+  userPfp: string | null;
   active: DashboardSection;
   onChange: (section: DashboardSection) => void;
   onCreate?: () => void;
@@ -33,6 +39,7 @@ export const DashboardSidebarNav: React.FC<DashboardSidebarNavProps> = ({
   onChange,
   onCreate,
   userInitials = "U",
+  userPfp,
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const menuOpen = Boolean(anchorEl);
@@ -48,8 +55,7 @@ export const DashboardSidebarNav: React.FC<DashboardSidebarNavProps> = ({
   const handleLogout = () => {
     localStorage.removeItem("token");
     handleMenuClose();
-    // redirect or refresh
-    window.location.href = "/login"; // adjust route as needed
+    window.location.href = "/login";
   };
 
   return (
@@ -69,13 +75,13 @@ export const DashboardSidebarNav: React.FC<DashboardSidebarNavProps> = ({
         zIndex: 1100,
       }}
     >
-      {/* Create Button */}
       <Tooltip title="Create New" placement="right">
         <Fab
           color="primary"
           size="medium"
           onClick={onCreate}
           sx={{
+            mt: 5,
             mb: 3,
             boxShadow: "0px 4px 10px rgba(0,0,0,0.15)",
           }}
@@ -84,9 +90,7 @@ export const DashboardSidebarNav: React.FC<DashboardSidebarNavProps> = ({
         </Fab>
       </Tooltip>
 
-      {/* Nav Items */}
       <List sx={{ flexGrow: 1, width: "100%" }}>
-        {/* Home */}
         <ListItem disablePadding sx={{ justifyContent: "center" }}>
           <Tooltip title="Home" placement="right">
             <ListItemButton
@@ -114,7 +118,6 @@ export const DashboardSidebarNav: React.FC<DashboardSidebarNavProps> = ({
           </Tooltip>
         </ListItem>
 
-        {/* Templates */}
         <ListItem disablePadding sx={{ justifyContent: "center" }}>
           <Tooltip title="Templates" placement="right">
             <ListItemButton
@@ -142,7 +145,6 @@ export const DashboardSidebarNav: React.FC<DashboardSidebarNavProps> = ({
           </Tooltip>
         </ListItem>
 
-        {/* Projects */}
         <ListItem disablePadding sx={{ justifyContent: "center" }}>
           <Tooltip title="Projects" placement="right">
             <ListItemButton
@@ -170,7 +172,6 @@ export const DashboardSidebarNav: React.FC<DashboardSidebarNavProps> = ({
           </Tooltip>
         </ListItem>
 
-        {/* Renders */}
         <ListItem disablePadding sx={{ justifyContent: "center" }}>
           <Tooltip title="Renders" placement="right">
             <ListItemButton
@@ -199,15 +200,22 @@ export const DashboardSidebarNav: React.FC<DashboardSidebarNavProps> = ({
         </ListItem>
       </List>
 
-      {/* Bottom User Profile with Menu */}
       <Box sx={{ pb: 2 }}>
         <Tooltip title="My Profile">
           <IconButton onClick={handleMenuOpen}>
-            <Avatar sx={{ bgcolor: "primary.main", width: 36, height: 36 }}>
-              {userInitials}
+            <Avatar
+              src={userPfp ?? undefined} 
+              sx={{
+                bgcolor: userPfp ? "transparent" : "primary.main",
+                width: 36,
+                height: 36,
+              }}
+            >
+              {!userPfp && userInitials}
             </Avatar>
           </IconButton>
         </Tooltip>
+
         <Menu
           anchorEl={anchorEl}
           open={menuOpen}
@@ -215,6 +223,15 @@ export const DashboardSidebarNav: React.FC<DashboardSidebarNavProps> = ({
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
           transformOrigin={{ vertical: "bottom", horizontal: "right" }}
         >
+          <MenuItem
+            onClick={() => {
+              handleMenuClose();
+              onChange("profile");
+            }}
+          >
+            View Profile
+          </MenuItem>
+
           <MenuItem onClick={handleLogout}>Logout</MenuItem>
         </Menu>
       </Box>

@@ -23,7 +23,6 @@ export const UserDatasetsSection: React.FC<UserDatasetsSectionInterface> = ({
   selectedFile,
   handleFileUpload,
 }) => {
-  // Dynamic button label logic
   const [uploadStage, setUploadStage] = useState<'idle' | 'uploading' | 'extracting'>('idle');
   useEffect(() => {
     if (uploading) {

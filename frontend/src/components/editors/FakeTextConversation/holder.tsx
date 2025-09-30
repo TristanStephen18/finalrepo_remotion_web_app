@@ -23,7 +23,6 @@ type ChatLine = { speaker: "person_1" | "person_2"; text: string };
 export const FakeTextConversationEditor: React.FC = () => {
   const { id } = useParams();
 
-  // 🟢 States
   const [templateName, setTemplateName] = useState(
     "🎬 Fake Text Conversation Template"
   );
@@ -63,7 +62,6 @@ export const FakeTextConversationEditor: React.FC = () => {
   >("messages");
   const [collapsed, setCollapsed] = useState(false);
 
-  // Default values required for export/save
   const defaultvalues = {
     chatPath: "chats.json",
     chatAudio: "fakeconvo.mp3",
@@ -123,7 +121,6 @@ export const FakeTextConversationEditor: React.FC = () => {
     else setPreviewBg("dark");
   };
 
-  // 🟢 Update JSON + Audio generation
   const createJsonFileandAudio = async () => {
     setIsUpdatingTemplate(true);
     try {
@@ -146,7 +143,6 @@ export const FakeTextConversationEditor: React.FC = () => {
     }
   };
 
-  // 🟢 Export Handler
   const handleExport = async (format: string) => {
     const prefix = window.location.origin;
     const newavatars = {
@@ -218,7 +214,6 @@ export const FakeTextConversationEditor: React.FC = () => {
     }
   };
 
-  // 🟢 Project Save Hook
   const {
     setProjectId,
     isSaving,
@@ -228,19 +223,16 @@ export const FakeTextConversationEditor: React.FC = () => {
     saveNewProject,
     lastSavedProps,
   } = useProjectSave({
-    templateId: 9, // unique ID for FakeText
+    templateId: 9, 
     buildProps: () => {
       const prefix = window.location.origin;
       return {
-        // 🔹 Full project state (DB should remember all of this)
         chats,
         voice1,
         voice2,
         chatdata,
         duration,
         serverAudio,
-
-        // 🔹 Render-safe props
         chatPath: defaultvalues.chatPath,
         bgVideo,
         chatAudio: defaultvalues.chatAudio,
@@ -266,7 +258,6 @@ export const FakeTextConversationEditor: React.FC = () => {
     },
     videoEndpoint: "/generatevideo/faketextconvo",
 
-    // 👇 NEW: strip extras before hitting video render API
     filterRenderProps: (props) => {
       const {
         chats,
@@ -342,8 +333,6 @@ export const FakeTextConversationEditor: React.FC = () => {
     getAllDefaultVideos();
   }, []);
 
-  // 🟢 Video Upload
-  // 🟢 Use reusable video upload hook
   const { uploadVideo } = useVideoUpload();
   const handleVideoUpload = async (file: File) => {
     const result = await uploadVideo(file);
@@ -357,7 +346,6 @@ export const FakeTextConversationEditor: React.FC = () => {
     <div style={{ display: "flex", height: "100%", flex: 1 }}>
       {isLoading && <LoadingOverlay message={messages[messageIndex]} />}
 
-      {/* 🔹 Top Navigation */}
       <TopNavWithSave
         templateName={templateName}
         onSave={handleSave}
@@ -368,7 +356,6 @@ export const FakeTextConversationEditor: React.FC = () => {
         isSaving={isSaving}
       />
 
-      {/* 🔹 Save Modal */}
       <SaveProjectModal
         open={showSaveModal}
         onClose={() => setShowSaveModal(false)}
@@ -386,7 +373,6 @@ export const FakeTextConversationEditor: React.FC = () => {
           />
         )}
 
-        {/* 🔹 Side Navigation */}
         <FakeTextVideoSideNavigation
           activeSection={activeSection}
           collapsed={collapsed}
@@ -394,7 +380,6 @@ export const FakeTextConversationEditor: React.FC = () => {
           setCollapsed={setCollapsed}
         />
 
-        {/* 🔹 Control Panel */}
         {!collapsed && (
           <div
             ref={panelRef}
@@ -408,7 +393,6 @@ export const FakeTextConversationEditor: React.FC = () => {
               transition: isResizing ? "none" : "width 0.2s",
             }}
           >
-            {/* Drag Handle */}
             <div
               onMouseDown={() => setIsResizing(true)}
               style={{
@@ -470,7 +454,6 @@ export const FakeTextConversationEditor: React.FC = () => {
           </div>
         )}
 
-        {/* 🔹 Preview */}
         <ChatVideoPreview
           chatdata={chatdata}
           cycleBg={cycleBg}
