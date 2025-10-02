@@ -77,7 +77,6 @@ export function useDatasetUpload(
           }
 
           saveData = await saveResponse.json();
-          //   console.log(saveResponse);
           console.log("✅ Upload saved to DB:", saveData);
         }
 

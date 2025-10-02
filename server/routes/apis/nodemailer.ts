@@ -42,3 +42,33 @@ export async function sendEmailVerification(userId: number, email: string, baseU
     console.error("Email send error:", error.message);
   }
 }
+
+export async function sendOtpEmail(email: string): Promise<string | null> {
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+  const otpToken = jwt.sign({ email, otp }, JWT_SECRET, { expiresIn: "10m" });
+
+  try {
+    await transporter.sendMail({
+      from: '"Viral Motion" <no-reply@viralmotion.com>',
+      to: email,
+      subject: "Your OTP Code",
+      text: `Your OTP code is: ${otp}. It will expire in 10 minutes.`,
+      html: `
+        <div style="font-family: Arial, sans-serif; line-height: 1.6; text-align: center;">
+          <h2>Your OTP Code</h2>
+          <p>Use the following OTP to reset your password. It will expire in <strong>10 minutes</strong>.</p>
+          <div style="font-size: 24px; font-weight: bold; margin: 20px 0; color: #4CAF50;">
+            ${otp}
+          </div>
+          <p>If you didn’t request this, please ignore this email.</p>
+        </div>
+      `,
+    });
+
+    return otpToken; 
+  } catch (error: any) {
+    console.error("OTP send error:", error.message);
+    return null;
+  }
+}

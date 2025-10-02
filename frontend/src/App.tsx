@@ -30,7 +30,7 @@ import { KenBurnsSwipeBatchRendering } from "./pages/batchrendering/KenburnsStac
 import { FactCardsBatchRendering } from "./pages/batchrendering/FactCardsTemplate.tsx";
 import { KpiFlipBatchRendering } from "./pages/batchrendering/KpilipCards.tsx";
 import RequireAuth from "./pages/auth/AuthChecker.tsx";
-import { ProfilePage } from "./pages/user/profile.tsx";
+import ForgotPasswordPage from "./pages/auth/forgotpassword.tsx";
 
 function App() {
   return (
@@ -81,14 +81,6 @@ function App() {
           element={
             <RequireAuth>
               <SplitScreenEditor />
-            </RequireAuth>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <RequireAuth>
-              <ProfilePage />
             </RequireAuth>
           }
         />
@@ -290,6 +282,9 @@ function App() {
         />
 
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+
+        <Route path="/" element={<LoginPage />} />
         <Route path="/sound" element={<Fakeconvo />} />
 
         <Route path="/signup" element={<SignupPage />} />

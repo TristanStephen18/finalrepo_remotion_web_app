@@ -130,7 +130,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   }, [renders]);
 
   const mostUsedTemplate = useMemo(() => {
-    if (templatesUsageData.length === 0) return "N/A";
+    if (templatesUsageData.length === 0) return "You have not used any template yet";
 
     const max = templatesUsageData.reduce((prev, curr) =>
       curr.usage > prev.usage ? curr : prev

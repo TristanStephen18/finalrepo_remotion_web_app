@@ -94,7 +94,6 @@ const LoginPage: React.FC = () => {
           )}
 
           <form className="auth__form" onSubmit={onSubmit} noValidate>
-            {/* Email */}
             <div className="field">
               <span className="field__icon" aria-hidden>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -123,7 +122,6 @@ const LoginPage: React.FC = () => {
               />
             </div>
 
-            {/* Password */}
             <div className="field">
               <span className="field__icon" aria-hidden>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -205,12 +203,15 @@ const LoginPage: React.FC = () => {
                 />
                 <span>Remember me</span>
               </label>
-              <a className="link" href="/forgot">
+              <a className="link" href="/forgot-password">
                 Forgot password?
               </a>
             </div>
 
             <button
+              style={{
+                marginTop: "10px",
+              }}
               className="btn btn--primary"
               type="submit"
               disabled={loading}
@@ -218,53 +219,7 @@ const LoginPage: React.FC = () => {
               {loading ? <span className="spinner" aria-hidden /> : "Log In"}
             </button>
 
-            <div className="divider">
-              <span>or continue with</span>
-            </div>
-
-            <div className="socials">
-              <button
-                type="button"
-                className="btn btn--ghost"
-                aria-label="Continue with Google"
-              >
-                <img
-                  src="/images/logos/google_logo.png"
-                  alt="Google logo"
-                  width={18}
-                  height={18}
-                />
-                <span>Google</span>
-              </button>
-
-              <button
-                type="button"
-                className="btn btn--ghost"
-                aria-label="Continue with GitHub"
-              >
-                <img
-                  src="/images/logos/github_logo.png"
-                  alt="GitHub logo"
-                  width={18}
-                  height={18}
-                />
-                <span>GitHub</span>
-              </button>
-
-              <button
-                type="button"
-                className="btn btn--ghost"
-                aria-label="Continue with X"
-              >
-                <img
-                  src="/images/logos/x_logo.jpg"
-                  alt="X (Twitter) logo"
-                  width={18}
-                  height={18}
-                />
-                <span>Twitter</span>
-              </button>
-            </div>
+            <div className="divider"></div>
           </form>
 
           <footer className="auth__footer">

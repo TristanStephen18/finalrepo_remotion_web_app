@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import "../css/Login.css";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import Visibility from "@mui/icons-material/Visibility";
+import PersonIcon from "@mui/icons-material/Person";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -8,6 +11,9 @@ const SignupPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [verifyPassword, setVerifyPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showVerifyPassword, setShowVerifyPassword] = useState(false);
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -53,7 +59,9 @@ const SignupPage: React.FC = () => {
         );
       }
 
-      setSuccess("Signup successful! 🎉 Please check your email to verify your account.");
+      setSuccess(
+        "Signup successful! 🎉 Please check your email to verify your account."
+      );
     } catch (err) {
       setError("Signup failed. Please try again.");
     } finally {
@@ -92,8 +100,8 @@ const SignupPage: React.FC = () => {
 
           {!success && (
             <form className="auth__form" onSubmit={onSubmit} noValidate>
-              {/* Username */}
               <div className="field">
+                <PersonIcon className="field__icon" fontSize="small" />
                 <input
                   type="text"
                   placeholder="Username"
@@ -106,8 +114,21 @@ const SignupPage: React.FC = () => {
                 />
               </div>
 
-              {/* Email */}
               <div className="field">
+                <span className="field__icon" aria-hidden>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <path
+                      d="M4 6h16v12H4z"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                    />
+                    <path
+                      d="m4 7 8 6 8-6"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                    />
+                  </svg>
+                </span>
                 <input
                   type="email"
                   placeholder="you@example.com"
@@ -120,10 +141,27 @@ const SignupPage: React.FC = () => {
                 />
               </div>
 
-              {/* Password */}
-              <div className="field">
+              <div className="field password-field">
+                <span className="field__icon" aria-hidden>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <rect
+                      x="5"
+                      y="10"
+                      width="14"
+                      height="10"
+                      rx="2"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                    />
+                    <path
+                      d="M8 10V7a4 4 0 1 1 8 0v3"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                    />
+                  </svg>
+                </span>
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -132,12 +170,41 @@ const SignupPage: React.FC = () => {
                   aria-label="Password"
                   required
                 />
+                <button
+                  type="button"
+                  className="field__suffix"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? (
+                    <VisibilityOff fontSize="small" />
+                  ) : (
+                    <Visibility fontSize="small" />
+                  )}
+                </button>
               </div>
 
-              {/* Verify Password */}
-              <div className="field">
+              <div className="field password-field">
+                <span className="field__icon" aria-hidden>
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                    <rect
+                      x="5"
+                      y="10"
+                      width="14"
+                      height="10"
+                      rx="2"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                    />
+                    <path
+                      d="M8 10V7a4 4 0 1 1 8 0v3"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                    />
+                  </svg>
+                </span>
                 <input
-                  type="password"
+                  type={showVerifyPassword ? "text" : "password"}
                   placeholder="Verify Password"
                   value={verifyPassword}
                   onChange={(e) => setVerifyPassword(e.target.value)}
@@ -146,6 +213,20 @@ const SignupPage: React.FC = () => {
                   aria-label="Verify Password"
                   required
                 />
+                <button
+                  type="button"
+                  className="field__suffix"
+                  onClick={() => setShowVerifyPassword((prev) => !prev)}
+                  aria-label={
+                    showVerifyPassword ? "Hide password" : "Show password"
+                  }
+                >
+                  {showVerifyPassword ? (
+                    <VisibilityOff fontSize="small" />
+                  ) : (
+                    <Visibility fontSize="small" />
+                  )}
+                </button>
               </div>
 
               <button
@@ -156,41 +237,7 @@ const SignupPage: React.FC = () => {
                 {loading ? <span className="spinner" aria-hidden /> : "Sign Up"}
               </button>
 
-              <div className="divider">
-                <span>or continue with</span>
-              </div>
-
-              <div className="socials">
-                <button type="button" className="btn btn--ghost">
-                  <img
-                    src="/images/logos/google_logo.png"
-                    alt="Google logo"
-                    width={18}
-                    height={18}
-                  />
-                  <span>Google</span>
-                </button>
-
-                <button type="button" className="btn btn--ghost">
-                  <img
-                    src="/images/logos/github_logo.png"
-                    alt="GitHub logo"
-                    width={18}
-                    height={18}
-                  />
-                  <span>GitHub</span>
-                </button>
-
-                <button type="button" className="btn btn--ghost">
-                  <img
-                    src="/images/logos/x_logo.jpg"
-                    alt="X logo"
-                    width={18}
-                    height={18}
-                  />
-                  <span>Twitter</span>
-                </button>
-              </div>
+              <div className="divider"></div>
             </form>
           )}
 
