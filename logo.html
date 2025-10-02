@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Centered Logo</title>
+    <style>
+      :root {
+        --primary-1: #6366f1;
+        --primary-2: #8b5cf6;
+        --primary-3: #e23e90;
+      }
+    </style>
+  </head>
+  <body
+    style="
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    "
+  >
+    <div
+      style="
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 120deg,
+          var(--primary-1),
+          var(--primary-2),
+          var(--primary-3)
+        );
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.45);
+      "
+    ></div>
+  </body>
+</html>

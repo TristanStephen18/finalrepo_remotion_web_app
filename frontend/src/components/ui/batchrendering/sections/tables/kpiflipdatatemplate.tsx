@@ -83,7 +83,6 @@ export const KpiFlipDatasetTable: React.FC<{
             ))}
           </Box>
 
-          {/* Remove Button */}
           <Box sx={{ width: 80, textAlign: "center" }}>
             <Button
               disabled={isRendering}

@@ -11,7 +11,7 @@ export const ImageSlot: React.FC<{
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) onUpload(file);
-    e.target.value = ""; // reset input
+    e.target.value = ""; 
   };
 
   const isEmpty = !img;
@@ -19,8 +19,8 @@ export const ImageSlot: React.FC<{
   return (
     <Box
       sx={{
-        pointerEvents: isRendering ? "none" : "auto", // disables hover/click
-        opacity: isRendering ? 0.5 : 1, // faded look
+        pointerEvents: isRendering ? "none" : "auto",
+        opacity: isRendering ? 0.5 : 1,
         position: "relative",
         width: "100%",
         height: 200,

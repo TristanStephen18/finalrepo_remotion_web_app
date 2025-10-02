@@ -45,7 +45,6 @@ export const ChooseUserDatasetsModal: React.FC<
     <Dialog open={showFileChooser} onClose={() => setShowFileChooser(false)}>
       <DialogTitle>Choose from your uploaded files</DialogTitle>
       <DialogContent>
-        {/* Search Bar */}
         <TextField
           placeholder="Search datasets..."
           value={searchQuery}

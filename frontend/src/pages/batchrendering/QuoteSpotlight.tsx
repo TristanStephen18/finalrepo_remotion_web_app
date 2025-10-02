@@ -203,7 +203,6 @@ export const QuoteSpotlightBatchRendering: React.FC = () => {
   const selectAllFonts = () => setSelectedFonts([...fontFamilies]);
   const clearAllFonts = () => setSelectedFonts([]);
 
-  // inside QuoteSpotlightBatchRendering component
   const handleRemoveQuote = (index: number) => {
     setQuotes((prev) => prev.filter((_, i) => i !== index));
   };
@@ -309,14 +308,12 @@ export const QuoteSpotlightBatchRendering: React.FC = () => {
           flexDirection: "column",
         }}
       >
-        {/* top title */}
         <SideBarHearder
           collapsed={collapsed}
           setCollapsed={setCollapsed}
           title="🎬 Quote Template Batch Rendering"
         />
 
-        {/* nav items */}
         <Box sx={{ flexGrow: 1 }}>
           <NavItem
             icon={<CloudIcon />}

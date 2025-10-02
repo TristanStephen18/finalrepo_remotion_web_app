@@ -130,7 +130,8 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   }, [renders]);
 
   const mostUsedTemplate = useMemo(() => {
-    if (templatesUsageData.length === 0) return "You have not used any template yet";
+    if (templatesUsageData.length === 0)
+      return "You have not used any template yet";
 
     const max = templatesUsageData.reduce((prev, curr) =>
       curr.usage > prev.usage ? curr : prev
@@ -142,6 +143,12 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   useEffect(() => {
     fetchProfileDetails();
   }, [profilePic]);
+
+  useEffect(() => {
+    if (userData?.name) {
+      setUsernameValue(userData.name);
+    }
+  }, [userData]);
 
   return (
     <Box sx={{ minHeight: "100vh", bgcolor: "#fafafa", width: "100%", p: 1 }}>
@@ -261,7 +268,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 </Box>
               )}
             </Box>
-            <Typography variant="body1" color="text.secondary" sx={{mt: 2}}>
+            <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
               {userData.email}
             </Typography>
             <Typography variant="caption" color="text.secondary">

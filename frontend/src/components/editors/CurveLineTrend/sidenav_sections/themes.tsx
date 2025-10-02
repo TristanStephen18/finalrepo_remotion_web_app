@@ -80,7 +80,6 @@ export const PresetPanel: React.FC<PresetPanelProps> = ({
               style={optionStyle(preset === p)}
               onClick={() => setPreset(p)}
             >
-
               <div style={swatchStyle(theme)}>
                 <div style={dotStyle(theme.dot)} />
               </div>

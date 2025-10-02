@@ -204,7 +204,7 @@ export const BarGraphEditor: React.FC = () => {
     saveNewProject,
     lastSavedProps,
   } = useProjectSave({
-    templateId: 3, // 👈 assign unique template ID
+    templateId: 3, 
     buildProps: () => ({
       data,
       title,
@@ -299,7 +299,6 @@ export const BarGraphEditor: React.FC = () => {
           />
         )}
 
-        {/* sidenav */}
         <BarGraphNavs
           activeSection={activeSection}
           collapsed={collapsed}
@@ -307,7 +306,6 @@ export const BarGraphEditor: React.FC = () => {
           setCollapsed={setCollapsed}
         />
 
-        {/* Controls Panel */}
         {!collapsed && (
           <div
             ref={panelRef}
@@ -321,7 +319,6 @@ export const BarGraphEditor: React.FC = () => {
               transition: isResizing ? "none" : "width 0.2s",
             }}
           >
-            {/* Drag Handle */}
             <div
               onMouseDown={() => setIsResizing(true)}
               style={{
@@ -393,6 +390,7 @@ export const BarGraphEditor: React.FC = () => {
                 searchQuery={searchQuery}
                 setSearchQuery={setSearchQuery}
                 userUploads={userUploads}
+                
               />
             )}
           </div>
