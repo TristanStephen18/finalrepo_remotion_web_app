@@ -3,7 +3,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import Button from "@mui/material/Button";
-import { BarChartNavItems } from "../../../data/navdata_live_editor";
+import { BarChartNavItems } from "../../../data/NavdataLiveEditor";
 
 interface SidenavProps {
   collapsed: boolean;

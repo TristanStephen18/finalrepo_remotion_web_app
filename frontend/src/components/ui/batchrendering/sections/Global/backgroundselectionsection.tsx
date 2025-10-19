@@ -13,7 +13,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import {
   barGraphImages,
   serverImages,
-} from "../../../../../data/backgroundimages";
+} from "../../../../../data/BackgroundImages";
+import { backendPrefix } from "../../../../../config";
 
 interface BackgroundImagesSelectionInterface {
   isRendering: boolean;
@@ -68,11 +69,11 @@ export const BackgroundImageSelectionBatchRendering: React.FC<
 
     const formData = new FormData();
     Array.from(files).forEach((file) => {
-      formData.append("images", file); // must match backend field name
+      formData.append("images", file); 
     });
 
     try {
-      const res = await fetch("/uploadhandler/upload-multiple-images", {
+      const res = await fetch(`${backendPrefix}/uploadhandler/upload-multiple-images`, {
         method: "POST",
         body: formData,
       });
@@ -81,11 +82,11 @@ export const BackgroundImageSelectionBatchRendering: React.FC<
       if (res.ok) {
         for (const imgObj of data.images) {
           try {
-            const saveResponse = await fetch("/useruploads", {
+            const saveResponse = await fetch(`${backendPrefix}/useruploads`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+                Authorization: `Bearer ${localStorage.getItem("token")}`,
               },
               body: JSON.stringify({
                 type: "image",

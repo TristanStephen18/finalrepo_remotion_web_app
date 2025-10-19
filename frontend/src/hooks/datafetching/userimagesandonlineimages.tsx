@@ -11,7 +11,7 @@ export const useBackgroundImages = () => {
 
   const fetchUserUploads = () => {
     setLoadingUploads(true);
-    fetch("/useruploads/images", {
+    fetch(`/useruploads/images`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
       },

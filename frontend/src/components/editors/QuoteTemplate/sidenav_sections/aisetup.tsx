@@ -1,5 +1,5 @@
 import type React from "react";
-import { quoteSpotlightNiches } from "../../../../data/aisetupdata";
+import { quoteSpotlightNiches } from "../../../../data/AiSetupData";
 
 export interface AiSetupProps {
   selectedNiches: string[];

@@ -1,5 +1,5 @@
 import React from "react";
-import { fontOptions } from "../../../../data/fonts";
+import { fontOptions } from "../../../../data/Fonts";
 
 interface TextPanelProps {
   title: string;

@@ -4,16 +4,16 @@ import {
   Typography,
 } from "@mui/material";
 import type React from "react";
-import { ChooseUserDatasetsModal } from "../../../modals/chooseuserdatasetsmodal";
-import { InvalidJsonFileFormatModal } from "../../../modals/invaliddatasetformat";
+import { ChooseUserDatasetsModal } from "../../../modals/ChooseUserDatasetsModal";
+import { InvalidJsonFileFormatModal } from "../../../modals/InvalidDatasetFormat";
 import { useEffect } from "react";
-import { DatasetTopbar } from "../Global/datasetsectiontopbar";
-import { useDatasetHooks } from "../../../../../hooks/datasetsection";
-import { AiGenerateSectionDatasetQnT } from "../Global/aidatasetsectionquoteandtexttyping";
-import { UserDatasetsSection } from "../Global/userdatasetssection";
-import { EditableJsonArea } from "../Global/editablejsonarea";
-import { datasetLoader } from "../../../datasetloader";
-import { QuoteDatasetTableDisplay } from "../tables/quotetemplatetable";
+import { DatasetTopbar } from "../Global/DatasetSectionTopbar";
+import { useDatasetHooks } from "../../../../../hooks/DatasetSection";
+import { AiGenerateSectionDatasetQnT } from "../Global/AiDatasetSectionQuoteAndTextTyping";
+import { UserDatasetsSection } from "../Global/UserDatasetsSection";
+import { EditableJsonArea } from "../Global/EditableJsonArea";
+import { datasetLoader } from "../../../DatasetLoader";
+import { QuoteDatasetTableDisplay } from "../tables/QuoteTemplateTable";
 
 interface QuoteTemplateDatasetSectionInterface {
   setDatasetSource: React.Dispatch<React.SetStateAction<"recite" | "ai">>;

@@ -2,7 +2,6 @@ import {
   AbsoluteFill,
   Audio,
   Video,
-  staticFile,
   useVideoConfig,
   useCurrentFrame,
   Sequence,
@@ -55,7 +54,7 @@ export const StoryTellingVideo: React.FC<StoryTellingVideoProps> = ({
   return (
     <AbsoluteFill>
       <Video
-        src={staticFile(bg)}
+        src={bg}
         muted
         loop
         style={{
@@ -77,7 +76,7 @@ export const StoryTellingVideo: React.FC<StoryTellingVideoProps> = ({
           fontColor={fontColor}
           sentenceBgColor={sentenceBgColor}
         />
-        <Audio src={staticFile(voiceoverPath)} />
+        <Audio src={voiceoverPath} />
       </Sequence>
 
       {/* Optional background music 🎶 */}

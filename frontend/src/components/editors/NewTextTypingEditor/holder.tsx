@@ -1,19 +1,20 @@
 import React, { useState, useRef, useEffect } from "react";
-import { defaultpanelwidth } from "../../../data/defaultvalues";
-import { NewTypingTemplateSideNav } from "./sidenav";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
+import { NewTypingTemplateSideNav } from "./Sidenav";
 import type { Phrase } from "../../../models/TextTyping";
-import { calculateDuration } from "./durationcalculator";
+import { calculateDuration } from "./DurationCalculator";
 import { NewTypingAnimationPreview } from "../../layout/EditorPreviews/NewTextTypingPreview";
-import { PhraseSideNav } from "./sidenav_sections/phrase";
-import { FontSideNavTextTyping } from "./sidenav_sections/fonts";
-import { BackgroundSideNav } from "./sidenav_sections/backgrounds";
-import { SoundSideNav } from "./sidenav_sections/sounds";
-import { ExportModal } from "../../ui/modals/exportmodal";
-import { TopNavWithSave } from "../../navigations/single_editors/withsave";
-import { useProjectSave } from "../../../hooks/saveproject";
-import { SaveProjectModal } from "../../ui/modals/savemodal";
-import { LoadingOverlay } from "../../ui/modals/loadingprojectmodal";
+import { PhraseSideNav } from "./sidenav_sections/Phrase";
+import { FontSideNavTextTyping } from "./sidenav_sections/Fonts";
+import { BackgroundSideNav } from "./sidenav_sections/Backgrounds";
+import { SoundSideNav } from "./sidenav_sections/Sounds";
+import { ExportModal } from "../../ui/modals/ExportModal";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
+import { useProjectSave } from "../../../hooks/SaveProject";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
 import { useParams } from "react-router-dom";
+
 
 export const NewTypingEditor: React.FC = () => {
   const { id } = useParams();
@@ -154,7 +155,7 @@ export const NewTypingEditor: React.FC = () => {
   const handleAISuggestion = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch("/api/generate-phrase", {
+      const response = await fetch(`/api/generate-phrase`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ category, mood }),
@@ -176,7 +177,7 @@ export const NewTypingEditor: React.FC = () => {
   const handleExport = async (format: string) => {
     setIsExporting(true);
     try {
-      const response = await fetch("/generatevideo/newtexttypingrender", {
+      const response = await fetch(`/generatevideo/newtexttypingrender`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -194,11 +195,11 @@ export const NewTypingEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId: 2,
@@ -247,7 +248,7 @@ export const NewTypingEditor: React.FC = () => {
       audioIndex: soundIndex,
       duration,
     }),
-    videoEndpoint: "/generatevideo/newtexttypingrender",
+    videoEndpoint: `/generatevideo/newtexttypingrender`,
   });
 
   // 🟢 Persist state in localStorage

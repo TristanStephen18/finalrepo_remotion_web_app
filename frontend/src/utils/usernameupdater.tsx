@@ -1,6 +1,8 @@
+import toast from "react-hot-toast";
+
 export const updateUsername = async (username: string) => {
   try {
-    const res = await fetch("/auth/update-username", {
+    const res = await fetch(`/auth/update-username`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -17,7 +19,7 @@ export const updateUsername = async (username: string) => {
 
     return "success";
   } catch (error: any) {
-    alert("There was an error updating your username");
+    toast.error("There was an error updating your username");
     return "error";
   }
 };

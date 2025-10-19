@@ -1,7 +1,7 @@
 import type React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import {StoryTellingNavs } from "../../../data/navdata_live_editor";
+import {StoryTellingNavs } from "../../../data/NavdataLiveEditor";
 // import { quoteeditornavs } from "../../../data/navdata_live_editor.tsx";
 // import 
 

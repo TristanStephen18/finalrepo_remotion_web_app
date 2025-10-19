@@ -1,36 +1,30 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SideNavTrial } from "./sidenav";
-import { QuoteSecTrial } from "./sidenav_sections/quote";
-import { BackgroundSecTrial } from "../Global/sidenav_sections/bg";
+import { SideNavTrial } from "./Sidenav";
+import { QuoteSecTrial } from "./sidenav_sections/Quote";
+import { BackgroundSecTrial } from "../Global/sidenav_sections/Backgrounds";
 import { QuoteSpotlightPreview } from "../../layout/EditorPreviews/QuoteTemplatePreview";
-import { TypographySectionQuote } from "./sidenav_sections/typo";
-import { defaultpanelwidth } from "../../../data/defaultvalues";
+import { TypographySectionQuote } from "./sidenav_sections/Typo";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
 import {
-  fontSizeIndicatorQuote,
   quoteSpotlightDurationCalculator,
-} from "../../../utils/quotespotlighthelpers";
-import type { QuoteConfigDataset } from "../../../models/QuoteSpotlight";
-import { AiSetupPanel } from "./sidenav_sections/aisetup";
-import { ExportModal } from "../../ui/modals/exportmodal";
+} from "../../../utils/QuoteSpotlightHelpers";
+import { ExportModal } from "../../ui/modals/ExportModal";
 // import { TopNavWithoutBatchrendering } from "../../navigations/single_editors/withoutswitchmodesbutton";
-import { useProjectSave } from "../../../hooks/saveproject";
+import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
-import { TopNavWithSave } from "../../navigations/single_editors/withsave";
-import { LoadingOverlay } from "../../ui/modals/loadingprojectmodal";
-import { SaveProjectModal } from "../../ui/modals/savemodal";
-import { useFileUpload } from "../../../hooks/uploads/handleimageupload";
-import { useBackgroundImages } from "../../../hooks/datafetching/userimagesandonlineimages";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { useFileUpload } from "../../../hooks/uploads/HandleImageUpload";
+import { useBackgroundImages } from "../../../hooks/datafetching/UserImagesAndOnlineImages";
+import toast from "react-hot-toast";
 
 export const QuoteTemplateEditor: React.FC = () => {
   const { id } = useParams();
-  const [aiMessage, setAiMessage] = useState<string | null>(null);
   const { isUploading, uploadedUrl, uploadFile } = useFileUpload({
     type: "image",
   });
 
-  const [aiSetupData, setAiSetupData] = useState<QuoteConfigDataset>();
-  const [selectedNiches, setSelectedNiches] = useState<string[]>([]);
-  const [isSettingUp, setIsSettingUp] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [previewSize, setPreviewSize] = useState(1);
   const [templateName, setTemplateName] = useState(
@@ -109,7 +103,7 @@ export const QuoteTemplateEditor: React.FC = () => {
 
   useEffect(() => {
     if (id) {
-      // 🟢 Load project from backend
+  
       setIsLoading(true);
       fetch(`/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
@@ -149,89 +143,10 @@ export const QuoteTemplateEditor: React.FC = () => {
     console.log(duration);
   }, [quote]);
 
-  const handleAiSetup = async () => {
-    // setIsSettingUp(true);
-    setAiMessage(null);
-
-    if (selectedNiches.length === 0) {
-      // aiMessage = "";
-      setAiMessage("You must select a niche first");
-      return;
-    } else {
-      setIsSettingUp(true);
-      try {
-        const response = await fetch("/api/setup/quotetemplate", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            preferences: selectedNiches,
-          }),
-        });
-
-        if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(
-            `HTTP error! status: ${response.status}, message: ${errorText}`
-          );
-        }
-
-        const result = await response.json();
-        const configdata: QuoteConfigDataset = result.data;
-        setAiSetupData(configdata);
-
-        // Simulate AI stepping through panels
-        const steps: { section: typeof activeSection; action: () => void }[] = [
-          {
-            section: "quote",
-            action: () => {
-              setFontSize(fontSizeIndicatorQuote(configdata.quote.length));
-              setQuote(configdata.quote);
-              setAuthor(configdata.author);
-            },
-          },
-          {
-            section: "background",
-            action: () => {
-              setBackgroundImage(configdata.backgroundImage);
-              setBackgroundSource("default");
-            },
-          },
-          {
-            section: "typography",
-            action: () => {
-              setFontFamily(configdata.fontFamily);
-              setFontColor(configdata.fontColor);
-            },
-          },
-        ];
-
-        let stepIndex = 0;
-        const interval = setInterval(() => {
-          if (stepIndex < steps.length) {
-            const { section, action } = steps[stepIndex];
-            setActiveSection(section);
-            action();
-            stepIndex++;
-          } else {
-            clearInterval(interval);
-            setActiveSection("ai");
-            setAiMessage(
-              "✅ AI has completed setting up your template based on your selected niches!"
-            );
-            setIsSettingUp(false);
-          }
-        }, 1500); // 1.5s delay between each panel
-      } catch (err: any) {
-        console.error(err.message);
-        setIsSettingUp(false);
-      }
-    }
-  };
-
   const handleAISuggestion = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch("/api/generate-quote", {
+      const response = await fetch(`/api/generate-quote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -246,9 +161,9 @@ export const QuoteTemplateEditor: React.FC = () => {
       const data = await response.json();
       setAuthor(data.author);
       setQuote(data.quote);
-    } catch (error) {
+    } catch (error: any) {
       console.error("error generating ai suggestion");
-      alert(error);
+      toast.error(error.message);
     } finally {
       setIsGenerating(false);
     }
@@ -267,12 +182,7 @@ export const QuoteTemplateEditor: React.FC = () => {
 
     try {
       let finalImageUrl = backgroundImage;
-      const origin = `${window.location.origin}`;
-      if (finalImageUrl.startsWith("/")) {
-        finalImageUrl = `${origin}${finalImageUrl}`;
-      }
-
-      const response = await fetch("/generatevideo/quotetemplatewchoices", {
+      const response = await fetch(`/generatevideo/quotetemplatewchoices`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -296,11 +206,11 @@ export const QuoteTemplateEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId: 1,
@@ -362,16 +272,13 @@ export const QuoteTemplateEditor: React.FC = () => {
     buildProps: () => ({
       quote,
       author,
-      imageurl: backgroundImage.startsWith("/")
-        ? `${window.location.origin}${backgroundImage}`
-        : backgroundImage,
-
+      imageurl: backgroundImage,
       fontsize: fontSize,
       fontcolor: fontColor,
       fontfamily: fontFamily,
       duration,
     }),
-    videoEndpoint: "/generatevideo/quotetemplatewchoices",
+    videoEndpoint: `/generatevideo/quotetemplatewchoices`,
   });
 
   useEffect(() => {
@@ -483,16 +390,6 @@ export const QuoteTemplateEditor: React.FC = () => {
                 setFontColor={setFontColor}
                 setFontFamily={setFontFamily}
                 setFontSize={setFontSize}
-              />
-            )}
-
-            {activeSection === "ai" && (
-              <AiSetupPanel
-                handleAiSetup={handleAiSetup}
-                isSettingUp={isSettingUp}
-                selectedNiches={selectedNiches}
-                setSelectedNiches={setSelectedNiches}
-                aiMessage={aiMessage}
               />
             )}
           </div>

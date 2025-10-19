@@ -1,25 +1,25 @@
 import React, { useEffect } from "react";
-import { BackgroundSecTrial } from "../Global/sidenav_sections/bg";
-import { BarGraphNavs } from "./sidenav";
+import { BackgroundSecTrial } from "../Global/sidenav_sections/Backgrounds";
 import { BarGraphTemplatePreview } from "../../layout/EditorPreviews/BarGraphPreview";
-import { TypographyPanelBarGraphTemplate } from "./sidenav_sections/header";
-import { DataPanel } from "./sidenav_sections/dataenrty";
-import { BarGraphControlsPanel } from "./sidenav_sections/bargraphconfig";
-import { defaultpanelwidth } from "../../../data/defaultvalues";
-import { ExportModal } from "../../ui/modals/exportmodal";
-import { TopNavWithSave } from "../../navigations/single_editors/withsave";
-import { useProjectSave } from "../../../hooks/saveproject";
-import { SaveProjectModal } from "../../ui/modals/savemodal";
-import { LoadingOverlay } from "../../ui/modals/loadingprojectmodal";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
+import { ExportModal } from "../../ui/modals/ExportModal";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
+import { useProjectSave } from "../../../hooks/SaveProject";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
 import { useParams } from "react-router-dom";
-import { useFileUpload } from "../../../hooks/uploads/handleimageupload";
-import { useResizablePanel } from "../../../hooks/resizablepanel";
-import { useLoadingMessages } from "../../../hooks/loadingtemplateoverlaymessages";
-import { useCollapsed } from "../../../hooks/collapsedsidebar";
-import { usePreviewControls } from "../../../hooks/liveeditorconstants";
-import { useExportModal } from "../../../hooks/exportmodalstate";
-import { barGraphConfigs } from "../../../hooks/singleoutputs/bargraphstates";
-import { useBackgroundImages } from "../../../hooks/datafetching/userimagesandonlineimages";
+import { useFileUpload } from "../../../hooks/uploads/HandleImageUpload";
+import { useResizablePanel } from "../../../hooks/ResizablePanel";
+import { useLoadingMessages } from "../../../hooks/LoadingTemplateOverlayMessages";
+import { useCollapsed } from "../../../hooks/CollapsedSidebar";
+import { usePreviewControls } from "../../../hooks/LiveEditorConstants";
+import { useExportModal } from "../../../hooks/ExportModalState";
+import { barGraphConfigs } from "../../../hooks/singleoutputs/BarGraphStates";
+import { useBackgroundImages } from "../../../hooks/datafetching/UserImagesAndOnlineImages";
+import { BarGraphNavs } from './Sidenav';
+import { TypographyPanelBarGraphTemplate } from './sidenav_sections/Header';
+import { DataPanel } from './sidenav_sections/DataEnrty';
+import { BarGraphControlsPanel } from './sidenav_sections/BarGraphConfig';
 
 export const BarGraphEditor: React.FC = () => {
   const { id } = useParams();
@@ -128,11 +128,8 @@ export const BarGraphEditor: React.FC = () => {
     setIsExporting(true);
     try {
       let finalImageUrl = backgroundImage;
-      const origin = window.location.origin;
-      if (finalImageUrl.startsWith("/"))
-        finalImageUrl = `${origin}${finalImageUrl}`;
 
-      const response = await fetch("/generatevideo/bargraph", {
+      const response = await fetch(`/generatevideo/bargraph`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -161,11 +158,11 @@ export const BarGraphEditor: React.FC = () => {
       setExportUrl(result.url);
       const renderUrl = result.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId,
@@ -219,12 +216,10 @@ export const BarGraphEditor: React.FC = () => {
       barGap,
       barLabelFontSize,
       barValueFontSize,
-      backgroundImage: backgroundImage.startsWith("/")
-        ? `${window.location.origin}${backgroundImage}`
-        : backgroundImage,
+      backgroundImage: backgroundImage,
       duration,
     }),
-    videoEndpoint: "/generatevideo/bargraph",
+    videoEndpoint: `/generatevideo/bargraph`,
   });
 
   useEffect(() => {

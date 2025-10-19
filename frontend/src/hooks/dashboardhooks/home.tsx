@@ -1,8 +1,8 @@
 import { useState } from "react";
-import type { DashboardSection } from "../../components/ui/navigations/dsahboardsidenav";
+import type { DashboardSection } from "../../components/ui/navigations/DashboardSidenav";
 
 export const useHomeSectionHooks = () => {
-      const [activeSection, setActiveSection] = useState<DashboardSection>("home");
+  const [activeSection, setActiveSection] = useState<DashboardSection>("home");
   const [search, setSearch] = useState("");
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [selectedDescription, setSelectedDescription] = useState<string>("");
@@ -25,6 +25,6 @@ export const useHomeSectionHooks = () => {
     handleClosePreview,
     handleOpenPreview,
     activeSection,
-    setActiveSection
+    setActiveSection,
   };
 };

@@ -22,7 +22,8 @@ export const TopNavWithSave: React.FC<{
     "Finalizing changes..."
   ];
   const [messageIndex, setMessageIndex] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
 
   useEffect(() => {
     if (isSaving) {

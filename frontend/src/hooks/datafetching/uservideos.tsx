@@ -30,9 +30,9 @@ setDefaultVidsLoading(false);
 
   const fetchUserVideos = () => {
     setLoadingVideos(true);
-    fetch("/useruploads/videos", {
+    fetch(`/useruploads/videos`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
       .then((res) => {

@@ -5,17 +5,17 @@ import {
 } from "@mui/material";
 import type React from "react";
 import type { CurveLineTrendDataset } from "../../../../../models/CurveLineTrend";
-import { ChooseUserDatasetsModal } from "../../../modals/chooseuserdatasetsmodal";
-import { InvalidJsonFileFormatModal } from "../../../modals/invaliddatasetformat";
+import { ChooseUserDatasetsModal } from "../../../modals/ChooseUserDatasetsModal";
+import { InvalidJsonFileFormatModal } from "../../../modals/InvalidDatasetFormat";
 import { useEffect } from "react";
-import { curverlinetrenddatasetformat } from "../../../../../data/properjsonformats";
-import { EditableJsonArea } from "../Global/editablejsonarea";
-import { CurveLineTrendDatasetTable } from "../tables/curvelinetrendtemplate";
-import { useDatasetHooks } from "../../../../../hooks/datasetsection";
-import { UserDatasetsSection } from "../Global/userdatasetssection";
-import { AIGeneratedDatasetSectionWithoutAPI } from "../Global/aisectionremaining";
-import { DatasetTopbar } from "../Global/datasetsectiontopbar";
-import { datasetLoader } from "../../../datasetloader";
+import { curverlinetrenddatasetformat } from "../../../../../data/ProperJsonFormats";
+import { EditableJsonArea } from "../Global/EditableJsonArea";
+import { CurveLineTrendDatasetTable } from "../tables/CurveLineTrendTemplate";
+import { useDatasetHooks } from "../../../../../hooks/DatasetSection";
+import { UserDatasetsSection } from "../Global/UserDatasetsSection";
+import { AIGeneratedDatasetSectionWithoutAPI } from "../Global/AiSectionRemaining";
+import { DatasetTopbar } from "../Global/DatasetSectionTopbar";
+import { datasetLoader } from "../../../DatasetLoader";
 
 interface CurveLineTrendBatchRenderingDatasetSectionInterface {
   curveLineData: CurveLineTrendDataset[];

@@ -95,6 +95,15 @@ export const RedditFetcherSidepanel: React.FC<RedditFetcherSidepanelProps> = ({
       {/* Status Messages */}
       {loading && <p style={{ fontSize: 13, color: "#666" }}>Fetching post...</p>}
       {error && <p style={{ fontSize: 13, color: "red" }}>{error}</p>}
+      {post && !error && !loading && (
+        <div className="text-sm text-blue-600 bg-blue-50 border border-blue-100 rounded-lg p-3 leading-relaxed">
+          ✅ Even though the post has been extracted successfully, changes
+          <span className="font-semibold"> won’t be visible in the preview</span>.
+          You have to click the{" "}
+          <span className="font-semibold">“Update Template”</span> button in the{" "}
+          <span className="font-semibold">AI Voices / Voices</span> tab to apply the changes.
+        </div>
+      )}
 
       {/* Post Display */}
       {post && (

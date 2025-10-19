@@ -1,10 +1,10 @@
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { DownloadIcon } from "lucide-react";
 import type React from "react";
-import { BACKGROUNDS } from "../../../../../data/texttypingbg";
-import { FONTS } from "../../../../../data/texttypingfonts";
-import { AUDIO_FILES } from "../../../../../data/texttypingaudios";
-import { handleDownloadAll } from "../../../../../utils/downloadall";
+import { BACKGROUNDS } from "../../../../../data/TextTypingBg";
+import { FONTS } from "../../../../../data/TextTypingFonts";
+import { AUDIO_FILES } from "../../../../../data/TextTypingAudios";
+import { handleDownloadAll } from "../../../../../utils/DownloadAll";
 
 interface TextTypingTemplateBatchOutputsSectionInterface {
   isRendering: boolean;

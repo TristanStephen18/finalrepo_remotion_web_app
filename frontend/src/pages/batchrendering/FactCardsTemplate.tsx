@@ -1,31 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container } from "@mui/material";
-import CloudIcon from "@mui/icons-material/Cloud";
-import WallpaperIcon from "@mui/icons-material/Wallpaper";
-import TextFieldsIcon from "@mui/icons-material/TextFields";
-import ViewModuleIcon from "@mui/icons-material/ViewModule";
-import { fontFamilies } from "../../data/fontfamilies";
+import { Typography } from "@mui/material";
+import { fontFamilies } from "../../data/FontFamilies";
 import type { FactCardsDataset } from "../../models/FactCards";
-import ColorLensIcon from "@mui/icons-material/ColorLens";
-import AnimationIcon from "@mui/icons-material/Animation";
 import {
   cardSubtitleFontSizeIndicator,
   cardTitleFontSizeIndicator,
   durationCalculatorforFactsCard,
-} from "../../utils/factcardshelpers";
-import NavItem from "../../components/navigations/batchrendering/NavItems";
-import { useBackgroundImages } from "../../hooks/datafetching/userimagesandonlineimages";
-import { BackgroundImageSelectionBatchRendering } from "../../components/ui/batchrendering/sections/Global/backgroundselectionsection";
-import { BatchRenderingFontFamilySelectionSection } from "../../components/ui/batchrendering/sections/Global/fontfamilyselectionsection";
-import { BatchRenderingFontColorsSelection } from "../../components/ui/batchrendering/sections/Global/fontcolorsselectionsection";
-import { FactCardsOutputsSection } from "../../components/ui/batchrendering/sections/factcards/batchoutputs";
-import { FactCardsBatchRenderingInidicator } from "../../components/ui/batchrendering/progressindicators/factcardsprogressindicator";
-import { BatchRenderingSideNavFooter } from "../../components/ui/batchrendering/sidenav/footer";
-import { SideBarHearder } from "../../components/ui/batchrendering/sidenav/header";
-import { FactCardsBatchRenderingDatasetSection } from "../../components/ui/batchrendering/sections/factcards/datasetsection";
-import { FactCardsBatchRenderingAnimationSelectionSection } from "../../components/ui/batchrendering/sections/factcards/animtionselectionsection";
-import { useDatasetsFetching } from "../../hooks/datafetching/datasetfilesfetching";
-import { useDatasetUpload } from "../../hooks/uploads/handledatasetsfileupload";
+} from "../../utils/FactCardsHelpers";
+import { useBackgroundImages } from "../../hooks/datafetching/UserImagesAndOnlineImages";
+import { BackgroundImageSelectionBatchRendering } from "../../components/ui/batchrendering/sections/Global/BackgroundSelectionSection";
+import { BatchRenderingFontFamilySelectionSection } from "../../components/ui/batchrendering/sections/Global/FontFamilySelectionSection";
+import { BatchRenderingFontColorsSelection } from "../../components/ui/batchrendering/sections/Global/FontColorsSelectionSection";
+import { FactCardsOutputsSection } from "../../components/ui/batchrendering/sections/factcards/BatchOutputs";
+import { FactCardsBatchRenderingInidicator } from "../../components/ui/batchrendering/progressindicators/FactCardsProgressIndicator";
+import { BatchRenderingSideNavFooter } from "../../components/ui/batchrendering/sidenav/Footer";
+import { SideBarHearder } from "../../components/ui/batchrendering/sidenav/Header";
+import { FactCardsBatchRenderingDatasetSection } from "../../components/ui/batchrendering/sections/factcards/DatasetSection";
+import { FactCardsBatchRenderingAnimationSelectionSection } from "../../components/ui/batchrendering/sections/factcards/AnimtionSelectionSection";
+import { useDatasetsFetching } from "../../hooks/datafetching/DatasetFilesFetching";
+import { useDatasetUpload } from "../../hooks/uploads/HandleDatasetsFileUpload";
+import { FiActivity, FiDatabase, FiDroplet, FiGrid, FiImage, FiMenu, FiType, FiX } from "react-icons/fi";
 
 export const FactCardsBatchRendering: React.FC = () => {
   const { fetchUserDatasets, userDatasets } = useDatasetsFetching();
@@ -81,7 +75,7 @@ export const FactCardsBatchRendering: React.FC = () => {
     } else {
       setLoading(true);
       try {
-        const res = await fetch("/api/generate/factcardsdataset", {
+        const res = await fetch(`/api/generate/factcardsdataset`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -111,7 +105,7 @@ export const FactCardsBatchRendering: React.FC = () => {
       if (finalImageUrl.startsWith("/")) {
         finalImageUrl = `${window.location.origin}${finalImageUrl}`;
       }
-      const response = await fetch("/generatevideo/factstemplaterender", {
+      const response = await fetch(`/generatevideo/factstemplaterender`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -141,11 +135,11 @@ export const FactCardsBatchRendering: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId: 7,
@@ -300,17 +294,44 @@ export const FactCardsBatchRendering: React.FC = () => {
     fetchUserDatasets();
   }, []);
 
+ const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navItems = [
+    { id: "dataset", label: "Dataset", icon: <FiDatabase /> },
+    { id: "animation", label: "Animation Speed", icon: <FiActivity /> },
+    { id: "backgrounds", label: "Backgrounds", icon: <FiImage /> },
+    { id: "fonts", label: "Fonts", icon: <FiType /> },
+    { id: "colors", label: "Font Colors", icon: <FiDroplet /> },
+    { id: "outputs", label: "Batch Outputs", icon: <FiGrid /> },
+  ] as const;
+
   return (
-    <Box sx={{ display: "flex", height: "100vh", bgcolor: "#fafafa" }}>
-      <Box
-        sx={{
-          width: collapsed ? 72 : 260,
-          flexShrink: 0,
-          bgcolor: "#fff",
-          borderRight: "1px solid #e0e0e0",
-          display: "flex",
-          flexDirection: "column",
-        }}
+    <div className="flex h-screen bg-gray-50 text-gray-800 overflow-hidden">
+      {/* === Mobile Header === */}
+      <header className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 flex items-center justify-between px-4 py-3 z-40">
+        <Typography
+          variant="subtitle1"
+          fontWeight={700}
+          sx={{
+            background: "linear-gradient(90deg,#ff4fa3,#8a4dff,#0077ff)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          🎬 Fact Cards Template Batch Rendering
+        </Typography>
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="text-gray-600 hover:text-gray-900"
+        >
+          <FiMenu size={22} />
+        </button>
+      </header>
+
+      {/* === Desktop Sidebar === */}
+      <aside
+        className={`hidden md:flex fixed top-0 left-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 flex-col justify-between shadow-sm z-30
+          ${collapsed ? "w-[72px]" : "w-[260px]"}`}
       >
         <SideBarHearder
           collapsed={collapsed}
@@ -318,64 +339,107 @@ export const FactCardsBatchRendering: React.FC = () => {
           title="🎬 Fact Cards Template Batch Rendering"
         />
 
-        {/* nav items */}
-        <Box sx={{ flexGrow: 1 }}>
-          <NavItem
-            icon={<CloudIcon />}
-            label="Dataset"
-            collapsed={collapsed}
-            active={activeSection === "dataset"}
-            onClick={() => setActiveSection("dataset")}
-          />
-          <NavItem
-            icon={<AnimationIcon />}
-            label="Animation Speed"
-            collapsed={collapsed}
-            active={activeSection === "animation"}
-            onClick={() => setActiveSection("animation")}
-          />
-          <NavItem
-            icon={<WallpaperIcon />}
-            label="Backgrounds"
-            collapsed={collapsed}
-            active={activeSection === "backgrounds"}
-            onClick={() => setActiveSection("backgrounds")}
-          />
-          <NavItem
-            icon={<TextFieldsIcon />}
-            label="Fonts"
-            collapsed={collapsed}
-            active={activeSection === "fonts"}
-            onClick={() => setActiveSection("fonts")}
-          />
-          <NavItem
-            icon={<ColorLensIcon />}
-            label="Font Colors"
-            collapsed={collapsed}
-            active={activeSection === "colors"}
-            onClick={() => setActiveSection("colors")}
-          />
-          <NavItem
-            icon={<ViewModuleIcon />}
-            label="Batch Outputs"
-            collapsed={collapsed}
-            active={activeSection === "outputs"}
-            onClick={() => setActiveSection("outputs")}
-          />
-        </Box>
+        {/* Navigation Items */}
+        <nav className="flex flex-col flex-1 space-y-1 px-4 overflow-y-auto">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveSection(item.id)}
+                className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
+                  ${
+                    isActive
+                      ? "bg-indigo-50 text-indigo-600"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }`}
+              >
+                <span className="text-xl mr-3">{item.icon}</span>
+                {!collapsed && <span>{item.label}</span>}
+              </button>
+            );
+          })}
+        </nav>
 
-        <BatchRenderingSideNavFooter
-          handleGenerateBatch={handleGenerateBatch}
-          isRendering={isRendering}
-          singleOutputLocation="/template/factcards"
+        <div className="px-3 py-2">
+          <BatchRenderingSideNavFooter
+            handleGenerateBatch={handleGenerateBatch}
+            isRendering={isRendering}
+            singleOutputLocation="/template/factcards"
+          />
+        </div>
+      </aside>
+
+      {/* === Mobile Overlay === */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-30 md:hidden"
+          onClick={() => setMobileOpen(false)}
         />
-      </Box>
+      )}
 
-      {/* -------------------
-          Main Content
-          ------------------- */}
-      <Box component="main" sx={{ flexGrow: 1, overflowY: "auto" }}>
-        <Container maxWidth="xl" sx={{ py: 4 }}>
+      {/* === Mobile Drawer === */}
+      <div
+        className={`fixed top-0 left-0 h-full bg-white shadow-lg border-r border-gray-200 z-40 transform transition-transform duration-300 md:hidden
+          ${mobileOpen ? "translate-x-0" : "-translate-x-full"} w-64`}
+      >
+        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+          <Typography
+            variant="subtitle1"
+            fontWeight={700}
+            sx={{
+              background: "linear-gradient(90deg,#ff4fa3,#8a4dff,#0077ff)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            🎬 Fact Cards Template Batch Rendering
+          </Typography>
+          <button onClick={() => setMobileOpen(false)} className="text-gray-600">
+            <FiX size={20} />
+          </button>
+        </div>
+
+        <nav className="flex flex-col p-4 space-y-2">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveSection(item.id);
+                  setMobileOpen(false);
+                }}
+                className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
+                  ${
+                    isActive
+                      ? "bg-indigo-50 text-indigo-600"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }`}
+              >
+                <span className="text-xl mr-3">{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        <div className="border-t border-gray-100 mt-4 p-4">
+          <BatchRenderingSideNavFooter
+            handleGenerateBatch={handleGenerateBatch}
+            isRendering={isRendering}
+            singleOutputLocation="/template/factcards"
+          />
+        </div>
+      </div>
+
+      {/* === Main Content === */}
+      <main
+        className={`flex-1 overflow-y-auto transition-all duration-300 bg-gray-50 md:ml-0 ${
+          collapsed ? "md:ml-[72px]" : "md:ml-[260px]"
+        } mt-[56px] md:mt-0`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {showProgressCard &&
             (isRendering ||
               (currentIndex === null && combinations.length > 0)) && (
@@ -388,7 +452,7 @@ export const FactCardsBatchRendering: React.FC = () => {
               />
             )}
 
-          {/* Dataset Section */}
+          {/* === Dataset Section === */}
           {activeSection === "dataset" && (
             <FactCardsBatchRenderingDatasetSection
               datasetQuantity={datasetQuantity}
@@ -409,7 +473,7 @@ export const FactCardsBatchRendering: React.FC = () => {
             />
           )}
 
-          {/* Animation Speeds Section */}
+          {/* === Animation Speed Section === */}
           {activeSection === "animation" && (
             <FactCardsBatchRenderingAnimationSelectionSection
               isRendering={isRendering}
@@ -418,7 +482,7 @@ export const FactCardsBatchRendering: React.FC = () => {
             />
           )}
 
-          {/* Backgrounds Section */}
+          {/* === Backgrounds Section === */}
           {activeSection === "backgrounds" && (
             <BackgroundImageSelectionBatchRendering
               fetchOnlineImages={fetchOnlineImages}
@@ -436,7 +500,7 @@ export const FactCardsBatchRendering: React.FC = () => {
             />
           )}
 
-          {/* Fonts Section */}
+          {/* === Fonts Section === */}
           {activeSection === "fonts" && (
             <BatchRenderingFontFamilySelectionSection
               clearAllFonts={clearAllFonts}
@@ -447,7 +511,7 @@ export const FactCardsBatchRendering: React.FC = () => {
             />
           )}
 
-          {/* Font Colors Section */}
+          {/* === Font Colors Section === */}
           {activeSection === "colors" && (
             <BatchRenderingFontColorsSelection
               isRendering={isRendering}
@@ -456,15 +520,15 @@ export const FactCardsBatchRendering: React.FC = () => {
             />
           )}
 
-          {/* Batch Outputs Section */}
+          {/* === Batch Outputs Section === */}
           {activeSection === "outputs" && (
             <FactCardsOutputsSection
               combinations={combinations}
               isRendering={isRendering}
             />
           )}
-        </Container>
-      </Box>
-    </Box>
+        </div>
+      </main>
+    </div>
   );
 };

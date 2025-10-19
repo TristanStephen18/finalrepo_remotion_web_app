@@ -2,7 +2,7 @@ import BurstModeIcon from "@mui/icons-material/BurstMode";
 import Filter9PlusIcon from "@mui/icons-material/Filter9Plus";
 import PhotoSizeSelectLargeIcon from "@mui/icons-material/PhotoSizeSelectLarge";
 import ViewModuleIcon from "@mui/icons-material/ViewModule";
-import type { NavData } from "../../components/navigations/batchrendering/sidenavs";
+import type { NavData } from "../../components/navigations/batchrendering/SideNavs";
 
 export const KenburnsnavItems: NavData[] = [
   { icon: <BurstModeIcon />, label: "Images", key: "images" },

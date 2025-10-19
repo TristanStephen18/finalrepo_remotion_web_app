@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../css/Login.css";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -8,11 +9,10 @@ const LoginPage: React.FC = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [remember, setRemember] = useState(true);
+  // const [remember, setRemember] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [verifiedMsg, setVerifiedMsg] = useState<string | null>(null);
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -29,7 +29,7 @@ const LoginPage: React.FC = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("/auth/login", {
+      const response = await fetch("http://localhost:3000/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -46,10 +46,10 @@ const LoginPage: React.FC = () => {
       }
 
       const data = await response.json();
+      toast.success('Log in successful. You will be redirected any second...');
 
       localStorage.setItem("token", data.token);
-      console.log({ email, password, remember });
-      navigate("/dashboard");
+      setTimeout(() => navigate("/dashboard"), 1000);
     } catch (err) {
       setError("Login failed. Please try again.");
     } finally {
@@ -60,7 +60,7 @@ const LoginPage: React.FC = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("verified") === "true") {
-      setVerifiedMsg("✅ Your email has been verified! Please log in.");
+      toast.success("Your email has been verified! Please log in.");
     }
   }, []);
 
@@ -80,12 +80,6 @@ const LoginPage: React.FC = () => {
               Sign in to continue creating snappy, TikTok-style animations.
             </p>
           </header>
-
-          {verifiedMsg && (
-            <div className="auth__success" role="alert">
-              {verifiedMsg}
-            </div>
-          )}
 
           {error && (
             <div className="auth__error" role="alert">
@@ -195,14 +189,6 @@ const LoginPage: React.FC = () => {
             </div>
 
             <div className="auth__row">
-              <label className="checkbox">
-                <input
-                  type="checkbox"
-                  checked={remember}
-                  onChange={(e) => setRemember(e.target.checked)}
-                />
-                <span>Remember me</span>
-              </label>
               <a className="link" href="/forgot-password">
                 Forgot password?
               </a>

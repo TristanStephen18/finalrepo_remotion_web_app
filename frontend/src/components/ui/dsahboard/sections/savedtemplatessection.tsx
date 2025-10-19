@@ -1,31 +1,15 @@
-import React, { useState, useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import {
-  Box,
-  Typography,
-  Card,
-  CardContent,
-  Button,
-  CircularProgress,
-  TextField,
-  Slide,
-  IconButton,
-  InputAdornment,
-} from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import FolderIcon from "@mui/icons-material/Folder";
-import { getTemplateRoute } from "../../../../utils/temlplatenavigator";
+  FiSearch,
+  FiImage,
+  FiCheck,
+  FiTrash2,
+  FiArrowLeft,
+} from "react-icons/fi";
+
+type FolderType = "root" | "media" | "datasets";
 
 interface ProjectsSectionProps {
-  projects: any[];
-  loadingProjects: boolean;
-  hoveredId: number | null;
-  setHoveredId: (id: number | null) => void;
-  selectedProjects: number[];
-  toggleProjectSelection: (id: number) => void;
-  clearSelection: () => void;
-  onDeleteSelected: (ids: number[]) => void;
-  fetchUploads: () => void;
   uploads: any[];
   uploadFilter: "all" | "image" | "video";
   setUploadFilter: React.Dispatch<
@@ -35,27 +19,17 @@ interface ProjectsSectionProps {
   selectedUploads: number[];
   setSelectedUploads: React.Dispatch<React.SetStateAction<number[]>>;
   handleDeleteUploads: () => Promise<void>;
-  handleDeleteDataset: () => Promise<void>;
   userDatasets: any[];
   selectedDatasets: number[];
   setSelectedDatasets: React.Dispatch<React.SetStateAction<number[]>>;
   loadingDatasets: boolean;
+  handleDeleteDataset: () => Promise<void>;
 }
 
-type FolderType = "root" | "templates" | "media" | "datasets";
-
 export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
-  projects,
-  loadingProjects,
-  hoveredId,
-  setHoveredId,
-  selectedProjects,
-  toggleProjectSelection,
-  clearSelection,
-  onDeleteSelected,
+  uploads,
   uploadFilter,
   setUploadFilter,
-  uploads,
   loadingUploads,
   selectedUploads,
   setSelectedUploads,
@@ -67,850 +41,288 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
   handleDeleteDataset,
 }) => {
   const [currentFolder, setCurrentFolder] = useState<FolderType>("root");
-  const [search, setSearch] = useState("");
-  const [deleting, setDeleting] = useState(false);
-  const [selectAllUploads, setSelectAllUploads] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-
-  const handleDelete = async () => {
-    try {
-      setDeleting(true);
-      await onDeleteSelected(selectedProjects);
-    } finally {
-      setDeleting(false);
-    }
-  };
-
-  const handleDeleteUploadsLoading = () => {
-    setDeleting(true);
-    handleDeleteUploads().then(() => setDeleting(false));
-  };
-
-  const handleDeleteDatasetsLoading = () => {
-    setDeleting(true);
-    handleDeleteDataset().then(() => setDeleting(false));
-  };
-
-  const sortedProjects = useMemo(
-    () =>
-      [...projects].sort(
-        (a, b) =>
-          new Date(b.lastUpdated).getTime() - new Date(a.lastUpdated).getTime()
-      ),
-    [projects]
-  );
-
-  const filteredProjects = useMemo(
-    () =>
-      sortedProjects.filter((p) =>
-        p.title.toLowerCase().includes(search.toLowerCase())
-      ),
-    [sortedProjects, search]
-  );
+  const [deleting, setDeleting] = useState(false);
 
   const filteredUploads = useMemo(() => {
     if (uploadFilter === "all") return uploads;
     return uploads.filter((u) => u.type === uploadFilter);
   }, [uploads, uploadFilter]);
 
-  const handleSelectAllUploads = () => {
-    if (selectedUploads.length === filteredUploads.length) {
-      setSelectedUploads([]);
-    } else {
-      setSelectedUploads(filteredUploads.map((u) => u.id));
-    }
-    setSelectAllUploads(!selectAllUploads);
-  };
+  const filteredDatasets = useMemo(() => {
+    return userDatasets.filter((dataset: any) =>
+      dataset.url
+        .replaceAll("/datasets/", "")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
+    );
+  }, [userDatasets, searchQuery]);
 
-  const handleCancelUploads = () => {
-    setSelectedUploads([]);
-    setSelectAllUploads(false);
+  const startDelete = async (type: "uploads" | "datasets") => {
+    setDeleting(true);
+    await (type === "uploads" ? handleDeleteUploads() : handleDeleteDataset());
+    setDeleting(false);
   };
 
   const sectionTitle =
     currentFolder === "root"
-      ? "MY SPACE"
-      : currentFolder === "templates"
-      ? "My Templates"
+      ? "My Files"
       : currentFolder === "media"
       ? "My Media"
       : "My Datasets";
 
-  const mediaLabel = useMemo(() => {
-    switch (uploadFilter) {
-      case "image":
-        return "Images";
-      case "video":
-        return "Videos";
-      default:
-        return "All media";
-    }
-  }, [uploadFilter]);
-
-  const renderRootFolders = () => (
-    <Box sx={{ mt: 2 }}>
-      <Typography
-        variant="h6"
-        fontWeight="bold"
-        textAlign="left"
-        gutterBottom
-      >
-        Choose a folder
-      </Typography>
-
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(120px, 1fr))",
-          gap: 7,
-          mt: 1,
-          textAlign: "center",
-        }}
-      >
-        {[
-          { key: "templates", label: "My Templates" },
-          { key: "media", label: "My Media" },
-          { key: "datasets", label: "My Datasets" },
-        ].map((f) => (
-          <Box
-            key={f.key}
-            onClick={() => setCurrentFolder(f.key as FolderType)}
-            sx={{
-              cursor: "pointer",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              p: 2,
-              borderRadius: 2,
-              transition: "0.2s",
-              "&:hover": {
-                bgcolor: "rgba(25,118,210,0.08)",
-                transform: "translateY(-2px)",
-              },
-            }}
-          >
-            <FolderIcon sx={{ fontSize: 150, color: "#1976d2" }} />
-            <Typography variant="body2" fontWeight="bold" mt={1}>
-              {f.label}
-            </Typography>
-          </Box>
-        ))}
-      </Box>
-    </Box>
-  );
-
-  const renderTemplates = () => (
-    <>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 2,
-          mt: 1,
-          width: "100%",
-        }}
-      >
-        <Typography variant="h6" fontWeight="bold" sx={{ mr: 2 }}>
-          My Templates
-        </Typography>
-        <Box sx={{ flex: 1 }} />
-        <TextField
-          variant="outlined"
-          placeholder="Search your templates"
-          size="small"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: "text.secondary" }} />
-              </InputAdornment>
-            ),
-          }}
-          sx={{
-            bgcolor: "white",
-            borderRadius: "8px",
-            width: 260,
-            "& fieldset": { border: "none" },
-          }}
-        />
-      </Box>
-
-      {loadingProjects ? (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2, py: 2 }}>
-          <CircularProgress size={32} />
-          <Typography
-            variant="body2"
-            sx={{ fontWeight: 600, color: "#1976d2" }}
-          >
-            Fetching your templates...
-          </Typography>
-        </Box>
-      ) : filteredProjects.length === 0 ? (
-        <Typography variant="body2" color="text.secondary">
-          {search
-            ? "No templates found for your search."
-            : "No templates yet. Start by creating one!"}
-        </Typography>
-      ) : (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-            gap: 2,
-            pb: 6,
-          }}
-        >
-          {filteredProjects.map((project) => (
-            <Card
-              key={project.id}
-              onMouseEnter={() => setHoveredId(project.id)}
-              onMouseLeave={() => setHoveredId(null)}
-              sx={{
-                borderRadius: 4,
-                overflow: "hidden",
-                position: "relative",
-                border: "2px solid transparent",
-                backgroundClip: "padding-box",
-                transition: "transform 0.25s ease, box-shadow 0.25s ease",
-                "&:hover": {
-                  cursor: "pointer",
-                  transform: "translateY(-6px)",
-                  boxShadow: "0px 10px 28px rgba(0,0,0,0.12)",
-                },
-              }}
-            >
-              {(hoveredId === project.id || selectedProjects.length > 0) && (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 10,
-                    left: 10,
-                    zIndex: 3,
-                    bgcolor: "white",
-                    p: 0.5,
-                    borderRadius: "6px",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedProjects.includes(project.id)}
-                    onChange={() => toggleProjectSelection(project.id)}
-                    style={{
-                      height: "18px",
-                      width: "18px",
-                      cursor: "pointer",
-                    }}
-                  />
-                </Box>
-              )}
-
-              <Box sx={{ position: "relative", height: 180 }}>
-                <video
-                  src={project.projectVidUrl}
-                  muted
-                  playsInline
-                  preload="metadata"
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.play();
-                    e.currentTarget.playbackRate = 2.5;
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.pause();
-                    e.currentTarget.currentTime = 0;
-                  }}
-                />
-                {hoveredId === project.id && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      bottom: 0,
-                      width: "100%",
-                      p: 2,
-                      bgcolor: "rgba(0,0,0,0.55)",
-                      color: "white",
-                      backdropFilter: "blur(4px)",
-                    }}
-                  >
-                    <Typography variant="subtitle2" fontWeight="bold" noWrap>
-                      {project.title}
-                    </Typography>
-                    <Typography variant="caption" sx={{ opacity: 0.85 }}>
-                      Last updated:{" "}
-                      {new Date(project.lastUpdated).toLocaleDateString()}
-                    </Typography>
-                  </Box>
-                )}
-              </Box>
-              <CardContent sx={{ textAlign: "center" }}>
-                <Button
-                  size="small"
-                  fullWidth
-                  sx={{
-                    borderRadius: "30px",
-                    textTransform: "none",
-                    fontWeight: 600,
-                    background: "linear-gradient(90deg,#d81b60,#42a5f5)",
-                    color: "white",
-                    "&:hover": { opacity: 0.9 },
-                  }}
-                  onClick={() => {
-                    const url = getTemplateRoute(
-                      project.templateId,
-                      project.id
-                    );
-                    window.open(url, "_blank");
-                  }}
-                >
-                  🚀 Open Project
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
-        </Box>
-      )}
-    </>
-  );
-
-  const renderMedia = () => (
-    <Box sx={{ mt: 4 }}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 2,
-        }}
-      >
-        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          {mediaLabel}
-        </Typography>
-
-        <TextField
-          select
-          size="small"
-          value={uploadFilter}
-          onChange={(e) =>
-            setUploadFilter(e.target.value as "all" | "image" | "video")
-          }
-          SelectProps={{
-            native: true,
-          }}
-          sx={{ minWidth: 140 }}
-        >
-          <option value="all">All</option>
-          <option value="image">Images</option>
-          <option value="video">Videos</option>
-        </TextField>
-      </Box>
-
-      {loadingUploads ? (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2, py: 2 }}>
-          <CircularProgress size={24} />
-          <Typography variant="body2">Fetching uploads...</Typography>
-        </Box>
-      ) : filteredUploads.length === 0 ? (
-        <Typography variant="body2" color="text.secondary">
-          No uploads yet.
-        </Typography>
-      ) : (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-            gap: 2,
-          }}
-        >
-          {filteredUploads.map((u) => (
-            <Card
-              key={u.id}
-              sx={{
-                borderRadius: 3,
-                overflow: "hidden",
-                border: selectedUploads.includes(u.id)
-                  ? "2px solid #1976d2"
-                  : "1px solid #ddd",
-                position: "relative",
-                cursor: "pointer",
-              }}
-              onClick={() => {
-                setSelectedUploads((prev) =>
-                  prev.includes(u.id)
-                    ? prev.filter((id) => id !== u.id)
-                    : [...prev, u.id]
-                );
-              }}
-            >
-              {selectedUploads.length > 0 && (
-                <Box
-                  sx={{
-                    position: "absolute",
-                    top: 10,
-                    left: 10,
-                    zIndex: 3,
-                    bgcolor: "white",
-                    p: 0.5,
-                    borderRadius: "6px",
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-                  }}
-                >
-                  <input
-                    type="checkbox"
-                    checked={selectedUploads.includes(u.id)}
-                    readOnly
-                    style={{
-                      height: "18px",
-                      width: "18px",
-                      cursor: "pointer",
-                    }}
-                  />
-                </Box>
-              )}
-              {u.type === "image" ? (
-                <Box
-                  component="img"
-                  src={u.url}
-                  alt="upload"
-                  sx={{
-                    width: "100%",
-                    height: 160,
-                    objectFit: "cover",
-                  }}
-                />
-              ) : (
-                <Box sx={{ position: "relative", height: 160 }}>
-                  <video
-                    src={u.url}
-                    muted
-                    loop
-                    playsInline
-                    style={{
-                      width: "100%",
-                      height: "100%",
-                      objectFit: "cover",
-                    }}
-                    onMouseOver={(e) => {
-                      e.currentTarget.play();
-                      e.currentTarget.playbackRate = 2.5;
-                    }}
-                    onMouseOut={(e) => {
-                      e.currentTarget.pause();
-                      e.currentTarget.currentTime = 0;
-                    }}
-                  />
-                </Box>
-              )}
-            </Card>
-          ))}
-        </Box>
-      )}
-    </Box>
-  );
-
-  const filteredDatasets = useMemo(() => {
-    return userDatasets.filter((dataset: any) => {
-      const name = dataset.url.replaceAll("/datasets/", "").toLowerCase();
-      return name.includes(searchQuery.toLowerCase());
-    });
-  }, [userDatasets, searchQuery]);
-
-  const renderDatasets = () => (
-    <Box sx={{ mt: 4 }}>
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 2,
-        }}
-      >
-        <Typography variant="h6" sx={{ fontWeight: "bold" }}>
-          My Datasets
-        </Typography>
-
-        <TextField
-          placeholder="Search datasets..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          size="small"
-          sx={{ minWidth: 260 }}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon sx={{ color: "text.secondary" }} />
-              </InputAdornment>
-            ),
-          }}
-        />
-      </Box>
-
-      {loadingDatasets ? (
-        <Box sx={{ display: "flex", alignItems: "center", gap: 2, py: 2 }}>
-          <CircularProgress size={24} />
-          <Typography variant="body2">Fetching datasets...</Typography>
-        </Box>
-      ) : filteredDatasets.length === 0 ? (
-        <Typography variant="body2" color="text.secondary">
-          No datasets found.
-        </Typography>
-      ) : (
-        <Box
-          sx={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))",
-            gap: 1,
-          }}
-        >
-          {filteredDatasets.map((dataset, idx) => {
-            const isSelected = selectedDatasets.includes(dataset.id || idx);
-            let iconSrc = "";
-            if (dataset.type === "json") iconSrc = "/images/json.png";
-            if (dataset.type === "xlsx") iconSrc = "/images/xlsx.png";
-
-            return (
-              <Box
-                key={dataset.id || idx}
-                sx={{
-                  p: 2,
-                  cursor: "pointer",
-                  transition: "0.2s",
-                  position: "relative",
-                  bgcolor: isSelected ? "#ecdfdfff" : "transparent",
-                  border: isSelected ? "1px solid black" : "transparent",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  textAlign: "center",
-                  borderRadius: 2,
-                }}
-                onClick={() =>
-                  setSelectedDatasets((prev) =>
-                    prev.includes(dataset.id || idx)
-                      ? prev.filter((id) => id !== (dataset.id || idx))
-                      : [...prev, dataset.id || idx]
-                  )
-                }
-              >
-                {iconSrc && (
-                  <Box
-                    sx={{
-                      width: 60,
-                      height: 60,
-                      mb: 1,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    <img
-                      src={iconSrc}
-                      alt={dataset.type}
-                      style={{ width: 55, height: 55, objectFit: "contain" }}
-                    />
-                  </Box>
-                )}
-
-                <Typography
-                  fontWeight={600}
-                  sx={{ mb: 0.5, wordBreak: "break-all", fontSize: 12 }}
-                >
-                  {dataset.url.replaceAll("/datasets/", "") ||
-                    `Dataset ${idx + 1}`}
-                </Typography>
-
-                <Typography
-                  variant="caption"
-                  color="text.secondary"
-                  sx={{ fontSize: 9 }}
-                >
-                  Uploaded:{" "}
-                  {dataset.uploadedAt
-                    ? new Date(dataset.uploadedAt).toLocaleString()
-                    : "N/A"}
-                </Typography>
-
-                {isSelected && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: 8,
-                      right: 8,
-                      bgcolor: "rgba(25, 118, 210, 0.85)",
-                      color: "#fff",
-                      borderRadius: "50%",
-                      width: 22,
-                      height: 22,
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      fontSize: 16,
-                      fontWeight: 700,
-                    }}
-                  >
-                    ✓
-                  </Box>
-                )}
-              </Box>
-            );
-          })}
-        </Box>
-      )}
-    </Box>
-  );
-
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
-      <Box
-        sx={{
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          borderRadius: 2,
-          overflow: "hidden",
-          mb: 1,
-        }}
-      >
-        <Box
-          component="img"
-          src="/projectsbackdrop.jpg"
-          alt="Projects Backdrop"
-          sx={{ width: "100%", height: 90, objectFit: "cover" }}
-        />
-        <Box
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            width: "100%",
-            height: "100%",
-            display: "flex",
-            alignItems: "center",
-            px: 3,
-            bgcolor: "rgba(0,0,0,0.3)",
-          }}
-        >
-          {currentFolder !== "root" && (
-            <IconButton
-              onClick={() => setCurrentFolder("root")}
-              sx={{ color: "white", mr: 1 }}
-            >
-              <ArrowBackIcon />
-            </IconButton>
-          )}
-          <Typography
-            variant="h5"
-            fontWeight="bold"
-            color="white"
-            sx={{ mb: 0 }}
+    <div className="flex flex-col h-full text-gray-800 bg-white rounded-2xl shadow-sm border border-gray-100 p-6 overflow-hidden">
+      {/* === Header (Simple, Clean) === */}
+      <div className="flex items-center mb-6">
+        {currentFolder !== "root" && (
+          <button
+            onClick={() => setCurrentFolder("root")}
+            className="p-2 mr-2 rounded-full hover:bg-gray-100 transition"
           >
-            {sectionTitle}
-          </Typography>
-        </Box>
-      </Box>
+            <FiArrowLeft size={18} className="text-gray-600" />
+          </button>
+        )}
+        <h1 className="text-2xl font-semibold text-gray-900">{sectionTitle}</h1>
+      </div>
 
-      <Box sx={{ flex: 1, overflowY: "auto", pr: 2, pb: 8 }}>
-        {currentFolder === "root" && renderRootFolders()}
-        {currentFolder === "templates" && renderTemplates()}
-        {currentFolder === "media" && renderMedia()}
-        {currentFolder === "datasets" && renderDatasets()}
-      </Box>
+      {/* === Main Content === */}
+      <div className="flex-1 overflow-y-auto pb-20 space-y-8">
+        {/* === ROOT === */}
+        {currentFolder === "root" && (
+          <div>
+            <h2 className="text-lg font-medium text-gray-700 mb-4">
+              Choose a category
+            </h2>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6">
+              {[
+                {
+                  key: "media",
+                  label: "Media",
+                  description: "Images and videos you uploaded",
+                  icon: <FiImage size={36} />,
+                },
+                {
+                  key: "datasets",
+                  label: "Datasets",
+                  description: "Your uploaded data files",
+                  icon: (
+                    <img
+                      src="/images/json.png"
+                      alt="dataset"
+                      className="w-9 h-9 opacity-80"
+                    />
+                  ),
+                },
+              ].map((f) => (
+                <div
+                  key={f.key}
+                  onClick={() => setCurrentFolder(f.key as FolderType)}
+                  className="group bg-white border border-gray-200 hover:border-indigo-400 rounded-2xl p-5 shadow-sm hover:shadow-md transition cursor-pointer flex flex-col justify-between"
+                >
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-indigo-50 transition">
+                      {f.icon}
+                    </div>
+                    <p className="font-medium text-gray-800 text-base">
+                      {f.label}
+                    </p>
+                  </div>
+                  <p className="text-xs text-gray-500">{f.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
-      <Slide
-        direction="up"
-        in={selectedProjects.length > 0}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Box
-          sx={{
-            position: "fixed",
-            bottom: 16,
-            left: "40%",
-            transform: "translateX(-50%)",
-            bgcolor: "white",
-            boxShadow: "0px 4px 16px rgba(0,0,0,0.2)",
-            borderRadius: "30px",
-            px: 3,
-            py: 1.5,
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-            zIndex: 2000,
-          }}
-        >
-          <Typography variant="body2" fontWeight={600}>
-            {selectedProjects.length} selected
-          </Typography>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={clearSelection}
-            sx={{ borderRadius: "20px", textTransform: "none" }}
-            disabled={deleting}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={handleDelete}
-            sx={{
-              borderRadius: "20px",
-              textTransform: "none",
-              minWidth: 80,
-            }}
-            disabled={deleting}
-          >
-            {deleting ? (
-              <CircularProgress size={18} sx={{ color: "white" }} />
+        {/* === MEDIA === */}
+        {currentFolder === "media" && (
+          <div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-4">
+              <h2 className="text-lg font-semibold text-gray-900">Media Library</h2>
+              <select
+                value={uploadFilter}
+                onChange={(e) =>
+                  setUploadFilter(e.target.value as "all" | "image" | "video")
+                }
+                className="px-3 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+              >
+                <option value="all">All</option>
+                <option value="image">Images</option>
+                <option value="video">Videos</option>
+              </select>
+            </div>
+
+            {loadingUploads ? (
+              <p className="text-indigo-500">Loading uploads...</p>
+            ) : filteredUploads.length === 0 ? (
+              <div className="text-center py-10 text-gray-500">
+                <FiImage className="mx-auto text-4xl mb-2 opacity-50" />
+                No uploads yet.
+              </div>
             ) : (
-              "Delete"
-            )}
-          </Button>
-        </Box>
-      </Slide>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+                {filteredUploads.map((u) => {
+                  const selected = selectedUploads.includes(u.id);
+                  return (
+                    <div
+                      key={u.id}
+                      onClick={() =>
+                        setSelectedUploads((prev) =>
+                          prev.includes(u.id)
+                            ? prev.filter((id) => id !== u.id)
+                            : [...prev, u.id]
+                        )
+                      }
+                      className={`relative rounded-xl overflow-hidden border transition-all cursor-pointer ${
+                        selected
+                          ? "border-indigo-400 ring-2 ring-indigo-200"
+                          : "border-gray-200 hover:border-gray-300"
+                      }`}
+                    >
+                      {selected && (
+                        <div className="absolute top-2 left-2 bg-white rounded-md p-1 shadow">
+                          <FiCheck className="text-indigo-600" />
+                        </div>
+                      )}
 
-      <Slide
-        direction="up"
-        in={selectedUploads.length > 0}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Box
-          sx={{
-            position: "fixed",
-            bottom: 16,
-            left: "40%",
-            transform: "translateX(-50%)",
-            bgcolor: "white",
-            boxShadow: "0px 4px 16px rgba(0,0,0,0.2)",
-            borderRadius: "30px",
-            px: 3,
-            py: 1.5,
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-            zIndex: 2000,
-          }}
-        >
-          <Typography variant="body2" fontWeight={600}>
-            {selectedUploads.length} selected
-          </Typography>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleSelectAllUploads}
-            sx={{ borderRadius: "20px", textTransform: "none" }}
-            disabled={deleting}
-          >
-            {selectedUploads.length === filteredUploads.length
-              ? "Unselect All"
-              : "Select All"}
-          </Button>
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={handleCancelUploads}
-            sx={{ borderRadius: "20px", textTransform: "none" }}
-            disabled={deleting}
-          >
-            Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={handleDeleteUploadsLoading}
-            sx={{ borderRadius: "20px", textTransform: "none", minWidth: 80 }}
-            disabled={deleting}
-          >
-            {deleting ? (
-              <CircularProgress size={18} sx={{ color: "white" }} />
+                      {u.type === "image" ? (
+                        <img
+                          src={u.url}
+                          alt="upload"
+                          className="w-full h-44 object-cover transition-transform duration-300 group-hover:scale-105"
+                        />
+                      ) : (
+                        <video
+                          src={u.url}
+                          muted
+                          playsInline
+                          className="w-full h-44 object-cover"
+                          onMouseOver={(e) => {
+                            e.currentTarget.play();
+                            e.currentTarget.playbackRate = 2.5;
+                          }}
+                          onMouseOut={(e) => {
+                            e.currentTarget.pause();
+                            e.currentTarget.currentTime = 0;
+                          }}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* === DATASETS === */}
+        {currentFolder === "datasets" && (
+          <div>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-3">
+              <h2 className="text-lg font-semibold text-gray-900">Datasets</h2>
+              <div className="relative w-full sm:w-72">
+                <FiSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search datasets..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2 rounded-lg border border-gray-300 bg-white text-sm focus:ring-2 focus:ring-indigo-400 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            {loadingDatasets ? (
+              <p className="text-indigo-500">Loading datasets...</p>
+            ) : filteredDatasets.length === 0 ? (
+              <div className="text-center py-10 text-gray-500">
+                <img
+                  src="/images/json.png"
+                  alt="dataset"
+                  className="mx-auto w-12 h-12 mb-3 opacity-60"
+                />
+                No datasets found.
+              </div>
             ) : (
-              "Delete"
-            )}
-          </Button>
-        </Box>
-      </Slide>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-5">
+                {filteredDatasets.map((dataset, idx) => {
+                  const isSelected = selectedDatasets.includes(dataset.id || idx);
+                  const iconSrc =
+                    dataset.type === "json"
+                      ? "/images/json.png"
+                      : dataset.type === "xlsx"
+                      ? "/images/xlsx.png"
+                      : "/images/file.png";
 
-      <Slide
-        direction="up"
-        in={selectedDatasets.length > 0}
-        mountOnEnter
-        unmountOnExit
-      >
-        <Box
-          sx={{
-            position: "fixed",
-            bottom: 16,
-            left: "40%",
-            transform: "translateX(-50%)",
-            bgcolor: "white",
-            boxShadow: "0px 4px 16px rgba(0,0,0,0.2)",
-            borderRadius: "30px",
-            px: 3,
-            py: 1.5,
-            display: "flex",
-            alignItems: "center",
-            gap: 2,
-            zIndex: 2000,
-          }}
-        >
-          <Typography variant="body2" fontWeight={600}>
-            {selectedDatasets.length} selected
-          </Typography>
-          <Button
-            variant="outlined"
-            size="small"
+                  return (
+                    <div
+                      key={dataset.id || idx}
+                      onClick={() =>
+                        setSelectedDatasets((prev) =>
+                          prev.includes(dataset.id || idx)
+                            ? prev.filter((id) => id !== (dataset.id || idx))
+                            : [...prev, dataset.id || idx]
+                        )
+                      }
+                      className={`relative flex flex-col items-center justify-center rounded-xl p-4 border transition-all cursor-pointer text-center ${
+                        isSelected
+                          ? "border-indigo-400 bg-indigo-50 shadow-sm"
+                          : "border-gray-200 hover:shadow-sm"
+                      }`}
+                    >
+                      <img
+                        src={iconSrc}
+                        alt={dataset.type}
+                        className="w-14 h-14 mb-2 object-contain"
+                      />
+                      <p className="text-xs font-medium text-gray-700 break-all max-w-[120px] truncate">
+                        {dataset.url.replaceAll("/datasets/", "")}
+                      </p>
+                      {isSelected && (
+                        <div className="absolute top-2 right-2 bg-indigo-500 text-white rounded-full p-1">
+                          <FiCheck size={12} />
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* === Floating Action Bar === */}
+      {(selectedUploads.length > 0 || selectedDatasets.length > 0) && (
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-white border border-gray-200 shadow-lg rounded-full px-6 py-2 flex items-center gap-4 z-50">
+          <span className="text-sm font-medium text-gray-700">
+            {selectedUploads.length > 0
+              ? `${selectedUploads.length} selected`
+              : `${selectedDatasets.length} selected`}
+          </span>
+          <button
             onClick={() => {
-              if (selectedDatasets.length === filteredDatasets.length) {
-                setSelectedDatasets([]);
-              } else {
-                setSelectedDatasets(filteredDatasets.map((d) => d.id));
-              }
+              setSelectedUploads([]);
+              setSelectedDatasets([]);
             }}
-            sx={{ borderRadius: "20px", textTransform: "none" }}
             disabled={deleting}
-          >
-            {selectedDatasets.length === filteredDatasets.length
-              ? "Unselect All"
-              : "Select All"}
-          </Button>
-
-          <Button
-            variant="outlined"
-            size="small"
-            onClick={() => setSelectedDatasets([])}
-            sx={{ borderRadius: "20px", textTransform: "none" }}
-            disabled={deleting}
+            className="text-sm text-gray-500 hover:text-gray-800 transition"
           >
             Cancel
-          </Button>
-          <Button
-            variant="contained"
-            color="error"
-            size="small"
-            onClick={handleDeleteDatasetsLoading}
-            sx={{ borderRadius: "20px", textTransform: "none", minWidth: 80 }}
+          </button>
+          <button
+            onClick={() =>
+              startDelete(selectedUploads.length > 0 ? "uploads" : "datasets")
+            }
             disabled={deleting}
+            className="flex items-center gap-1.5 px-4 py-1.5 text-sm rounded-full bg-red-500 hover:bg-red-600 text-white transition"
           >
-            {deleting ? (
-              <CircularProgress size={18} sx={{ color: "white" }} />
-            ) : (
-              "Delete"
-            )}
-          </Button>
-        </Box>
-      </Slide>
-    </Box>
+            <FiTrash2 size={14} />
+            {deleting ? "Deleting..." : "Delete"}
+          </button>
+        </div>
+      )}
+    </div>
   );
 };

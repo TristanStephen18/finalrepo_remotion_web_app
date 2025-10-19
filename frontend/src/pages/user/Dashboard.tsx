@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Search, Play, Dumbbell, Hammer, Apple, Briefcase, Monitor, Activity, Leaf, Wrench, Home, User, ChevronRight, Calculator, Settings } from 'lucide-react';
+import { Search, Play, Dumbbell, Hammer, Apple, Activity, Leaf,  Home, User, Calculator, Settings } from 'lucide-react';
 
 const ViralMotionCreator = () => {
   const [selectedNiches, setSelectedNiches] = useState<string[]>([]);

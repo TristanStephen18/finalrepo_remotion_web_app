@@ -1,17 +1,17 @@
 import { Box, Paper, Typography } from "@mui/material";
 import type React from "react";
 import type { FactCardsDataset } from "../../../../../models/FactCards";
-import { ChooseUserDatasetsModal } from "../../../modals/chooseuserdatasetsmodal";
-import { InvalidJsonFileFormatModal } from "../../../modals/invaliddatasetformat";
+import { ChooseUserDatasetsModal } from "../../../modals/ChooseUserDatasetsModal";
+import { InvalidJsonFileFormatModal } from "../../../modals/InvalidDatasetFormat";
 import { useEffect, type ChangeEvent } from "react";
-import { factcardsDatasetFormat } from "../../../../../data/properjsonformats";
-import { useDatasetHooks } from "../../../../../hooks/datasetsection";
-import { DatasetTopbar } from "../Global/datasetsectiontopbar";
-import { UserDatasetsSection } from "../Global/userdatasetssection";
-import { datasetLoader } from "../../../datasetloader";
-import { EditableJsonArea } from "../Global/editablejsonarea";
-import { FactCardsAiSection } from "./aisection";
-import { FactCardsDatasetTable } from "../tables/factcardstemplate";
+import { factcardsDatasetFormat } from "../../../../../data/ProperJsonFormats";
+import { useDatasetHooks } from "../../../../../hooks/DatasetSection";
+import { DatasetTopbar } from "../Global/DatasetSectionTopbar";
+import { UserDatasetsSection } from "../Global/UserDatasetsSection";
+import { datasetLoader } from "../../../DatasetLoader";
+import { EditableJsonArea } from "../Global/EditableJsonArea";
+import { FactCardsAiSection } from "./AiSection";
+import { FactCardsDatasetTable } from "../tables/FactCardsTemplate";
 
 interface FactCardsBatchRenderingDatasetSectionInterface {
   isRendering: boolean;

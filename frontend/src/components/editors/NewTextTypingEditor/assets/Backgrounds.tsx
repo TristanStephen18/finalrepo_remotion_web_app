@@ -4,8 +4,6 @@ import {
   useCurrentFrame,
   useVideoConfig,
   interpolate,
-  Easing,
-  spring,
   interpolateColors,
 } from 'remotion';
 
@@ -15,15 +13,6 @@ interface BackgroundProps {
   animation?: string;
 }
 
-// Helper for smooth animations
-const smoothInterpolate = (frame: number, fps: number, duration: number, outputRange: number[]) => {
-  const progress = (frame / (fps * duration)) % 1;
-  return interpolate(progress, [0, 1], outputRange, {
-    easing: Easing.inOut(Easing.ease),
-  });
-};
-
-// 1. Ambient Flow - Smooth gradient rotation
 const AmbientFlow: React.FC<{ gradient: string }> = ({ gradient }) => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
@@ -51,7 +40,7 @@ const AmbientFlow: React.FC<{ gradient: string }> = ({ gradient }) => {
 };
 
 // 2. Color Drift - Smooth color interpolation
-const ColorDrift: React.FC<{ gradient: string }> = ({ gradient }) => {
+const ColorDrift: React.FC<{ gradient: string }> = () => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
   const t = frame / fps;
@@ -221,8 +210,7 @@ const AnimatedMesh: React.FC<{ gradient: string }> = ({ gradient }) => {
   );
 };
 
-// 7. Sunset Gradient - Warm gradient animation (not literal sunset)
-const SunsetGradient: React.FC<{ gradient: string }> = ({ gradient }) => {
+const SunsetGradient: React.FC<{ gradient: string }> = () => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
   const t = frame / fps;
@@ -270,7 +258,7 @@ const SunsetGradient: React.FC<{ gradient: string }> = ({ gradient }) => {
 };
 
 // 8. Night Gradient - Deep blue gradient animation
-const NightGradient: React.FC<{ gradient: string }> = ({ gradient }) => {
+const NightGradient: React.FC<{ gradient: string }> = () => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
   const t = frame / fps;
@@ -323,7 +311,7 @@ const NightGradient: React.FC<{ gradient: string }> = ({ gradient }) => {
 };
 
 // 9. Storm Gradient - Moody gradient animation
-const StormGradient: React.FC<{ gradient: string }> = ({ gradient }) => {
+const StormGradient: React.FC<{ gradient: string }> = () => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
   const t = frame / fps;
@@ -371,7 +359,7 @@ const StormGradient: React.FC<{ gradient: string }> = ({ gradient }) => {
 };
 
 // 10. Nature Gradient - Fresh green gradient animation
-const NatureGradient: React.FC<{ gradient: string }> = ({ gradient }) => {
+const NatureGradient: React.FC<{ gradient: string }> = () => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
   const t = frame / fps;
@@ -679,7 +667,7 @@ const AmbientDots: React.FC<{ gradient: string }> = ({ gradient }) => {
 };
 
 // 19. Gradient Shift - Smooth gradient transitions
-const GradientShift: React.FC<{ gradient: string }> = ({ gradient }) => {
+const GradientShift: React.FC<{ gradient: string }> = () => {
   const frame = useCurrentFrame();
   const { fps, width, height } = useVideoConfig();
   const t = frame / fps;

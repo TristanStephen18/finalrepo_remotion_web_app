@@ -1,6 +1,8 @@
+import toast from "react-hot-toast";
+
 export async function updatePassword(oldPassword: string, newPassword: string) {
   try {
-    const response = await fetch("/auth/update-password", {
+    const response = await fetch(`/auth/update-password`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
@@ -16,7 +18,7 @@ export async function updatePassword(oldPassword: string, newPassword: string) {
 
     return "success";
   } catch (error: any) {
-    console.error("Password update failed:", error);
+    toast.error("Password update failed:", error);
     return error.message || "error";
   }
 }

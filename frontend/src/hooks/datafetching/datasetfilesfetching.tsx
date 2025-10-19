@@ -7,7 +7,7 @@ export const useDatasetsFetching = () => {
 
   const fetchUserDatasets = () => {
     setLoadingDatasets(true);
-    fetch("/datasets", {
+    fetch(`/datasets`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
       },

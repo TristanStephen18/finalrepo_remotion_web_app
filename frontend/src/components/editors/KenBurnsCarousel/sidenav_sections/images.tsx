@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Box, IconButton, Modal, Typography, Button } from "@mui/material";
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { ChooseUploadModalBatchRenderingKenburns } from "../../../ui/modals/chooseuploadmodal_batchrendering_kenburns";
+import { ChooseUploadModalBatchRenderingKenburns } from "../../../ui/modals/ChooseUploadModalBatchRenderingKenBurns";
 import type { DragEndEvent } from "@dnd-kit/core";
 import {
   DndContext,
@@ -66,7 +66,7 @@ export const KenBurnsImagesPanel: React.FC<{
           newImages[index] = data.url;
           return newImages;
         });
-         const saveResponse = await fetch('/useruploads', {
+         const saveResponse = await fetch(`/useruploads`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

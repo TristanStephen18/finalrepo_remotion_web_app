@@ -11,7 +11,7 @@ export const useProjectHooks = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch("/projects", {
+      const res = await fetch(`/projects`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

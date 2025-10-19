@@ -1,15 +1,16 @@
 import React, { useState, useRef, useEffect } from "react";
-import { KenBurnsSideNav } from "./sidenav";
+import { KenBurnsSideNav } from "./Sidenav";
 import { KenBurnsCarouselPreview } from "../../layout/EditorPreviews/KenBurnsCarouselPreview";
-import { KenBurnsImagesPanel } from "./sidenav_sections/images";
-import { ProportionsPanel } from "./sidenav_sections/proportions";
-import { defaultpanelwidth } from "../../../data/defaultvalues";
-import { ExportModal } from "../../ui/modals/exportmodal";
-import { TopNavWithSave } from "../../navigations/single_editors/withsave";
-import { SaveProjectModal } from "../../ui/modals/savemodal";
-import { LoadingOverlay } from "../../ui/modals/loadingprojectmodal";
-import { useProjectSave } from "../../../hooks/saveproject";
+import { KenBurnsImagesPanel } from "./sidenav_sections/Images";
+import { ProportionsPanel } from "./sidenav_sections/Proportions";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
+import { ExportModal } from "../../ui/modals/ExportModal";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
+import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
+
 
 export const KenBurnsEditor: React.FC = () => {
   const { id } = useParams();
@@ -41,9 +42,9 @@ export const KenBurnsEditor: React.FC = () => {
   const [userUploads, setUserUploads] = useState<any[]>();
 
   const fetchUploads = () => {
-    fetch("/useruploads/images", {
+    fetch(`/useruploads/images`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
       .then((res) => {
@@ -110,18 +111,14 @@ export const KenBurnsEditor: React.FC = () => {
     if (images.length <= 1) {
       alert("This template does not allow one image only");
     } else {
-      const prefix = window.location.origin;
-      const updatedImages = images.map((img) =>
-        img.startsWith("http") ? img : `${prefix}${img}`
-      );
 
       setIsExporting(true);
       try {
-        const response = await fetch("/generatevideo/kenburnsswipe", {
+        const response = await fetch(`/generatevideo/kenburnsswipe`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            images: updatedImages,
+            images,
             cardHeightRatio,
             cardWidthRatio,
             duration,
@@ -132,11 +129,11 @@ export const KenBurnsEditor: React.FC = () => {
         const data = await response.json();
         const renderUrl = data.url;
         if (renderUrl) {
-          const saveResponse = await fetch("/renders", {
+          const saveResponse = await fetch(`/renders`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             body: JSON.stringify({
               templateId: 8,
@@ -179,14 +176,12 @@ export const KenBurnsEditor: React.FC = () => {
   } = useProjectSave({
     templateId: 8, // 👈 unique ID for Ken Burns
     buildProps: () => ({
-      images: images.map((img) =>
-        img.startsWith("http") ? img : `${window.location.origin}${img}`
-      ),
+      images,
       duration,
       cardWidthRatio,
       cardHeightRatio,
     }),
-    videoEndpoint: "/generatevideo/kenburnsswipe",
+    videoEndpoint: `/generatevideo/kenburnsswipe`,
   });
 
   // 🟢 Load project if editing existing

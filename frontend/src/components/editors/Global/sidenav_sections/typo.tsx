@@ -1,5 +1,5 @@
 import type React from "react";
-import { fontOptions } from "../../../../data/fonts";
+import { fontOptions } from "../../../../data/Fonts";
 
 export interface TypoSectionProps {
   fontFamily: string;

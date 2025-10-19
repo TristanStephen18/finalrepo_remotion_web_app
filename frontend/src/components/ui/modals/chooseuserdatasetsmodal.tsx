@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { SearchIcon } from "lucide-react";
 import type React from "react";
-import { useDatasetFromUploads } from "../../../hooks/uploads/extractingdatafromuploads";
+import { useDatasetFromUploads } from "../../../hooks/uploads/ExtractingDataFromUploads";
 import { useState } from "react";
 
 interface ChooseUserDatasetsModalInterface {

@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import type { VoiceId } from "../../../../data/ai_voices";
-import { VOICES } from "../../../../data/ai_voices";
+import type { VoiceId } from "../../../../data/Ai_Voices";
+import { VOICES } from "../../../../data/Ai_Voices";
 
 export const AiVoiceSelector: React.FC<{
   aiVoice: string;
@@ -124,7 +124,9 @@ export const AiVoiceSelector: React.FC<{
                 {v.label}
               </p>
               <p style={{ fontSize: 12, color: "#555" }}>
-                {selected ? "Selected ✅ (click to remove)" : "Click to preview"}
+                {selected
+                  ? "Selected ✅ (click to remove)"
+                  : "Click to preview"}
               </p>
             </div>
           );
@@ -148,6 +150,7 @@ export const AiVoiceSelector: React.FC<{
               aiVoice && !isUpdatingTemplate
                 ? "0 3px 6px rgba(0,0,0,0.1)"
                 : "none",
+            width: "100%",
           }}
         >
           {isUpdatingTemplate ? "⏳ Updating..." : "Update Template"}

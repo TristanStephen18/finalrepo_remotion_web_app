@@ -1,7 +1,7 @@
 import { Box, Button, CircularProgress, Typography } from "@mui/material";
 import { DownloadIcon } from "lucide-react";
 import type React from "react";
-import { handleDownloadAll } from "../../../../../utils/downloadall";
+import { handleDownloadAll } from "../../../../../utils/DownloadAll";
 
 interface QuoteTemplateBatchOutputsSectionInterface {
   isRendering: boolean;

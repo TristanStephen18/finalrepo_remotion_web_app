@@ -1,21 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
-import { BackgroundSecTrial } from "../Global/sidenav_sections/bg";
-import { FactCardsSidenav } from "./sidenav";
-import { IntroOutroPanel } from "./sidenave_sections/endpoints";
+import { BackgroundSecTrial } from "../Global/sidenav_sections/Backgrounds";
+import { FactCardsSidenav } from "./Sidenav";
+import { IntroOutroPanel } from "./sidenave_sections/Endpoints";
 import type { Slide } from "../../layout/EditorPreviews/FacstCardTemplate";
-import { FactPanel } from "./sidenave_sections/facts";
-import { TypographyPanelFactsTemplate } from "./sidenave_sections/typo";
+import { FactPanel } from "./sidenave_sections/Facts";
+import { TypographyPanelFactsTemplate } from "./sidenave_sections/Typo";
 import { FacstCardPreview } from "../../layout/EditorPreviews/FacstCardTemplate";
-import { DurationSection } from "./sidenave_sections/duration";
-import { defaultpanelwidth } from "../../../data/defaultvalues";
-import { ExportModal } from "../../ui/modals/exportmodal";
-import { TopNavWithSave } from "../../navigations/single_editors/withsave";
-import { SaveProjectModal } from "../../ui/modals/savemodal";
-import { LoadingOverlay } from "../../ui/modals/loadingprojectmodal";
-import { useProjectSave } from "../../../hooks/saveproject";
+import { DurationSection } from "./sidenave_sections/Duration";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
+import { ExportModal } from "../../ui/modals/ExportModal";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
+import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
-import { useFileUpload } from "../../../hooks/uploads/handleimageupload";
-import { useBackgroundImages } from "../../../hooks/datafetching/userimagesandonlineimages";
+import { useFileUpload } from "../../../hooks/uploads/HandleImageUpload";
+import { useBackgroundImages } from "../../../hooks/datafetching/UserImagesAndOnlineImages";
 
 export const FactCardsEditor: React.FC = () => {
   const { id } = useParams();
@@ -121,11 +121,7 @@ export const FactCardsEditor: React.FC = () => {
     setIsExporting(true);
     try {
       let finalImageUrl = backgroundImage;
-      const origin = window.location.origin;
-      if (finalImageUrl.startsWith("/")) {
-        finalImageUrl = `${origin}${finalImageUrl}`;
-      }
-      const response = await fetch("/generatevideo/factstemplaterender", {
+      const response = await fetch(`/generatevideo/factstemplaterender`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -147,11 +143,11 @@ export const FactCardsEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId: 7,
@@ -195,9 +191,7 @@ export const FactCardsEditor: React.FC = () => {
       intro,
       outro,
       facts: factsArray,
-      backgroundImage: backgroundImage.startsWith("/")
-        ? `${window.location.origin}${backgroundImage}`
-        : backgroundImage,
+      backgroundImage: backgroundImage,
       fontSizeTitle: titleFontSize,
       fontSizeSubtitle: subtitleFontSize,
       fontFamilyTitle: titleFontFamily,
@@ -206,7 +200,7 @@ export const FactCardsEditor: React.FC = () => {
       fontFamilySubtitle: subtitleFontFamily,
       duration,
     }),
-    videoEndpoint: "/generatevideo/factstemplaterender",
+    videoEndpoint: `/generatevideo/factstemplaterender`,
   });
 
 

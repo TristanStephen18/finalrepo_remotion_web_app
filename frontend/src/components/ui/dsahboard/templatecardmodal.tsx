@@ -6,7 +6,8 @@ export const ModalTemplateCard: React.FC<{
   label: string;
   description: string;
   onSelect: (template: string, description: string) => void;
-}> = ({ label, description, onSelect }) => {
+  url: string;
+}> = ({ label, description, onSelect, url }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   const handleMouseEnter = () => {
@@ -49,7 +50,7 @@ export const ModalTemplateCard: React.FC<{
           playsInline
           preload="metadata"
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          src={`/template_previews/${label.replace(/\s+/g, "")}.mp4`}
+          src={`${url}`}
         />
       </Box>
 

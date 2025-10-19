@@ -1,23 +1,17 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container } from "@mui/material";
-import BurstModeIcon from "@mui/icons-material/BurstMode";
-import Filter9PlusIcon from "@mui/icons-material/Filter9Plus";
-
-import ViewModuleIcon from "@mui/icons-material/ViewModule";
-
-import PhotoSizeSelectLargeIcon from "@mui/icons-material/PhotoSizeSelectLarge";
+import { Typography } from "@mui/material";
 import {
   kenBurnsDurationCalculator,
   kenBurnsProportionHelper,
-} from "../../utils/kenburnshelper";
-import NavItem from "../../components/navigations/batchrendering/NavItems";
-import { SideBarHearder } from "../../components/ui/batchrendering/sidenav/header";
-import { ImagesSection } from "../../components/ui/batchrendering/sections/kenburnstemplate/imagessection";
-import { ImageQuantitySection } from "../../components/ui/batchrendering/sections/kenburnstemplate/imagequantitysection";
-import { ImageProportionsSecion } from "../../components/ui/batchrendering/sections/kenburnstemplate/proportionssection";
-import { KenBurnsBatchOutputs } from "../../components/ui/batchrendering/sections/kenburnstemplate/batchoutputs";
-import { BatchRenderingSideNavFooter } from "../../components/ui/batchrendering/sidenav/footer";
-import { KenburnsBatchRenderingInidicator } from "../../components/ui/batchrendering/progressindicators/kenburnsprogressindicator";
+} from "../../utils/KenBurnsHelper";
+import { SideBarHearder } from "../../components/ui/batchrendering/sidenav/Header";
+import { ImagesSection } from "../../components/ui/batchrendering/sections/kenburnstemplate/ImagesSection";
+import { ImageQuantitySection } from "../../components/ui/batchrendering/sections/kenburnstemplate/ImageQuantitySection";
+import { ImageProportionsSecion } from "../../components/ui/batchrendering/sections/kenburnstemplate/ProportionsSection";
+import { KenBurnsBatchOutputs } from "../../components/ui/batchrendering/sections/kenburnstemplate/BatchOutputs";
+import { BatchRenderingSideNavFooter } from "../../components/ui/batchrendering/sidenav/Footer";
+import { KenburnsBatchRenderingInidicator } from "../../components/ui/batchrendering/progressindicators/KenBurnsProgressIndicator";
+import { FiGrid, FiHash, FiImage, FiMaximize, FiMenu, FiX } from "react-icons/fi";
 
 export const KenBurnsSwipeBatchRendering: React.FC = () => {
   const [userImages, setUserImages] = useState<string[]>([]);
@@ -38,9 +32,9 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
   const [combinations, setCombinations] = useState<any[]>([]);
 
   const fetchUploads = () => {
-    fetch("/useruploads/images", {
+    fetch(`/useruploads/images`, {
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
     })
       .then((res) => {
@@ -57,7 +51,7 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
   const handleExportForCombination = async (combo: any, index: number) => {
     updateCombination(index, { status: "exporting" });
     try {
-      const response = await fetch("/generatevideo/kenburnsswipe", {
+      const response = await fetch(`/generatevideo/kenburnsswipe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -75,11 +69,11 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId: 8,
@@ -184,17 +178,42 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
     fetchUploads();
   }, []);
 
+ const [mobileOpen, setMobileOpen] = useState(false);
+
+  const navItems = [
+    { id: "images", label: "Images", icon: <FiImage /> },
+    { id: "quantity", label: "Image Counts", icon: <FiHash /> },
+    { id: "proportions", label: "Proportions", icon: <FiMaximize /> },
+    { id: "outputs", label: "Batch Outputs", icon: <FiGrid /> },
+  ] as const;
+
   return (
-    <Box sx={{ display: "flex", height: "100vh", bgcolor: "#fafafa" }}>
-      <Box
-        sx={{
-          width: collapsed ? 72 : 260,
-          flexShrink: 0,
-          bgcolor: "#fff",
-          borderRight: "1px solid #e0e0e0",
-          display: "flex",
-          flexDirection: "column",
-        }}
+    <div className="flex h-screen bg-gray-50 text-gray-800 overflow-hidden">
+      {/* === Mobile Header === */}
+      <header className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 flex items-center justify-between px-4 py-3 z-40">
+        <Typography
+          variant="subtitle1"
+          fontWeight={700}
+          sx={{
+            background: "linear-gradient(90deg,#ff4fa3,#8a4dff,#0077ff)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          🎬 Ken Burns Carousel Batch Rendering
+        </Typography>
+        <button
+          onClick={() => setMobileOpen(true)}
+          className="text-gray-600 hover:text-gray-900"
+        >
+          <FiMenu size={22} />
+        </button>
+      </header>
+
+      {/* === Desktop Sidebar === */}
+      <aside
+        className={`hidden md:flex fixed top-0 left-0 h-screen bg-white border-r border-gray-200 transition-all duration-300 flex-col justify-between shadow-sm z-30
+          ${collapsed ? "w-[72px]" : "w-[260px]"}`}
       >
         <SideBarHearder
           collapsed={collapsed}
@@ -202,46 +221,107 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
           title="🎬 Ken Burns Carousel Batch Rendering"
         />
 
-        <Box sx={{ flexGrow: 1 }}>
-          <NavItem
-            icon={<BurstModeIcon />}
-            label="Images"
-            collapsed={collapsed}
-            active={activeSection === "images"}
-            onClick={() => setActiveSection("images")}
-          />
-          <NavItem
-            icon={<Filter9PlusIcon />}
-            label="Image Counts"
-            collapsed={collapsed}
-            active={activeSection === "quantity"}
-            onClick={() => setActiveSection("quantity")}
-          />
-          <NavItem
-            icon={<PhotoSizeSelectLargeIcon />}
-            label="Proportions"
-            collapsed={collapsed}
-            active={activeSection === "proportions"}
-            onClick={() => setActiveSection("proportions")}
-          />
-          <NavItem
-            icon={<ViewModuleIcon />}
-            label="Batch Outputs"
-            collapsed={collapsed}
-            active={activeSection === "outputs"}
-            onClick={() => setActiveSection("outputs")}
-          />
-        </Box>
+        {/* Navigation Items */}
+        <nav className="flex flex-col flex-1 space-y-1 px-4 overflow-y-auto">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => setActiveSection(item.id)}
+                className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
+                  ${
+                    isActive
+                      ? "bg-indigo-50 text-indigo-600"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }`}
+              >
+                <span className="text-xl mr-3">{item.icon}</span>
+                {!collapsed && <span>{item.label}</span>}
+              </button>
+            );
+          })}
+        </nav>
 
-        <BatchRenderingSideNavFooter
-          handleGenerateBatch={handleGenerateBatch}
-          isRendering={isRendering}
-          singleOutputLocation="/template/kenburnscarousel"
+        <div className="px-3 py-2">
+          <BatchRenderingSideNavFooter
+            handleGenerateBatch={handleGenerateBatch}
+            isRendering={isRendering}
+            singleOutputLocation="/template/kenburnscarousel"
+          />
+        </div>
+      </aside>
+
+      {/* === Mobile Overlay === */}
+      {mobileOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 z-30 md:hidden"
+          onClick={() => setMobileOpen(false)}
         />
-      </Box>
+      )}
 
-      <Box component="main" sx={{ flexGrow: 1, overflowY: "auto" }}>
-        <Container maxWidth="xl" sx={{ py: 2 }}>
+      {/* === Mobile Drawer === */}
+      <div
+        className={`fixed top-0 left-0 h-full bg-white shadow-lg border-r border-gray-200 z-40 transform transition-transform duration-300 md:hidden
+          ${mobileOpen ? "translate-x-0" : "-translate-x-full"} w-64`}
+      >
+        <div className="flex items-center justify-between p-4 border-b border-gray-100">
+          <Typography
+            variant="subtitle1"
+            fontWeight={700}
+            sx={{
+              background: "linear-gradient(90deg,#ff4fa3,#8a4dff,#0077ff)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+            }}
+          >
+            🎬 Ken Burns Carousel Batch Rendering
+          </Typography>
+          <button onClick={() => setMobileOpen(false)} className="text-gray-600">
+            <FiX size={20} />
+          </button>
+        </div>
+
+        <nav className="flex flex-col p-4 space-y-2">
+          {navItems.map((item) => {
+            const isActive = activeSection === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => {
+                  setActiveSection(item.id);
+                  setMobileOpen(false);
+                }}
+                className={`flex items-center rounded-lg px-3 py-2 text-sm font-medium transition-all duration-200
+                  ${
+                    isActive
+                      ? "bg-indigo-50 text-indigo-600"
+                      : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  }`}
+              >
+                <span className="text-xl mr-3">{item.icon}</span>
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
+        </nav>
+
+        <div className="border-t border-gray-100 mt-4 p-4">
+          <BatchRenderingSideNavFooter
+            handleGenerateBatch={handleGenerateBatch}
+            isRendering={isRendering}
+            singleOutputLocation="/template/kenburnscarousel"
+          />
+        </div>
+      </div>
+
+      {/* === Main Content === */}
+      <main
+        className={`flex-1 overflow-y-auto transition-all duration-300 bg-gray-50 md:ml-0 ${
+          collapsed ? "md:ml-[72px]" : "md:ml-[260px]"
+        } mt-[56px] md:mt-0`}
+      >
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           {showProgressCard &&
             (isRendering ||
               (currentIndex === null && combinations.length > 0)) && (
@@ -253,7 +333,8 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
                 setShowProgressCard={setShowProgressCard}
               />
             )}
-          {/* images Section */}
+
+          {/* === Images Section === */}
           {activeSection === "images" && (
             <ImagesSection
               isRendering={isRendering}
@@ -264,7 +345,8 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
               userUploads={userUploads}
             />
           )}
-          {/* Image Quantity Section*/}
+
+          {/* === Image Quantity Section === */}
           {activeSection === "quantity" && (
             <ImageQuantitySection
               imageQuantities={imageQuantities}
@@ -273,7 +355,8 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
               userImages={userImages}
             />
           )}
-          {/* Proportions */}
+
+          {/* === Proportions Section === */}
           {activeSection === "proportions" && (
             <ImageProportionsSecion
               isRendering={isRendering}
@@ -281,15 +364,16 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
               setSelectedProportions={setSelectedProportions}
             />
           )}
-          {/* Batch Outputs Section */}
+
+          {/* === Batch Outputs Section === */}
           {activeSection === "outputs" && (
             <KenBurnsBatchOutputs
               combinations={combinations}
               isRendering={isRendering}
             />
           )}
-        </Container>
-      </Box>
-    </Box>
+        </div>
+      </main>
+    </div>
   );
 };

@@ -5,17 +5,17 @@ import {
 } from "@mui/material";
 import type React from "react";
 import type { Phrase } from "../../../../../models/TextTyping";
-import { ChooseUserDatasetsModal } from "../../../modals/chooseuserdatasetsmodal";
-import { InvalidJsonFileFormatModal } from "../../../modals/invaliddatasetformat";
+import { ChooseUserDatasetsModal } from "../../../modals/ChooseUserDatasetsModal";
+import { InvalidJsonFileFormatModal } from "../../../modals/InvalidDatasetFormat";
 import { useEffect } from "react";
-import { texttypingdatasetformat } from "../../../../../data/properjsonformats";
-import { useDatasetHooks } from "../../../../../hooks/datasetsection";
-import { DatasetTopbar } from "../Global/datasetsectiontopbar";
-import { AiGenerateSectionDatasetQnT } from "../Global/aidatasetsectionquoteandtexttyping";
-import { UserDatasetsSection } from "../Global/userdatasetssection";
-import { datasetLoader } from "../../../datasetloader";
-import { TextTypingDatasetTable } from "../tables/texttypingtemplate";
-import { EditableJsonArea } from "../Global/editablejsonarea";
+import { texttypingdatasetformat } from "../../../../../data/ProperJsonFormats";
+import { useDatasetHooks } from "../../../../../hooks/DatasetSection";
+import { DatasetTopbar } from "../Global/DatasetSectionTopbar";
+import { AiGenerateSectionDatasetQnT } from "../Global/AiDatasetSectionQuoteAndTextTyping";
+import { UserDatasetsSection } from "../Global/UserDatasetsSection";
+import { datasetLoader } from "../../../DatasetLoader";
+import { TextTypingDatasetTable } from "../tables/TextTypingTemplate";
+import { EditableJsonArea } from "../Global/EditableJsonArea";
 
 interface TextTypingDatasetSectionInterface {
   setDatasetSource: React.Dispatch<React.SetStateAction<"recite" | "ai">>;

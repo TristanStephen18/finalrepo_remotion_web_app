@@ -40,7 +40,19 @@ export const StorySidePanel: React.FC<StoryPanelProps> = ({
         border: "1px solid #eee",
       }}
     >
-      <h3 style={{ marginBottom: "1rem", color: "#0077ff" }}>📖 Story Builder</h3>
+      <h3 style={{ marginBottom: "1rem", color: "#0077ff" }}>
+        📖 Story Builder
+      </h3>
+
+      <div className="text-sm text-blue-600 bg-blue-50 border border-blue-100 rounded-lg p-3 leading-relaxed mb-2">
+        <strong> Note:</strong> Even though the story has been created by the ai
+        or you have entered it, changes
+        <span className="font-semibold"> won’t be visible in the preview</span>.
+        You have to click the{" "}
+        <span className="font-semibold">“Update Template”</span> button in the{" "}
+        <span className="font-semibold">AI Voices / Voices</span> tab to apply
+        the changes.
+      </div>
 
       {/* Genres */}
       <label style={{ display: "block", marginBottom: "1rem" }}>
@@ -87,7 +99,6 @@ export const StorySidePanel: React.FC<StoryPanelProps> = ({
         </p>
       </label>
 
-      {/* Prompt */}
       <label style={{ display: "block", marginBottom: "1rem" }}>
         <div style={{ marginBottom: "0.3rem", color: "#ff4fa3" }}>
           Add specifications
@@ -134,11 +145,10 @@ export const StorySidePanel: React.FC<StoryPanelProps> = ({
         {isGenerating ? "⏳ Creating..." : "✨ Create My Story"}
       </button>
       <p style={{ fontSize: "0.85rem", color: "#666", marginTop: "0.3rem" }}>
-        Click to generate a story with AI. The result will appear below — you can
-        then edit it manually.
+        Click to generate a story with AI. The result will appear below — you
+        can then edit it manually.
       </p>
 
-      {/* Story Field */}
       <label style={{ display: "block", marginTop: "1.5rem" }}>
         <div style={{ marginBottom: "0.3rem", color: "#ff4fa3" }}>
           Story Content

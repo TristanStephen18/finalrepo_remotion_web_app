@@ -1,72 +1,131 @@
-/* ----------------------
-   Light Theme (default)
----------------------- */
-:root {
-  --bg-color: #f5f5f5;
-  --text-color: #213547;
-  --card-bg: #ffffff;
-  --input-bg: #fff;
-  --border-color: #ddd;
-  --btn-primary-bg: linear-gradient(90deg, #a855f7, #3b82f6);
-  --btn-primary-text: #fff;
+@import "tailwindcss";
+/* LoginExtras.css
+   small, focused set of styles for glows/blobs/button inner-shadows/wave animation
+   (keeps most layout in Tailwind; these styles provide the "lively" touches)
+   
+*/
+
+@import "swiper/css";
+@import "swiper/css/effect-coverflow";
+@import "swiper/css/pagination";
+
+
+.auth-bg {
+  /* base subtle gradient background (will be combined with Tailwind utilities) */
+  background: linear-gradient(180deg, rgba(245,241,255,0.9) 0%, rgba(255,248,250,0.95) 60%);
+  position: relative;
+  overflow: hidden;
 }
 
-/* ----------------------
-   Dark Theme
----------------------- */
-[data-theme="dark"] {
-  --bg-color: #18181b; /* dark neutral */
-  --text-color: #f5f5f5;
-  --card-bg: #242424;
-  --input-bg: #2c2c2c;
-  --border-color: #444;
-  --btn-primary-bg: linear-gradient(90deg, #6366f1, #8b5cf6);
-  --btn-primary-text: #fff;
+/* Big soft blobs (left & right) */
+.auth-bg::before,
+.auth-bg::after {
+  content: "";
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.55;
+  z-index: 0;
+  transform: translate3d(0,0,0);
+  pointer-events: none;
+}
+.auth-bg::before {
+  left: -220px;
+  top: -120px;
+  background: radial-gradient(circle at 30% 30%, rgba(120,81,255,0.22), rgba(149,108,255,0.06) 40%, transparent 60%);
+}
+.auth-bg::after {
+  right: -220px;
+  bottom: -120px;
+  background: radial-gradient(circle at 70% 70%, rgba(255,106,156,0.22), rgba(255,186,216,0.06) 40%, transparent 60%);
 }
 
-/* Apply background + text globally */
-body,
-.auth__bg {
-  background: var(--bg-color);
-  color: var(--text-color);
-  transition: background 0.3s, color 0.3s;
+/* Card outer glow / subtle border (keeps center card visible above blobs) */
+.card-glow {
+  position: relative;
+  z-index: 10; /* place above background blobs */
 }
 
-/* Card styling */
-.auth__card {
-  background-color: var(--card-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
+/* Gradient halo behind the card to mimic the delicate outline in your screenshot */
+.card-glow::before {
+  content: "";
+  position: absolute;
+  inset: -1.5rem; /* halo around card */
+  border-radius: 1rem;
+  background: linear-gradient(90deg, rgba(241,113,255,0.12), rgba(99,102,241,0.08), rgba(45,212,191,0.06));
+  z-index: -1;
+  filter: blur(18px);
+  opacity: 0.9;
+}
+
+/* Input inner subtle border like original (rounded pill-ish feel) */
+.input-pill {
+  background: rgba(255,255,255,0.9);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(229,231,235,0.9);
+  box-shadow: 0 6px 18px rgba(14,15,30,0.03) inset;
+}
+
+/* On focus, give a soft purple inner glow */
+.input-pill:focus,
+.input-pill:focus-within {
+  outline: none;
+  box-shadow: 0 6px 18px rgba(14,15,30,0.03) inset, 0 0 0 4px rgba(124,58,237,0.06);
+  border-color: rgba(124,58,237,0.35);
+}
+
+/* Fancy gradient button (extra inner highlight + shadow) */
+.gradient-btn {
+  background: linear-gradient(90deg, #ff5aa5 0%, #7c3aed 45%, #00c2d1 100%);
+  box-shadow: 0 8px 20px rgba(124,58,237,0.18), 0 2px 6px rgba(0,0,0,0.08) inset;
   border-radius: 12px;
-  padding: 2rem;
-  max-width: 420px;
-  margin: auto;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  transition: background 0.3s, color 0.3s, border 0.3s;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+  color: #fff;
+}
+.gradient-btn:active {
+  transform: translateY(1px) scale(0.998);
+}
+.gradient-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-/* Inputs */
-.input {
-  background-color: var(--input-bg);
-  color: var(--text-color);
-  border: 1px solid var(--border-color);
-  padding: 0.75rem 1rem;
-  border-radius: 8px;
-  width: 100%;
-  transition: background 0.3s, color 0.3s, border 0.3s;
+/* underline-ish divider */
+.auth-divider {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(124,58,237,0.06), rgba(99,102,241,0.04));
+  margin-top: 0.6rem;
 }
 
-/* Buttons */
-.btn--primary {
-  background: var(--btn-primary-bg);
-  color: var(--btn-primary-text);
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem;
-  width: 100%;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.3s, color 0.3s;
+/* custom checkbox style: small purple tick background */
+.checkbox-custom input[type="checkbox"] {
+  accent-color: #7c3aed;
+}
+
+/* small spinner color override if present */
+.spinner-border {
+  border-color: rgba(255,255,255,0.8);
+  border-top-color: rgba(255,255,255,0.15);
+}
+
+/* wave animation on emoji */
+@keyframes wave {
+  0% { transform: rotate(0deg); }
+  10% { transform: rotate(14deg); }
+  20% { transform: rotate(-8deg); }
+  30% { transform: rotate(14deg); }
+  40% { transform: rotate(-4deg); }
+  50% { transform: rotate(10deg); }
+  60% { transform: rotate(0deg); }
+  100% { transform: rotate(0deg); }
+}
+.animate-wave {
+  animation: wave 2s infinite;
+  transform-origin: 70% 70%;
+  display: inline-block;
 }
 
 

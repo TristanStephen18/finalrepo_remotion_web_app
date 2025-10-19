@@ -36,6 +36,14 @@ export const MessagesPanel: React.FC<{
       }}
     >
       <h3 style={{ marginBottom: 16, color: "#0b63ff" }}>💬 Conversation Messages</h3>
+        <div className="text-sm text-blue-600 bg-blue-50 border border-blue-100 rounded-lg p-3 leading-relaxed">
+          Changes
+          <span className="font-semibold"> won’t be visible in the preview already</span>.
+          You have to click the{" "}
+          <span className="font-semibold">“Update Template”</span> button in the{" "}
+          <span className="font-semibold">AI Voices / Voices</span> tab to apply the changes.
+        </div>
+
 
       <p style={{ fontSize: 13, color: "#555", marginBottom: 16 }}>
         Manage the chat lines between <strong>Person 1</strong> and{" "}

@@ -107,7 +107,7 @@ export function useProjectSave<T>({
       const exportResult = await exportRes.json();
       const projectVidUrl = exportResult.url;
 
-      const response = await fetch("/projects/save", {
+      const response = await fetch(`/projects/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

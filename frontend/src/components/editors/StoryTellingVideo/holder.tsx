@@ -1,21 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
-import { BackgroundVideoSelectorPanel } from "../Global/sidenav_sections/bgvideoselector";
-import { MusicSelector } from "../Global/bgmusic";
-import { AiVoiceSelector } from "../Global/sidenav_sections/aivoices";
-import { RedditTypoGraphy } from "../Global/sidenav_sections/typography";
+import { BackgroundVideoSelectorPanel } from "../Global/sidenav_sections/BackgroundVideoSelector";
+import { MusicSelector } from "../Global/BackgroundMusic";
+import { AiVoiceSelector } from "../Global/sidenav_sections/AiVoices";
+import { RedditTypoGraphy } from "../Global/sidenav_sections/Typography";
 import { StoryTellingPreview } from "../../layout/EditorPreviews/StoryTellingPreview";
-import { samplestory } from "./defaultvalues";
-import { StoryTellingSidePanel } from "./sidenav";
-import { StorySidePanel } from "./sidenav_sections/story";
-import { defaultpanelwidth } from "../../../data/defaultvalues";
-import { ExportModal } from "../../ui/modals/exportmodal";
-import { TopNavWithSave } from "../../navigations/single_editors/withsave";
-import { SaveProjectModal } from "../../ui/modals/savemodal";
-import { LoadingOverlay } from "../../ui/modals/loadingprojectmodal";
-import { useProjectSave } from "../../../hooks/saveproject";
+import { samplestory } from "./DefaultValues";
+import { StoryTellingSidePanel } from "./Sidenav";
+import { StorySidePanel } from "./sidenav_sections/Story";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
+import { ExportModal } from "../../ui/modals/ExportModal";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
+import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
-import { useVideoUpload } from "../../../hooks/uploads/handlevideouploads";
-import { userVideos } from "../../../hooks/datafetching/uservideos";
+import { useVideoUpload } from "../../../hooks/uploads/HandleVideoUploads";
+import { userVideos } from "../../../hooks/datafetching/UserVideos";
 
 export const StoryTellingVideoEditor: React.FC = () => {
   const { id } = useParams();
@@ -45,13 +45,13 @@ export const StoryTellingVideoEditor: React.FC = () => {
   const [aiVoice, setAiVoice] = useState("21m00Tcm4TlvDq8ikWAM");
 
   const [voiceoverPath, setVoiceoverPath] = useState(
-    "/soundeffects/story/voice.mp3"
+    `/soundeffects/story/voice.mp3`
   );
   const [backgroundVideo, setBackgroundVideo] = useState(
-    "/defaultvideos/minecraft/m1.mp4"
+    `/defaultvideos/minecraft/m1.mp4`
   );
   const [backgroundMusicPath, setBackgroundMusicPath] = useState(
-    "/soundeffects/bgmusic/bg11.mp3"
+    `/soundeffects/bgmusic/bg11.mp3`
   );
 
   const [duration, setDuration] = useState(2);
@@ -118,7 +118,7 @@ export const StoryTellingVideoEditor: React.FC = () => {
   async function fetchAiStory() {
     setIsGenerating(true);
     try {
-      const res = await fetch("/api/generate-story", {
+      const res = await fetch(`/api/generate-story`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt, genres }),
@@ -135,7 +135,7 @@ export const StoryTellingVideoEditor: React.FC = () => {
   const createVoiceOverandScript = async () => {
     setIsUpdating(true);
     try {
-      const res = await fetch("/sound/story", {
+      const res = await fetch(`/sound/story`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ content: story, voiceid: aiVoice }),
@@ -156,7 +156,7 @@ export const StoryTellingVideoEditor: React.FC = () => {
   const handleExport = async (format: string) => {
     setIsExporting(true);
     try {
-      const response = await fetch("/generatevideo/storytelling", {
+      const response = await fetch(`/generatevideo/storytelling`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -175,11 +175,11 @@ export const StoryTellingVideoEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId: 11,
@@ -221,7 +221,6 @@ export const StoryTellingVideoEditor: React.FC = () => {
     templateId: 11, // unique ID for StoryTelling
 
     buildProps: () => ({
-      // 🔹 Full editor state (saved to DB)
       storyData,
       templateName,
       story,
@@ -229,8 +228,6 @@ export const StoryTellingVideoEditor: React.FC = () => {
       prompt,
       aiVoice,
       serverAudio,
-
-      // 🔹 Render-safe props (still included here, but filtered below)
       voiceoverPath: defaulvalues.voiceoverPath,
       duration,
       fontSize,
@@ -241,7 +238,7 @@ export const StoryTellingVideoEditor: React.FC = () => {
       backgroundMusicPath,
     }),
 
-    videoEndpoint: "/generatevideo/storytelling",
+    videoEndpoint: `/generatevideo/storytelling`,
 
     // 👇 Filter before hitting the render API
     filterRenderProps: (props) => {
@@ -255,7 +252,7 @@ export const StoryTellingVideoEditor: React.FC = () => {
         storyData,
         ...renderProps
       } = props;
-      return renderProps; // ✅ only what /generatevideo expects
+      return renderProps; 
     },
   });
 
@@ -281,7 +278,7 @@ export const StoryTellingVideoEditor: React.FC = () => {
           setBackgroundVideo(data.props.backgroundVideo);
           setAiVoice(data.props.aiVoice || "21m00Tcm4TlvDq8ikWAM");
           setVoiceoverPath(
-            data.props.serverAudio || "/soundeffects/story/voice.mp3"
+            data.props.serverAudio || `/soundeffects/story/voice.mp3`
           );
           setBackgroundMusicPath(data.props.backgroundMusicPath);
           setFontFamily(data.props.fontFamily);
@@ -310,8 +307,6 @@ export const StoryTellingVideoEditor: React.FC = () => {
     getAllDefaultVideos();
   }, []);
 
-  // 🟢 Video Upload
-  // 🟢 Use reusable video upload hook
   const { uploadVideo } = useVideoUpload();
   const handleVideoUpload = async (file: File) => {
     const result = await uploadVideo(file);

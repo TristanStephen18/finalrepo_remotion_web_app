@@ -5,16 +5,16 @@ import {
 } from "@mui/material";
 import React, { useEffect } from "react";
 import type { BarGraphDataset } from "../../../../../models/BarGraph";
-import { InvalidJsonFileFormatModal } from "../../../modals/invaliddatasetformat";
-import { bargraphdatasetformat } from "../../../../../data/properjsonformats";
-import { ChooseUserDatasetsModal } from "../../../modals/chooseuserdatasetsmodal";
-import { useDatasetHooks } from "../../../../../hooks/datasetsection";
-import { DatasetTopbar } from "../Global/datasetsectiontopbar";
-import { AIGeneratedDatasetSectionWithoutAPI } from "../Global/aisectionremaining";
-import { UserDatasetsSection } from "../Global/userdatasetssection";
-import { datasetLoader } from "../../../datasetloader";
-import { EditableJsonArea } from "../Global/editablejsonarea";
-import { BarGraphDatasetTable } from "../tables/bargraphtemplate";
+import { InvalidJsonFileFormatModal } from "../../../modals/InvalidDatasetFormat";
+import { bargraphdatasetformat } from "../../../../../data/ProperJsonFormats";
+import { ChooseUserDatasetsModal } from "../../../modals/ChooseUserDatasetsModal";
+import { useDatasetHooks } from "../../../../../hooks/DatasetSection";
+import { DatasetTopbar } from "../Global/DatasetSectionTopbar";
+import { AIGeneratedDatasetSectionWithoutAPI } from "../Global/AiSectionRemaining";
+import { UserDatasetsSection } from "../Global/UserDatasetsSection";
+import { datasetLoader } from "../../../DatasetLoader";
+import { EditableJsonArea } from "../Global/EditableJsonArea";
+import { BarGraphDatasetTable } from "../tables/BarGraphTemplate";
 
 interface BarGraphDatasetSectionInterface {
   datasetQuantity: number;

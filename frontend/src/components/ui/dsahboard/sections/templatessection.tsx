@@ -1,12 +1,6 @@
 import React from "react";
-import {
-  Box,
-  Typography,
-  TextField,
-  Chip,
-} from "@mui/material";
-import { templateCategories } from "../../../../data/dashboardcardsdata";
-import { TemplateCard } from "../templatecard";
+import { templateCategories } from "../../../../data/DashboardCardsData";
+import { TemplateCard } from "../TemplateCard";
 
 interface TemplatesSectionProps {
   search: string;
@@ -32,85 +26,55 @@ export const TemplatesSection: React.FC<TemplatesSectionProps> = ({
       : templateCategories[categories[tab] as keyof typeof templateCategories];
 
   return (
-    <Box>
-      {/* 🔹 Header with Search */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          mb: 2,
-        }}
-      >
-        <Typography variant="h5" fontWeight="bold">
+    <section className="w-full space-y-6 mt-8">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4">
+        <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
           Templates
-        </Typography>
+        </h2>
 
-        <TextField
-          variant="outlined"
-          placeholder="Search our templates"
-          size="small"
+        <input
+          type="text"
+          placeholder="Search our templates..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          sx={{
-            width: "100%",
-            maxWidth: 400,
-            "& .MuiOutlinedInput-root": {
-              borderRadius: "12px",
-            },
-          }}
+          className="w-full sm:w-80 md:w-96 px-4 py-2 border border-gray-200 rounded-xl 
+          shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 transition text-sm sm:text-base"
         />
-      </Box>
+      </div>
 
-      {/* 🔹 Category Chips */}
-      <Box
-        sx={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: 1.5,
-          mb: 4,
-        }}
-      >
+      {/* Category Tabs */}
+      <div className="flex flex-wrap gap-2">
         {categories.map((category, index) => {
-        //   const count =
-        //     category === "For you"
-        //       ? allTemplates.length
-        //       : (templateCategories as any)[category].length;
-
           const isActive = tab === index;
-
           return (
-            <Chip
+            <button
               key={index}
-              label={`${category}`}
               onClick={() => setTab(index)}
-              variant={isActive ? "filled" : "outlined"}
-              sx={{
-                px: 2,
-                py: 1,
-                fontWeight: 600,
-                fontSize: "0.875rem",
-                borderRadius: "8px",
-                cursor: "pointer",
-                bgcolor: isActive ? "primary.light" : "background.paper",
-                color: isActive ? "primary.main" : "text.primary",
-                borderColor: isActive ? "primary.main" : "rgba(0,0,0,0.1)",
-                "&:hover": {
-                  bgcolor: isActive ? "primary.light" : "rgba(0,0,0,0.04)",
-                },
-              }}
-            />
+              className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-semibold rounded-lg border transition-all duration-200
+                ${
+                  isActive
+                    ? "bg-indigo-100 text-indigo-700 border-indigo-300"
+                    : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50"
+                }`}
+            >
+              {category}
+            </button>
           );
         })}
-      </Box>
+      </div>
 
-      {/* 🔹 Template Cards Grid */}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))",
-          gap: 4,
-        }}
+      {/* Template Grid — auto responsive */}
+      <div
+        className="
+          grid gap-5
+          grid-cols-1
+          sm:grid-cols-2
+          md:grid-cols-3
+          lg:grid-cols-4
+          2xl:grid-cols-5
+          [@media(max-width:450px)]:grid-cols-1
+        "
       >
         {displayedTemplates
           .filter(
@@ -121,12 +85,13 @@ export const TemplatesSection: React.FC<TemplatesSectionProps> = ({
           .map((template) => (
             <TemplateCard
               key={template.name}
-              label={template.name}
+              label={template.url}
+              name = {template.name}
               description={template.description}
               onTry={onTry}
             />
           ))}
-      </Box>
-    </Box>
+      </div>
+    </section>
   );
 };

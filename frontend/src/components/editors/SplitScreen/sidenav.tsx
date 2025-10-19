@@ -2,7 +2,7 @@ import type React from "react";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 // import { typingtemplatenavs } from "../../../data/navdata_live_editor";
-import { SplitScreenNavs } from "../../../data/navdata_live_editor";
+import { SplitScreenNavs } from "../../../data/NavdataLiveEditor";
 // import { quoteeditornavs } from "../../../data/navdata_live_editor.tsx";
 // import 
 

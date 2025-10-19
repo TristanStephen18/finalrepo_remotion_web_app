@@ -224,9 +224,6 @@ export const TrendGraphRemotion: React.FC<GraphProps> = (props) => {
   const RIPPLE_START = DRAW_END;
   const RIPPLE_DURATION = Math.round(p.timeline.rippleSeconds * fps);
   const RIPPLE_END = RIPPLE_START + RIPPLE_DURATION;
-  const HOLD_START = RIPPLE_END;
-  const HOLD_DURATION = Math.round(3 * fps); // 3 seconds hold
-  const HOLD_END = HOLD_START + HOLD_DURATION;
 
   const animationPhase = frame < RIPPLE_START ? "drawing" : 
                         frame < RIPPLE_END ? "ripples" : "hold";

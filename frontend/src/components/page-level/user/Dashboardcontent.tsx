@@ -1,20 +1,17 @@
 import React, { useEffect } from "react";
-import { Box } from "@mui/material";
-import { DashboardSidebarNav } from "../../ui/navigations/dsahboardsidenav";
-import { TemplatesSection } from "../../ui/dsahboard/sections/templatessection";
-import { ProjectsSection } from "../../ui/dsahboard/sections/savedtemplatessection";
-import { TemplatePreviewDialog } from "../../ui/dsahboard/templatepreviewdialog";
-import { ChooseTemplateModal } from "../../ui/modals/choosetemplatemodal";
-import { HomeSection } from "../../ui/dsahboard/sections/homesection";
-import { MyRendersSection } from "../../ui/dsahboard/sections/myrenderssection";
-import { useDatasetsFetching } from "../../../hooks/datafetching/datasetfilesfetching";
-import { useHomeSectionHooks } from "../../../hooks/dashboardhooks/home";
-import { useTemplateSectionHooks } from "../../../hooks/dashboardhooks/templatessectionhooks";
-import { useProjectHooks } from "../../../hooks/dashboardhooks/projecthooks";
-import { useUploadHooks } from "../../../hooks/dashboardhooks/uploadhooks";
-import { useRendersHooks } from "../../../hooks/dashboardhooks/rendershooks";
-import { useProfileHooks } from "../../../hooks/datafetching/profiledata";
-import { ProfilePage } from "../../../pages/user/profile";
+import { DashboardSidebarNav } from "../../ui/navigations/DashboardSidenav";
+import { ProjectsSection } from "../../ui/dsahboard/sections/SavedTemplatesSection";
+// import { ChooseTemplateModal } from "../../ui/modals/ChooseTemplateModal";
+import { HomeSection } from "../../ui/dsahboard/sections/HomeSection";
+import { MyRendersSection } from "../../ui/dsahboard/sections/MyRendersSection";
+import { useDatasetsFetching } from "../../../hooks/datafetching/DatasetFilesFetching";
+import { useHomeSectionHooks } from "../../../hooks/dashboardhooks/Home";
+import { useProjectHooks } from "../../../hooks/dashboardhooks/ProjectHooks";
+import { useUploadHooks } from "../../../hooks/dashboardhooks/UploadHooks";
+import { useRendersHooks } from "../../../hooks/dashboardhooks/RendersHooks";
+import { useProfileHooks } from "../../../hooks/datafetching/ProfileData";
+import { ProfilePage } from "../../../pages/user/Profile";
+import { MyTemplatesSection } from "../../ui/dsahboard/sections/MyDesignSection";
 
 export const DashboardContent: React.FC = () => {
   const {
@@ -25,18 +22,10 @@ export const DashboardContent: React.FC = () => {
     setSelectedDatasets,
     handleDeleteDatasets,
   } = useDatasetsFetching();
-  const {
-    search,
-    setSearch,
-    selectedTemplate,
-    selectedDescription,
-    handleClosePreview,
-    handleOpenPreview,
-    activeSection,
-    setActiveSection,
-  } = useHomeSectionHooks();
 
-  const { tab, setTab } = useTemplateSectionHooks();
+  const { search, setSearch, activeSection, setActiveSection } =
+    useHomeSectionHooks();
+
   const {
     loadingProjects,
     fetchProjects,
@@ -47,12 +36,6 @@ export const DashboardContent: React.FC = () => {
     setHoveredId,
     setSelectedProjects,
     toggleProjectSelection,
-    newProjectOpen,
-    setNewProjectOpen,
-    newProjectTab,
-    setNewProjectTab,
-    newProjectSearch,
-    setNewProjectSearch,
   } = useProjectHooks();
 
   const {
@@ -87,54 +70,54 @@ export const DashboardContent: React.FC = () => {
   }, []);
 
   return (
-    <Box sx={{ display: "flex", minHeight: "100vh" }}>
+    <div className="min-h-screen bg-gray-50 relative">
+      {/* === Sidebar === */}
       <DashboardSidebarNav
         active={activeSection}
         onChange={setActiveSection}
-        userInitials={username[0]}
-        onCreate={() => setNewProjectOpen(true)}
+        userInitials={username?.[0] ?? "U"}
         userPfp={userPfp}
       />
-      <Box
-        sx={{
-          flexGrow: 1,
-          ml: "80px",
-          p: 3,
-          backgroundColor: "background.default",
-          position: "relative",
-        }}
+
+      <main
+        className="
+    md:ml-60
+    px-3
+    sm:px-4
+    md:px-8
+    py-4
+    pt-16 md:pt-4
+    min-h-screen
+    transition-all
+    duration-300
+  "
       >
         {activeSection === "home" && (
           <HomeSection
             search={search}
             setSearch={setSearch}
-            onTry={handleOpenPreview}
             projects={projects}
             renders={renders}
+            datasets={userDatasets}
+            uploads={uploads}
           />
         )}
 
         {activeSection === "templates" && (
-          <TemplatesSection
-            search={search}
-            setSearch={setSearch}
-            tab={tab}
-            setTab={setTab}
-            onTry={handleOpenPreview}
+          <MyTemplatesSection
+            clearSelection={() => setSelectedProjects([])}
+            hoveredId={hoveredId}
+            loadingProjects={loadingProjects}
+            onDeleteSelected={handleDeleteProjects}
+            projects={projects}
+            selectedProjects={selectedProjects}
+            setHoveredId={setHoveredId}
+            toggleProjectSelection={toggleProjectSelection}
           />
         )}
 
-        {activeSection === "projects" && (
+        {activeSection === "files" && (
           <ProjectsSection
-            projects={projects}
-            loadingProjects={loadingProjects}
-            hoveredId={hoveredId}
-            setHoveredId={setHoveredId}
-            selectedProjects={selectedProjects}
-            toggleProjectSelection={toggleProjectSelection}
-            clearSelection={() => setSelectedProjects([])}
-            onDeleteSelected={handleDeleteProjects}
-            fetchUploads={fetchUploads}
             loadingUploads={loadingUploads}
             setUploadFilter={setUploadFilter}
             uploadFilter={uploadFilter}
@@ -170,24 +153,8 @@ export const DashboardContent: React.FC = () => {
             fetchProfileDetails={fetchProfileDetails}
           />
         )}
-
-        <TemplatePreviewDialog
-          open={!!selectedTemplate}
-          onClose={handleClosePreview}
-          selectedTemplate={selectedTemplate}
-          selectedDescription={selectedDescription}
-        />
-
-        <ChooseTemplateModal
-          open={newProjectOpen}
-          onClose={() => setNewProjectOpen(false)}
-          newProjectTab={newProjectTab}
-          setNewProjectTab={setNewProjectTab}
-          newProjectSearch={newProjectSearch}
-          setNewProjectSearch={setNewProjectSearch}
-        />
-      </Box>
-    </Box>
+      </main>
+    </div>
   );
 };
 

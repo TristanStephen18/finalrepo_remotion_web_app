@@ -30,19 +30,11 @@ import AddToPhotosIcon from "@mui/icons-material/AddToPhotos";
 import PanoramaWideAngleIcon from "@mui/icons-material/PanoramaWideAngle";
 import AutoStoriesIcon from "@mui/icons-material/AutoStories";
 import GridViewIcon from "@mui/icons-material/GridView";
-import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
-// import TimerSharpIcon from '@mui/icons-material/TimerSharp';
 
 export const quoteeditornavs = [
   { key: "quote", label: "Quote", icon: <FormatQuoteIcon /> },
   { key: "background", label: "Background", icon: <ImageIcon /> },
   { key: "typography", label: "Typography", icon: <TextFieldsIcon /> },
-  {
-    key: "ai",
-    label: "Ai",
-    icon: <AutoAwesomeIcon />,
-  },
-
 ];
 
 export const typingtemplatenavs = [

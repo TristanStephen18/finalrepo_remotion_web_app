@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: true }));
 // dotenv.config();
 // const geminiapi = process.env.GEMINI_API_KEY!;
 
-ViteExpress.config({ viteConfigFile: "./frontend/vite.config.ts" });
+// ViteExpress.config({ viteConfigFile: "./frontend/vite.config.ts" });
 app.set("trust proxy", true);
 
 
@@ -93,7 +93,7 @@ app.get("/api/hello", (req, res) => {
   res.json({ message: "Hello from the server!" });
 });
 
-ViteExpress.listen(app, 3000, () => {
+app.listen(3000, () => {
   // console.log(__dirname);
   // console.log(geminiapi);
   // console.log(path.join(process.cwd(),"./server/public/datasets"));

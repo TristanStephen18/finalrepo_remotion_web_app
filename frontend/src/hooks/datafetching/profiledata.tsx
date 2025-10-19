@@ -8,7 +8,7 @@ export const useProfileHooks = () => {
 
     const fetchProfileDetails = () => {
     setLoadingUserData(true);
-    fetch("/auth", {
+    fetch(`/auth`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
       },

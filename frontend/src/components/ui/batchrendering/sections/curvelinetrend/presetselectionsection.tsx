@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import type React from "react";
-import { graphThemes } from "../../../../../data/curvelinethemes";
+import { graphThemes } from "../../../../../data/CurveLineThemes";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 

@@ -1,10 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import path from 'path'
+import tailwindcss from "@tailwindcss/vite"
 
-// https://vite.dev/config/
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   root: __dirname,
   resolve: {
     alias: {
@@ -12,9 +12,5 @@ export default defineConfig({
       "@shared": path.resolve(__dirname, "../shared"),
       "@assets": path.resolve(__dirname, "src/assets"),
     },
-  },
-  server: {
-    port: 3000, 
-    hmr: true,
   },
 });

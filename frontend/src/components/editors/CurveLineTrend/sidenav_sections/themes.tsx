@@ -1,5 +1,5 @@
 import React from "react";
-import { graphThemes } from "../../../../data/curvelinethemes";
+import { graphThemes } from "../../../../data/CurveLineThemes";
 
 export type GraphThemeKey = keyof typeof graphThemes;
 export type GraphTheme = (typeof graphThemes)[GraphThemeKey];

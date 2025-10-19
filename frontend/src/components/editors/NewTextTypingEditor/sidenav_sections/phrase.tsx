@@ -1,5 +1,5 @@
 import React from "react";
-import { MoodOptions, CategoryOptions } from "../data";
+import { MoodOptions, CategoryOptions } from "../Data";
 import type { Phrase } from "../../../../models/TextTyping";
 import { useEffect } from "react";
 

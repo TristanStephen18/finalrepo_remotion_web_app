@@ -1,0 +1,17 @@
+.logo__dot {
+    margin-left: 20px;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 120deg,
+    var(--primary-1),
+    var(--primary-2),
+    var(--primary-3)
+  );
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.45);
+}
+.logo__text {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}

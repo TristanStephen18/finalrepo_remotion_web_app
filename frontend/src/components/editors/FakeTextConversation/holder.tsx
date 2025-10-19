@@ -1,22 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
-import { FakeTextVideoSideNavigation } from "./sidenav";
+import { FakeTextVideoSideNavigation } from "./Sidenav";
 import { ChatVideoPreview } from "../../layout/EditorPreviews/FakeTextConversationPreview";
-import { defaultchats } from "./defaultdata";
-import { VoiceSelector } from "./sidenav_sections/voice";
-import { MessagesPanel } from "./sidenav_sections/chats";
-import { AvatarSelector } from "./sidenav_sections/avatars";
-import { ChatStylePanel } from "./sidenav_sections/themesnfonts";
-import { BackgroundVideoSelectorPanel } from "../Global/sidenav_sections/bgvideoselector";
-import { MusicSelector } from "../Global/bgmusic";
-import { defaultpanelwidth } from "../../../data/defaultvalues";
-import { ExportModal } from "../../ui/modals/exportmodal";
-import { TopNavWithSave } from "../../navigations/single_editors/withsave";
-import { SaveProjectModal } from "../../ui/modals/savemodal";
-import { LoadingOverlay } from "../../ui/modals/loadingprojectmodal";
-import { useProjectSave } from "../../../hooks/saveproject";
+import { defaultchats } from "./DefaultData";
+import { VoiceSelector } from "./sidenav_sections/Voice";
+import { MessagesPanel } from "./sidenav_sections/Chats";
+import { AvatarSelector } from "./sidenav_sections/Avatars";
+import { ChatStylePanel } from "./sidenav_sections/ThemesAndFonts";
+import { BackgroundVideoSelectorPanel } from "../Global/sidenav_sections/BackgroundVideoSelector";
+import { MusicSelector } from "../Global/BackgroundMusic";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
+import { ExportModal } from "../../ui/modals/ExportModal";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
+import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
-import { useVideoUpload } from "../../../hooks/uploads/handlevideouploads";
-import { userVideos } from "../../../hooks/datafetching/uservideos";
+import { useVideoUpload } from "../../../hooks/uploads/HandleVideoUploads";
+import { userVideos } from "../../../hooks/datafetching/UserVideos";
 
 type ChatLine = { speaker: "person_1" | "person_2"; text: string };
 
@@ -43,15 +43,15 @@ export const FakeTextConversationEditor: React.FC = () => {
   const [fontSize, setFontSize] = useState(28);
   const [fontColor, setFontColor] = useState("");
 
-  const [bgVideo, setBgVideo] = useState("/defaultvideos/minecraft/m1.mp4");
-  const [chatAudio, setChatAudio] = useState("/fakeconvo/fakeconvo.mp3");
+  const [bgVideo, setBgVideo] = useState(`/defaultvideos/minecraft/m1.mp4`);
+  const [chatAudio, setChatAudio] = useState(`/fakeconvo/fakeconvo.mp3`);
   const [serverAudio, setServerAudio] = useState("");
   const [musicAudio, setMusicAudio] = useState(
-    "/soundeffects/bgmusic/bg10.mp3"
+    `/soundeffects/bgmusic/bg10.mp3`
   );
   const [avatars, setAvatars] = useState({
-    left: "/images/vectors/v1.jpg",
-    right: "/images/vectors/v8.jpg",
+    left: `/images/vectors/v1.jpg`,
+    right: `/images/vectors/v8.jpg`,
   });
 
   const [isUpdatingTemplate, setIsUpdatingTemplate] = useState(false);
@@ -72,7 +72,6 @@ export const FakeTextConversationEditor: React.FC = () => {
     timeShiftSec: 0,
   };
 
-  // 🟢 Export modal + loading
   const [isExporting, setIsExporting] = useState(false);
   const [exportUrl, setExportUrl] = useState<string | null>(null);
   const [showModal, setShowModal] = useState(false);
@@ -93,7 +92,6 @@ export const FakeTextConversationEditor: React.FC = () => {
     return () => clearInterval(interval);
   }, [isLoading]);
 
-  // 🟢 Resizable panel
   const [panelWidth, setPanelWidth] = useState(defaultpanelwidth);
   const [isResizing, setIsResizing] = useState(false);
   const panelRef = useRef<HTMLDivElement | null>(null);
@@ -125,7 +123,7 @@ export const FakeTextConversationEditor: React.FC = () => {
     setIsUpdatingTemplate(true);
     try {
       const payload = { voices: [voice1, voice2], chats };
-      const res = await fetch("/sound/test-generate", {
+      const res = await fetch(`/sound/test-generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -144,18 +142,9 @@ export const FakeTextConversationEditor: React.FC = () => {
   };
 
   const handleExport = async (format: string) => {
-    const prefix = window.location.origin;
-    const newavatars = {
-      left: avatars.left.startsWith("http")
-        ? avatars.left
-        : prefix + avatars.left,
-      right: avatars.right.startsWith("http")
-        ? avatars.right
-        : prefix + avatars.right,
-    };
     setIsExporting(true);
     try {
-      const response = await fetch("/generatevideo/faketextconvo", {
+      const response = await fetch(`/generatevideo/faketextconvo`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -172,7 +161,7 @@ export const FakeTextConversationEditor: React.FC = () => {
           fontSize,
           fontColor,
           chatTheme,
-          avatars: newavatars,
+          avatars,
           format,
         }),
       });
@@ -180,11 +169,11 @@ export const FakeTextConversationEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId: 9,
@@ -225,7 +214,6 @@ export const FakeTextConversationEditor: React.FC = () => {
   } = useProjectSave({
     templateId: 9, 
     buildProps: () => {
-      const prefix = window.location.origin;
       return {
         chats,
         voice1,
@@ -246,17 +234,10 @@ export const FakeTextConversationEditor: React.FC = () => {
         fontSize,
         fontColor,
         chatTheme,
-        avatars: {
-          left: avatars.left.startsWith("http")
-            ? avatars.left
-            : prefix + avatars.left,
-          right: avatars.right.startsWith("http")
-            ? avatars.right
-            : prefix + avatars.right,
-        },
+        avatars,
       };
     },
-    videoEndpoint: "/generatevideo/faketextconvo",
+    videoEndpoint:`/generatevideo/faketextconvo`,
 
     filterRenderProps: (props) => {
       const {
@@ -284,16 +265,6 @@ export const FakeTextConversationEditor: React.FC = () => {
           return res.json();
         })
         .then((data) => {
-          const newavatars = {
-            left: data.props.avatars.left.replaceAll(
-              `${window.location.origin}`,
-              ""
-            ),
-            right: data.props.avatars.right.replaceAll(
-              `${window.location.origin}`,
-              ""
-            ),
-          };
           setTemplateName(data.title);
 
           setProjectId(data.id);
@@ -303,7 +274,7 @@ export const FakeTextConversationEditor: React.FC = () => {
           setFontSize(data.props.fontSize);
           setFontColor(data.props.fontColor);
           setChatTheme(data.props.chatTheme);
-          setAvatars(newavatars);
+          setAvatars(data.props.avatars);
           // ✅ Restore persisted states
           if (data.props.chats) setChats(data.props.chats);
           if (data.props.voice1) setVoice1(data.props.voice1);

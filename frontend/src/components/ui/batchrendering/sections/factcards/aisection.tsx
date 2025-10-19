@@ -1,16 +1,9 @@
-import {
-  Box,
-  Button,
-  Paper,
-  TextField,
-  ToggleButton,
-  ToggleButtonGroup,
-  Typography,
-} from "@mui/material";
+
 import type React from "react";
-import { NicheSelectionFactCards } from "../../../factcardsnichesselection";
-import DatasetIcon from "@mui/icons-material/Dataset";
-import SmartToyIcon from "@mui/icons-material/SmartToy";
+import { NicheSelectionFactCards } from "../../../FactCardsNichesSelection";
+import Dataset from "@mui/icons-material/Dataset";
+import SmartToyIcon from '@mui/icons-material/SmartToy';
+
 
 interface FactCardsAiSectionInterface {
   selectedNiches: string[];
@@ -29,84 +22,58 @@ export const FactCardsAiSection: React.FC<FactCardsAiSectionInterface> = ({
   isRendering,
   datasetQuantity,
 }) => {
-  return (
-    <Paper
-      elevation={3}
-      sx={{
-        p: 3,
-        borderRadius: 3,
-        display: "flex",
-        flexDirection: "column",
-        gap: 4,
-        mb: 3,
-        bgcolor: "#fdfdfd",
-      }}
-    >
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: { xs: "stretch", md: "center" },
-          gap: 3,
-        }}
-      >
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-          <Typography
-            variant="subtitle2"
-            color="text.secondary"
-            fontWeight={600}
-          >
-            Source
-          </Typography>
-          <ToggleButtonGroup exclusive size="medium">
-            <ToggleButton value="ai">
-              <SmartToyIcon sx={{ mr: 1 }} /> AI Generated
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </Box>
+   return (
+    <div className="bg-white shadow-md rounded-2xl p-6 md:p-8 mb-6 flex flex-col gap-6 border border-gray-100">
+      <div className="flex flex-col md:flex-row md:items-center gap-6">
 
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-          <Typography
-            variant="subtitle2"
-            color="text.secondary"
-            fontWeight={600}
-          >
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-semibold text-gray-600">
+            Source
+          </label>
+          <div className="flex items-center space-x-2">
+            <button
+              disabled={isRendering}
+              className="flex items-center px-4 py-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-medium rounded-lg text-sm transition-all duration-200 disabled:opacity-60"
+            >
+              <SmartToyIcon className="mr-2 text-indigo-500" fontSize="small" />
+              AI Generated
+            </button>
+          </div>
+        </div>
+
+        {/* Dataset Quantity Input */}
+        <div className="flex flex-col gap-2">
+          <label className="text-sm font-semibold text-gray-600">
             Number of Datasets Per Niche
-          </Typography>
-          <TextField
-            disabled={isRendering}
+          </label>
+          <input
             type="number"
+            disabled={isRendering}
+            min={1}
             value={datasetQuantity}
             onChange={(e) => setDatasetQuantity(Number(e.target.value))}
-            inputProps={{ min: 1, style: { textAlign: "center" } }}
-            sx={{ width: 120 }}
-            size="small"
+            className="w-32 text-center border border-gray-300 rounded-md py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 disabled:opacity-50"
           />
-        </Box>
-        <Box sx={{ ml: { xs: 0, md: "auto" } }}>
-          <Button
-            variant="contained"
-            startIcon={<DatasetIcon />}
+        </div>
+
+        {/* Generate Button */}
+        <div className="md:ml-auto">
+          <button
             onClick={generateDataset}
             disabled={isRendering}
-            sx={{
-              borderRadius: 2,
-              py: 1,
-              px: 3,
-              fontWeight: 600,
-              textTransform: "none",
-              background: "linear-gradient(90deg,#1976d2,#42a5f5)",
-            }}
+            className="flex items-center justify-center px-5 py-2.5 rounded-lg text-white font-semibold text-sm shadow-sm transition-all duration-300 disabled:opacity-50 bg-gradient-to-r from-blue-600 to-sky-400 hover:from-blue-700 hover:to-sky-500"
           >
+            <Dataset className="mr-2 text-white" fontSize="small" />
             Generate Dataset
-          </Button>
-        </Box>
-      </Box>
+          </button>
+        </div>
+      </div>
 
+      {/* === Niche Selection Section === */}
       <NicheSelectionFactCards
         selectedNiches={selectedNiches}
         setSelectedNiches={setSelectedNiches}
       />
-    </Paper>
+    </div>
   );
 };

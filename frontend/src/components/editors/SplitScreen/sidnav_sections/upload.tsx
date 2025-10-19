@@ -1,7 +1,7 @@
 
 import type React from "react";
 import { useState, useRef } from "react";
-import { UserVideoUploadsModal } from "../../../ui/modals/uservideouploadsmodal";
+import { UserVideoUploadsModal } from "../../../ui/modals/UserVideoUploadsModal";
 // import { UserVideoUploadsModal } from "../../ui/modals/uservideouploadsmodal";
 
 

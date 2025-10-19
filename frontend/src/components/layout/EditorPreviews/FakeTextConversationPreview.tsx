@@ -100,14 +100,11 @@ const RemotionChatPlayer: React.FC<{
   );
 };
 
-// Final Preview component
 export const ChatVideoPreview: React.FC<{
   duration: number;
   previewBg: string;
   cycleBg: () => void;
   previewScale: number;
-
-  // 👇 forward all props you want to control live
   chatdata: any;
   avatars?: { left?: string; right?: string };
   bgVideo?: string;
@@ -157,7 +154,6 @@ export const ChatVideoPreview: React.FC<{
         position: "relative",
       }}
     >
-      {/* Background toggle button */}
       <button
         onClick={cycleBg}
         style={{
@@ -181,7 +177,6 @@ export const ChatVideoPreview: React.FC<{
           : "🌙 Dark"}
       </button>
 
-      {/* Checkbox for Safe Margins */}
       <label
         style={{
           position: "absolute",

@@ -1,21 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
-import { CurveLineSideNav } from "./sidenav";
+import { CurveLineSideNav } from "./Sidenav";
 import { SimpleTrendGraphPreview } from "../../layout/EditorPreviews/SimpleTrendMapPreview";
 import type { SimpleGraphProps } from "../../remotion_compositions/Curvelinetrend/SimplifiedTemplateHolder";
-import { CurveLineTextPanel } from "./sidenav_sections/titleandsubtitle";
+import { CurveLineTextPanel } from "./sidenav_sections/TitleAndSubtitle";
 import {
   CurveLineTrendDataPanel,
   type DataPoint,
-} from "./sidenav_sections/data";
-import { PresetPanel, type GraphThemeKey } from "./sidenav_sections/themes";
-import { AnimationPanel } from "./sidenav_sections/animation";
-import { defaultpanelwidth } from "../../../data/defaultvalues";
-import { ExportModal } from "../../ui/modals/exportmodal";
-import { SaveProjectModal } from "../../ui/modals/savemodal";
-import { TopNavWithSave } from "../../navigations/single_editors/withsave";
+} from "./sidenav_sections/Data";
+import { PresetPanel, type GraphThemeKey } from "./sidenav_sections/Themes";
+import { AnimationPanel } from "./sidenav_sections/Animation";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
+import { ExportModal } from "../../ui/modals/ExportModal";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
 import { useParams } from "react-router-dom";
 import isEqual from "lodash/isEqual";
-import { LoadingOverlay } from "../../ui/modals/loadingprojectmodal";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
 
 const initialData = [
   { label: 2015, value: 100 },
@@ -145,7 +145,7 @@ export const CurveLineTrendEditor: React.FC = () => {
 
       setIsSaving(true);
       try {
-        const exportRes = await fetch("/generatevideo/curvelinetrend", {
+        const exportRes = await fetch(`/generatevideo/curvelinetrend`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -206,7 +206,7 @@ export const CurveLineTrendEditor: React.FC = () => {
       setStatus("Saving design...");
       const currentProps = buildPropsObject();
 
-      const exportRes = await fetch("/generatevideo/curvelinetrend", {
+      const exportRes = await fetch(`/generatevideo/curvelinetrend`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -223,7 +223,7 @@ export const CurveLineTrendEditor: React.FC = () => {
       const exportResult = await exportRes.json();
       const projectVidUrl = exportResult.url;
 
-      const response = await fetch("/projects/save", {
+      const response = await fetch(`/projects/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -261,7 +261,7 @@ export const CurveLineTrendEditor: React.FC = () => {
   const handleExport = async (format: string) => {
     setIsExporting(true);
     try {
-      const response = await fetch("/generatevideo/curvelinetrend", {
+      const response = await fetch(`/generatevideo/curvelinetrend`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -292,11 +292,11 @@ export const CurveLineTrendEditor: React.FC = () => {
       setExportUrl(result.url);
       const renderUrl = result.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId,

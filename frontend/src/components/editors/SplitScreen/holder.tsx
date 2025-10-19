@@ -1,18 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SplitScreenSideNavs } from "./sidenav";
-import { BottomVideoSelectorPanel } from "./sidnav_sections/bottomvidselection";
+import { SplitScreenSideNavs } from "./Sidenav";
+import { BottomVideoSelectorPanel } from "./sidnav_sections/BottomVidSelection";
 import { SPlitScreenPreview } from "../../layout/EditorPreviews/SplitScreenPreview";
-import { VideoUploadPanel } from "./sidnav_sections/upload";
-import { VideoSettingsControlPanel } from "./sidnav_sections/videosettings";
-import { defaultpanelwidth } from "../../../data/defaultvalues";
-import { ExportModal } from "../../ui/modals/exportmodal";
-import { TopNavWithSave } from "../../navigations/single_editors/withsave";
-import { SaveProjectModal } from "../../ui/modals/savemodal";
-import { LoadingOverlay } from "../../ui/modals/loadingprojectmodal";
-import { useProjectSave } from "../../../hooks/saveproject";
+import { VideoUploadPanel } from "./sidnav_sections/Upload";
+import { VideoSettingsControlPanel } from "./sidnav_sections/VideoSettings";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
+import { ExportModal } from "../../ui/modals/ExportModal";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
+import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
-import { useVideoUpload } from "../../../hooks/uploads/handlevideouploads";
-import { userVideos } from "../../../hooks/datafetching/uservideos";
+import { useVideoUpload } from "../../../hooks/uploads/HandleVideoUploads";
+import { userVideos } from "../../../hooks/datafetching/UserVideos";
+
 
 export const SplitScreenEditor: React.FC = () => {
   const { id } = useParams();
@@ -128,7 +129,7 @@ export const SplitScreenEditor: React.FC = () => {
   const handleExport = async (format: string) => {
     setIsExporting(true);
     try {
-      const response = await fetch("/generatevideo/splitscreen", {
+      const response = await fetch(`/generatevideo/splitscreen`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -149,11 +150,11 @@ export const SplitScreenEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId: 6,
@@ -206,7 +207,7 @@ export const SplitScreenEditor: React.FC = () => {
       topVolume,
       duration,
     }),
-    videoEndpoint: "/generatevideo/splitscreen",
+    videoEndpoint: `/generatevideo/splitscreen`,
   });
 
   // 🟢 Load project if editing existing

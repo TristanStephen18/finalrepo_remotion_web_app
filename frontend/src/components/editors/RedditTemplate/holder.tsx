@@ -1,21 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
-import { BackgroundVideoSelectorPanel } from "../Global/sidenav_sections/bgvideoselector";
-import { MusicSelector } from "../Global/bgmusic";
-import { script } from "./defaultvalues";
+import { BackgroundVideoSelectorPanel } from "../Global/sidenav_sections/BackgroundVideoSelector";
+import { MusicSelector } from "../Global/BackgroundMusic";
+import { script } from "./DefaultValues";
 import { RedditVideoPreview } from "../../layout/EditorPreviews/RedditTemplatePreview";
-import { RedditSideNavigation } from "./sidenav";
-import { AiVoiceSelector } from "../Global/sidenav_sections/aivoices";
-import { RedditTypoGraphy } from "../Global/sidenav_sections/typography";
-import { RedditFetcherSidepanel } from "./sidenav_sections/post";
-import { defaultpanelwidth } from "../../../data/defaultvalues";
-import { ExportModal } from "../../ui/modals/exportmodal";
-import { TopNavWithSave } from "../../navigations/single_editors/withsave";
-import { SaveProjectModal } from "../../ui/modals/savemodal";
-import { LoadingOverlay } from "../../ui/modals/loadingprojectmodal";
-import { useProjectSave } from "../../../hooks/saveproject";
+import { RedditSideNavigation } from "./Sidenav";
+import { AiVoiceSelector } from "../Global/sidenav_sections/AiVoices";
+import { RedditTypoGraphy } from "../Global/sidenav_sections/Typography";
+import { RedditFetcherSidepanel } from "./sidenav_sections/Post";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
+import { ExportModal } from "../../ui/modals/ExportModal";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
+import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
-import { useVideoUpload } from "../../../hooks/uploads/handlevideouploads";
-import { userVideos } from "../../../hooks/datafetching/uservideos";
+import { useVideoUpload } from "../../../hooks/uploads/HandleVideoUploads";
+import { userVideos } from "../../../hooks/datafetching/UserVideos";
+import toast from "react-hot-toast";
 
 export const RedditVideoEditor: React.FC = () => {
   const { id } = useParams();
@@ -48,13 +49,13 @@ export const RedditVideoEditor: React.FC = () => {
 
   const [aiVoice, setAiVoice] = useState("21m00Tcm4TlvDq8ikWAM");
   const [voiceoverPath, setVoiceoverPath] = useState(
-    "/soundeffects/reddit/voice.mp3"
+    `/soundeffects/reddit/voice.mp3`
   );
   const [backgroundVideo, setBackgroundVideo] = useState(
-    "/defaultvideos/minecraft/m1.mp4"
+    `/defaultvideos/minecraft/m1.mp4`
   );
   const [backgroundMusicPath, setBackgroundMusicPath] = useState(
-    "/soundeffects/bgmusic/bg11.mp3"
+    `/soundeffects/bgmusic/bg11.mp3`
   );
   const [serverAudio, setServerAudio] = useState("");
 
@@ -122,7 +123,7 @@ export const RedditVideoEditor: React.FC = () => {
       setPostError(null);
       setFetchedPost(null);
 
-      const res = await fetch("/reddit/getpost", {
+      const res = await fetch(`/reddit/getpost`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: postUrl }),
@@ -149,7 +150,7 @@ export const RedditVideoEditor: React.FC = () => {
     setIsUpdatingTemplate(true);
     if (fetchedPost) {
       try {
-        const res = await fetch("/sound/reddit", {
+        const res = await fetch(`/sound/reddit`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -163,6 +164,8 @@ export const RedditVideoEditor: React.FC = () => {
         setVoiceoverPath(data.serverfilename);
         setServerAudio(data.serverfilename);
         setDuration(Math.ceil(data.duration) + 2);
+
+        toast.success("Reddit post extraction successful");
       } catch (err) {
         console.error("Failed to update template ❗", err);
         alert("Template update failed, please try again.");
@@ -178,7 +181,7 @@ export const RedditVideoEditor: React.FC = () => {
   const handleExport = async (format: string) => {
     setIsExporting(true);
     try {
-      const response = await fetch("/generatevideo/redditvideo", {
+      const response = await fetch(`/generatevideo/redditvideo`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -197,11 +200,11 @@ export const RedditVideoEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId: 10,
@@ -249,8 +252,6 @@ export const RedditVideoEditor: React.FC = () => {
       redditData,
       aiVoice,
       serverAudio,
-
-      // 🔹 Render-safe props (still included here, but also filtered below)
       voiceoverPath: defaulvalues.voiceoverPath,
       duration,
       fontSize,
@@ -260,7 +261,7 @@ export const RedditVideoEditor: React.FC = () => {
       backgroundVideo,
       backgroundMusicPath,
     }),
-    videoEndpoint: "/generatevideo/redditvideo",
+    videoEndpoint: `/generatevideo/redditvideo`,
 
     // 👇 Filter before hitting the render API
     filterRenderProps: (props) => {
@@ -300,7 +301,7 @@ export const RedditVideoEditor: React.FC = () => {
           setRedditData(props.redditData || script);
           setAiVoice(props.aiVoice || "21m00Tcm4TlvDq8ikWAM");
           setVoiceoverPath(
-            props.serverAudio || "/soundeffects/reddit/voice.mp3"
+            props.serverAudio || `/soundeffects/reddit/voice.mp3`
           );
           setDuration(props.duration || Math.ceil(script.duration) + 2);
 

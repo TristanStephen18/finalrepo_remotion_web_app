@@ -1,5 +1,5 @@
 import React from "react";
-import { fontOptions } from "../../../../data/fonts";
+import { fontOptions } from "../../../../data/Fonts";
 
  const cardStyle = (active: boolean): React.CSSProperties => ({
     flex: "1 1 calc(33% - 1rem)",
@@ -44,15 +44,6 @@ export const ChatStylePanel: React.FC<{
     { id: "discord", label: "Discord", logo: "/images/logos/discord.jpg" },
     { id: "messenger", label: "Messenger", logo: "/images/logos/messenger.webp" },
     { id: "whatsapp", label: "WhatsApp", logo: "/images/logos/whatsapp.png" },
-  ];
-
-  const fonts = [
-    "Inter, sans-serif",
-    "Roboto, sans-serif",
-    "Open Sans, sans-serif",
-    "Poppins, sans-serif",
-    "Georgia, serif",
-    "Courier New, monospace",
   ];
 
   return (

@@ -1,6 +1,6 @@
 import { Button, Typography, Box } from "@mui/material";
 // import { Box } from "lucide-react";
-import { kenBurnsProportions } from "../../../../../data/kenburnsproportions";
+import { kenBurnsProportions } from "../../../../../data/KenBurnsProportions";
 import type React from "react";
 
 interface ProportionsSectionInterface {

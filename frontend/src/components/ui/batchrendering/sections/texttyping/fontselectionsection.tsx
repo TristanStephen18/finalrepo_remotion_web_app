@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import type React from "react";
-import { FONTS } from "../../../../../data/texttypingfonts";
+import { FONTS } from "../../../../../data/TextTypingFonts";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 

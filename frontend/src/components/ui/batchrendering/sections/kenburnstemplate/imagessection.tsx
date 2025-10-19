@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Box, Typography, CircularProgress } from "@mui/material";
-import { ImageSlot } from "../../../../batchrendering/imageslotkenburns";
-import { ChooseUploadModalBatchRenderingKenburns } from "../../../modals/chooseuploadmodal_batchrendering_kenburns";
+import { ImageSlot } from "../../../../batchrendering/ImageSlotKenBurns";
+import { ChooseUploadModalBatchRenderingKenburns } from "../../../modals/ChooseUploadModalBatchRenderingKenBurns";
 
 interface ImagesSectionInterface {
   userImages: string[];
@@ -23,9 +22,9 @@ export const ImagesSection: React.FC<ImagesSectionInterface> = ({
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  return (
-    <Box>
-      {/* Modal for choosing uploads */}
+ return (
+    <div className="w-full">
+      {/* === Modal === */}
       <ChooseUploadModalBatchRenderingKenburns
         open={showUploadsModal}
         onClose={() => setShowUploadsModal(false)}
@@ -37,33 +36,21 @@ export const ImagesSection: React.FC<ImagesSectionInterface> = ({
           ]);
         }}
       />
-      {/* Sticky Top Bar */}
-      <Box
-        sx={{
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          bgcolor: "background.paper",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          py: 2,
-          px: 2,
-          borderBottom: "1px solid #eee",
-        }}
-      >
-        <Typography variant="h5" fontWeight={700}>
+
+      <div className="sticky top-0 z-20 bg-white border-b border-gray-200 flex flex-col md:flex-row items-start md:items-center justify-between p-3 md:p-4 gap-3">
+        <h2 className="text-xl md:text-2xl font-bold text-gray-800">
           Images Upload
-        </Typography>
-        <Box sx={{ display: "flex", gap: 2 }}>
-          {/* Upload Multiple Images */}
-          <Box>
+        </h2>
+
+        <div className="flex flex-wrap items-center gap-3">
+          <div>
             <input
               disabled={isRendering}
               type="file"
-              accept="image/*"
               id="add-image-upload"
-              style={{ display: "none" }}
+              accept="image/*"
+              multiple
+              className="hidden"
               onChange={async (e) => {
                 const files = e.target.files;
                 if (!files || files.length === 0) return;
@@ -72,129 +59,108 @@ export const ImagesSection: React.FC<ImagesSectionInterface> = ({
                 setUploadError(null);
 
                 const formData = new FormData();
-                Array.from(files).forEach((file) => {
-                  formData.append("images", file); // must match backend field name
-                });
+                Array.from(files).forEach((file) =>
+                  formData.append("images", file)
+                );
 
                 try {
                   const res = await fetch(
-                    "/uploadhandler/upload-multiple-kenburns-images",
+                    `/uploadhandler/upload-multiple-kenburns-images`,
                     {
                       method: "POST",
                       body: formData,
                     }
                   );
                   const data = await res.json();
-
                   if (res.ok) {
-                    setUserImages((prev: any) => [
+                    setUserImages((prev: string[]) => [
                       ...prev,
                       ...data.images.map((img: any) => img.url),
                     ]);
+
+                    // Save uploads to DB
                     for (const imgObj of data.images) {
                       try {
-                        const saveResponse = await fetch("/useruploads", {
-                          method: "POST",
-                          headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${
-                              localStorage.getItem("token") || ""
-                            }`,
-                          },
-                          body: JSON.stringify({
-                            type: "image",
-                            url: imgObj.url,
-                          }),
-                        });
-                        if (!saveResponse.ok) {
-                          throw new Error(
-                            `Failed to save upload: ${
-                              saveResponse.status
-                            } ${await saveResponse.text()}`
-                          );
-                        }
-                        const saveData = await saveResponse.json();
-                        console.log("✅ Upload saved to DB:", saveData);
-                      } catch (err) {
-                        console.error(
-                          "Failed to save uploaded image to DB:",
-                          err
+                        const saveResponse = await fetch(
+                          `/useruploads`,
+                          {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                              Authorization: `Bearer ${localStorage.getItem("token")}`,
+                            },
+                            body: JSON.stringify({
+                              type: "image",
+                              url: imgObj.url,
+                            }),
+                          }
                         );
+                        if (!saveResponse.ok)
+                          throw new Error(await saveResponse.text());
+                        console.log("✅ Upload saved:", await saveResponse.json());
+                      } catch (err) {
+                        console.error("Failed to save upload:", err);
                       }
                     }
                   } else {
-                    setUploadError(
-                      data.error || "Upload failed. Please try again."
-                    );
+                    setUploadError(data.error || "Upload failed.");
                   }
                 } catch (err) {
-                  console.error("Upload failed:", err);
-                  setUploadError("Unexpected error during upload.");
+                  console.error(err);
+                  setUploadError("Unexpected upload error.");
                 } finally {
                   setIsUploading(false);
                   (e.target as HTMLInputElement).value = "";
-                  console.log(userImages);
                 }
               }}
-              multiple
             />
-            <Box
+
+            <button
               onClick={() =>
                 !isUploading &&
                 document.getElementById("add-image-upload")?.click()
               }
-              sx={{
-                px: 2,
-                py: 1,
-                border: "2px dashed #1976d2",
-                borderRadius: 2,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: isUploading ? "not-allowed" : "pointer",
-                fontSize: 16,
-                fontWeight: 700,
-                color: "#1976d2",
-                bgcolor: isUploading ? "#e0e0e0" : "#f9fbff",
-                "&:hover": {
-                  bgcolor: isUploading ? "#e0e0e0" : "#eef5ff",
-                },
-                position: "relative",
-                minWidth: 120,
-              }}
+              disabled={isUploading || isRendering}
+              className={`flex items-center justify-center px-4 py-2 rounded-lg border-2 font-semibold text-sm transition-all duration-200 w-full md:w-auto ${
+                isUploading
+                  ? "border-blue-300 bg-blue-100 text-blue-400 cursor-not-allowed"
+                  : "border-blue-500 text-blue-600 bg-blue-50 hover:bg-blue-100"
+              }`}
             >
               {isUploading ? (
-                <CircularProgress size={24} color="primary" />
+                <span className="animate-pulse">Uploading...</span>
               ) : (
                 "Upload Images"
               )}
-            </Box>
-          </Box>
-          {/* Upload Folder */}
-          <Box>
+            </button>
+          </div>
+
+          {/* ==== Upload Folder ==== */}
+          <div>
             <input
               disabled={isRendering}
               type="file"
               id="add-folder-upload"
-              style={{ display: "none" }}
-              // @ts-ignore directory upload attributes
+              multiple
+              className="hidden"
+              // @ts-ignore
               webkitdirectory="true"
               directory="true"
-              multiple
               onChange={async (e) => {
                 const files = e.target.files;
                 if (!files || files.length === 0) return;
+
                 setIsUploading(true);
                 setUploadError(null);
 
                 const formData = new FormData();
-                Array.from(files).forEach((file) => {
-                  formData.append("images", file);
-                });
+                Array.from(files).forEach((file) =>
+                  formData.append("images", file)
+                );
 
                 try {
                   const res = await fetch(
-                    "/uploadhandler/upload-kenburns-folder",
+                    `/uploadhandler/upload-kenburns-folder`,
                     {
                       method: "POST",
                       body: formData,
@@ -202,150 +168,104 @@ export const ImagesSection: React.FC<ImagesSectionInterface> = ({
                   );
                   const data = await res.json();
                   if (res.ok) {
-                    setUserImages((prev: any) => [
+                    setUserImages((prev: string[]) => [
                       ...prev,
                       ...data.images.map((img: any) => img.url),
                     ]);
+
                     for (const imgObj of data.images) {
                       try {
-                        const saveResponse = await fetch("/useruploads", {
-                          method: "POST",
-                          headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${
-                              localStorage.getItem("token") || ""
-                            }`,
-                          },
-                          body: JSON.stringify({
-                            type: "image",
-                            url: imgObj.url,
-                          }),
-                        });
-                        if (!saveResponse.ok) {
-                          throw new Error(
-                            `Failed to save upload: ${
-                              saveResponse.status
-                            } ${await saveResponse.text()}`
-                          );
-                        }
-                        const saveData = await saveResponse.json();
-                        console.log("✅ Upload saved to DB:", saveData);
-                      } catch (err) {
-                        console.error(
-                          "Failed to save uploaded image to DB:",
-                          err
+                        const saveResponse = await fetch(
+                          `/useruploads`,
+                          {
+                            method: "POST",
+                            headers: {
+                              "Content-Type": "application/json",
+                              Authorization: `Bearer ${localStorage.getItem("token")}`,
+                            },
+                            body: JSON.stringify({
+                              type: "image",
+                              url: imgObj.url,
+                            }),
+                          }
                         );
+                        if (!saveResponse.ok)
+                          throw new Error(await saveResponse.text());
+                        console.log("✅ Folder upload saved:", await saveResponse.json());
+                      } catch (err) {
+                        console.error("Save failed:", err);
                       }
                     }
                   } else {
                     setUploadError(data.error || "Folder upload failed.");
                   }
                 } catch (err) {
-                  console.error("Folder upload failed:", err);
-                  setUploadError("Unexpected error during folder upload.");
+                  console.error(err);
+                  setUploadError("Unexpected folder upload error.");
                 } finally {
                   setIsUploading(false);
                   (e.target as HTMLInputElement).value = "";
                 }
               }}
             />
-            <Box
+
+            <button
               onClick={() =>
                 !isUploading &&
                 document.getElementById("add-folder-upload")?.click()
               }
-              sx={{
-                px: 2,
-                py: 1,
-                border: "2px dashed #388e3c",
-                borderRadius: 2,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: isUploading ? "not-allowed" : "pointer",
-                fontSize: 16,
-                fontWeight: 700,
-                color: "#388e3c",
-                bgcolor: isUploading ? "#e0e0e0" : "#f1fff4",
-                "&:hover": {
-                  bgcolor: isUploading ? "#e0e0e0" : "#e6ffea",
-                },
-                position: "relative",
-                minWidth: 120,
-              }}
+              disabled={isUploading || isRendering}
+              className={`flex items-center justify-center px-4 py-2 rounded-lg border-2 font-semibold text-sm transition-all duration-200 w-full md:w-auto ${
+                isUploading
+                  ? "border-green-300 bg-green-100 text-green-400 cursor-not-allowed"
+                  : "border-green-600 text-green-700 bg-green-50 hover:bg-green-100"
+              }`}
             >
               {isUploading ? (
-                <CircularProgress size={24} color="success" />
+                <span className="animate-pulse">Uploading...</span>
               ) : (
                 "Upload Folder"
               )}
-            </Box>
-          </Box>
-          {/* Choose from your uploads */}
-          <Box>
-            <Box
-              onClick={() => {
-                if (isRendering) {
-                  alert("Cannot open uploads when rendering");
-                } else {
-                  setShowUploadsModal(true);
-                }
-              }}
-              sx={{
-                px: 2,
-                py: 1,
-                border: isRendering ? "2px solid #b3b2b2ff" : "2px solid #888",
-                borderRadius: 2,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                fontSize: 16,
-                fontWeight: 700,
-                color: "#444",
-                bgcolor: isRendering ? "#9e9999ff" : "#f7f7f7",
-                minWidth: 120,
-                transition: "background 0.2s",
-                "&:hover": { bgcolor: "#eaeaea" },
-              }}
+            </button>
+          </div>
+
+          {/* ==== Choose Uploads ==== */}
+          <div>
+            <button
+              onClick={() =>
+                isRendering
+                  ? alert("Cannot open uploads while rendering.")
+                  : setShowUploadsModal(true)
+              }
+              disabled={isRendering}
+              className={`flex items-center justify-center px-4 py-2 rounded-lg border-2 font-semibold text-sm w-full md:w-auto ${
+                isRendering
+                  ? "border-gray-300 bg-gray-200 text-gray-400 cursor-not-allowed"
+                  : "border-gray-400 text-gray-700 bg-gray-50 hover:bg-gray-100"
+              }`}
             >
               Choose from your uploads
-            </Box>
-          </Box>
-        </Box>
-      </Box>
+            </button>
+          </div>
+        </div>
+      </div>
 
-      {/* Error message for uploads */}
+      {/* === Error Message === */}
       {uploadError && (
-        <Typography color="error" variant="caption" sx={{ mt: 1, mb: 2 }}>
-          {uploadError}
-        </Typography>
+        <p className="text-sm text-red-600 mt-3 mb-2">{uploadError}</p>
       )}
 
+      {/* === Empty State === */}
       {userImages.length === 0 && (
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            mt: 2,
-            mb: 2,
-          }}
-        >
-          <Typography variant="subtitle1" color="text.secondary" align="center">
+        <div className="flex justify-center items-center w-full mt-6 mb-4">
+          <p className="text-gray-500 text-center">
             This is where your images will appear
-          </Typography>
-        </Box>
+          </p>
+        </div>
       )}
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-          gap: 2,
-          mt: 2,
-        }}
-      >
+
+      {/* === Image Grid === */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 mt-4">
         {userImages.map((img: string, i: number) => (
           <ImageSlot
             key={i}
@@ -355,10 +275,13 @@ export const ImagesSection: React.FC<ImagesSectionInterface> = ({
             onUpload={async (file: any) => {
               const formData = new FormData();
               formData.append("image", file);
-              const res = await fetch("/uploadhandler/upload-kenburns-image", {
-                method: "POST",
-                body: formData,
-              });
+              const res = await fetch(
+                `/uploadhandler/upload-kenburns-image`,
+                {
+                  method: "POST",
+                  body: formData,
+                }
+              );
               const data = await res.json();
               if (res.ok) {
                 setUserImages((prev: any) => {
@@ -367,27 +290,18 @@ export const ImagesSection: React.FC<ImagesSectionInterface> = ({
                   return arr;
                 });
 
-                const saveResponse = await fetch("/useruploads", {
+                const saveResponse = await fetch(`/useruploads`, {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${
-                      localStorage.getItem("token") || ""
-                    }`,
+                    Authorization: `Bearer ${localStorage.getItem("token")}`,
                   },
                   body: JSON.stringify({ type: "image", url: data.url }),
                 });
 
-                if (!saveResponse.ok) {
-                  throw new Error(
-                    `Failed to save upload: ${
-                      saveResponse.status
-                    } ${await saveResponse.text()}`
-                  );
-                }
-
-                const saveData = await saveResponse.json();
-                console.log("✅ Upload saved to DB:", saveData);
+                if (!saveResponse.ok)
+                  throw new Error(await saveResponse.text());
+                console.log("✅ Upload saved:", await saveResponse.json());
               }
             }}
             onRemove={() =>
@@ -397,7 +311,7 @@ export const ImagesSection: React.FC<ImagesSectionInterface> = ({
             }
           />
         ))}
-      </Box>
-    </Box>
+      </div>
+    </div>
   );
 };

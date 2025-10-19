@@ -1,6 +1,6 @@
 import type React from "react";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import { FakeTextSideNavs } from "../../../data/navdata_live_editor";
+import { FakeTextSideNavs } from "../../../data/NavdataLiveEditor";
 import { MenuIcon } from "lucide-react";
 
 

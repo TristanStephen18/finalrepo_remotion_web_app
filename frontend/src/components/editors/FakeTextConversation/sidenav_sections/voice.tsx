@@ -1,6 +1,6 @@
 import { useRef } from "react";
-import type { VoiceId } from "../../../../data/ai_voices";
-import { VOICES } from "../../../../data/ai_voices";
+import type { VoiceId } from "../../../../data/Ai_Voices";
+import { VOICES } from "../../../../data/Ai_Voices";
 
 export const VoiceSelector: React.FC<{
   voice1: string;

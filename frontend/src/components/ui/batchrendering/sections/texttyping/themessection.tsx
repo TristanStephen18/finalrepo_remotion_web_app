@@ -1,6 +1,6 @@
 import { Box, Button, Typography } from "@mui/material";
 import type React from "react";
-import { BACKGROUNDS } from "../../../../../data/texttypingbg";
+import { BACKGROUNDS } from "../../../../../data/TextTypingBg";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 

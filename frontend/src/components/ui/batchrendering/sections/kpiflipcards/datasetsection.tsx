@@ -2,18 +2,18 @@ import { Box, Paper, Typography } from "@mui/material";
 import type React from "react";
 
 import type { KpiFlipData } from "../../../../../models/KpiFlipData";
-import { ChooseUserDatasetsModal } from "../../../modals/chooseuserdatasetsmodal";
-import { InvalidJsonFileFormatModal } from "../../../modals/invaliddatasetformat";
+import { ChooseUserDatasetsModal } from "../../../modals/ChooseUserDatasetsModal";
+import { InvalidJsonFileFormatModal } from "../../../modals/InvalidDatasetFormat";
 import { useEffect } from "react";
 
-import { kpiflipdatasetformat } from "../../../../../data/properjsonformats";
-import { useDatasetHooks } from "../../../../../hooks/datasetsection";
-import { DatasetTopbar } from "../Global/datasetsectiontopbar";
-import { AIGeneratedDatasetSectionWithoutAPI } from "../Global/aisectionremaining";
-import { UserDatasetsSection } from "../Global/userdatasetssection";
-import { datasetLoader } from "../../../datasetloader";
-import { KpiFlipDatasetTable } from "../tables/kpiflipdatatemplate";
-import { EditableJsonArea } from "../Global/editablejsonarea";
+import { kpiflipdatasetformat } from "../../../../../data/ProperJsonFormats";
+import { useDatasetHooks } from "../../../../../hooks/DatasetSection";
+import { DatasetTopbar } from "../Global/DatasetSectionTopbar";
+import { AIGeneratedDatasetSectionWithoutAPI } from "../Global/AiSectionRemaining";
+import { UserDatasetsSection } from "../Global/UserDatasetsSection";
+import { datasetLoader } from "../../../DatasetLoader";
+import { KpiFlipDatasetTable } from "../tables/KpiFlipDataTemplate";
+import { EditableJsonArea } from "../Global/EditableJsonArea";
 
 interface KpiFlipCardsDatasetSectionInterface {
   loading: boolean;

@@ -1,5 +1,5 @@
 import React from "react";
-import { fontOptions } from "../../../../data/fonts";
+import { fontOptions } from "../../../../data/Fonts";
 
  const cardStyle = (active: boolean): React.CSSProperties => ({
     flex: "1 1 calc(33% - 1rem)",

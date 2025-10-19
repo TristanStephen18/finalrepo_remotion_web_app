@@ -1,27 +1,15 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import {
-  Box,
-  Typography,
-  Avatar,
-  Card,
-  TextField,
-  Button,
-  Divider,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  IconButton,
-} from "@mui/material";
-import { LoadingButton } from "@mui/lab";
-
-import CameraAltIcon from "@mui/icons-material/CameraAlt";
-import VpnKeyIcon from "@mui/icons-material/VpnKey";
-import EditIcon from "@mui/icons-material/Edit";
-import CloseIcon from "@mui/icons-material/Close";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
-
+  FiEdit2,
+  FiCamera,
+  FiLock,
+  FiEye,
+  FiEyeOff,
+  FiX,
+  FiTrendingUp,
+  FiPieChart,
+} from "react-icons/fi";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   LineChart,
   Line,
@@ -32,10 +20,11 @@ import {
   ResponsiveContainer,
   Legend,
 } from "recharts";
-import { templatesWithTheirIds } from "../../data/templateids";
-import { useProfileFileUpload } from "../../hooks/uploads/profileupload";
-import { updateUsername } from "../../utils/usernameupdater";
-import { updatePassword } from "../../utils/passwordupdater";
+import { templatesWithTheirIds } from "../../data/TemplateIds";
+import { updateUsername } from "../../utils/UsernameUpdater";
+import { updatePassword } from "../../utils/PasswordUpdater";
+import { useProfileFileUpload } from "../../hooks/uploads/ProfileUpload";
+import toast from "react-hot-toast";
 
 interface ProfilePageProps {
   userData: any;
@@ -54,74 +43,52 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
   renders,
   fetchProfileDetails,
 }) => {
-  const [showOldPassword, setShowOldPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
-  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
-
-  const [isUpdatingUsername, setIsUpdatingUsername] = useState(false);
-
-  const { uploadFile, isUploading } = useProfileFileUpload({
-    type: "image",
-  });
   const [isEditingUsername, setIsEditingUsername] = useState(false);
   const [usernameValue, setUsernameValue] = useState(userData.name);
-
+  const [isUpdatingUsername, setIsUpdatingUsername] = useState(false);
+  const [isUpdatingPassword, setIsUpdatingPassword] = useState(false);
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
-  const [oldPassword, setOldPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState({
+    old: false,
+    new: false,
+    confirm: false,
+  });
+  const [passwords, setPasswords] = useState({
+    old: "",
+    new: "",
+    confirm: "",
+  });
 
-  const formattedDate = new Date(userData.createdAt).toLocaleString("en-US", {
+  const { uploadFile, isUploading } = useProfileFileUpload({ type: "image" });
+  const [profilePic, setProfilePic] = useState(userData.profilePicture || null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+  const formattedDate = new Date(userData.createdAt).toLocaleDateString("en-US", {
     year: "numeric",
     month: "short",
     day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-    hour12: true,
   });
 
-  const [profilePic, setProfilePic] = useState<string | null>(
-    userData.profilePicture || null
-  );
-  const fileInputRef = React.useRef<HTMLInputElement | null>(null);
-
-  const handleProfilePicChange = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const uploadedUrl = await uploadFile(file);
-      if (uploadedUrl) {
-        setProfilePic(uploadedUrl);
-      }
-    }
-  };
-
+  // ==== Data ====
   const renderingHistoryData = useMemo(() => {
     const counts: Record<string, number> = {};
     renders.forEach((r) => {
       if (!r.renderedAt) return;
-      const date = new Date(r.renderedAt);
-      const day = date.toLocaleDateString("en-US", {
+      const day = new Date(r.renderedAt).toLocaleDateString("en-US", {
         month: "short",
         day: "numeric",
       });
       counts[day] = (counts[day] || 0) + 1;
     });
-
     return Object.entries(counts).map(([day, renders]) => ({ day, renders }));
   }, [renders]);
 
   const templatesUsageData = useMemo(() => {
     const counts: Record<string, number> = {};
     renders.forEach((r) => {
-      const templateId = r.templateId;
-      if (!templateId) return;
-      counts[templateId] = (counts[templateId] || 0) + 1;
+      if (!r.templateId) return;
+      counts[r.templateId] = (counts[r.templateId] || 0) + 1;
     });
-
     return Object.entries(counts).map(([templateId, usage]) => ({
       templateId,
       template: templatesWithTheirIds[templateId],
@@ -129,377 +96,289 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
     }));
   }, [renders]);
 
-  const mostUsedTemplate = useMemo(() => {
-    if (templatesUsageData.length === 0)
-      return "You have not used any template yet";
-
-    const max = templatesUsageData.reduce((prev, curr) =>
-      curr.usage > prev.usage ? curr : prev
-    );
-
-    return max.template;
-  }, [templatesUsageData]);
+  const mostUsedTemplate = templatesUsageData.length
+    ? templatesUsageData.reduce((prev, curr) =>
+        curr.usage > prev.usage ? curr : prev
+      ).template
+    : "No templates used yet.";
 
   useEffect(() => {
     fetchProfileDetails();
   }, [profilePic]);
 
-  useEffect(() => {
-    if (userData?.name) {
-      setUsernameValue(userData.name);
+  // ==== Profile Picture Upload ====
+  const handleProfilePicChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const uploadedUrl = await uploadFile(file);
+      if (uploadedUrl) setProfilePic(uploadedUrl);
     }
-  }, [userData]);
+  };
 
+  // ==== UI ====
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "#fafafa", width: "100%", p: 1 }}>
-      <Box
-        sx={{
-          maxWidth: "100%",
-          mx: "auto",
-          display: "flex",
-          flexDirection: "column",
-          gap: 2,
-        }}
+    <motion.div
+      className="min-h-screen w-full bg-gradient-to-b from-white to-gray-50 p-4 md:p-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      {/* ==== Header ==== */}
+      <motion.div
+        layout
+        className="bg-white rounded-3xl shadow-sm border border-gray-100 p-8 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden"
       >
-        <Card
-          sx={{
-            width: "100%",
-            p: { xs: 2, md: 4 },
-            display: "flex",
-            alignItems: "center",
-            gap: 3,
-          }}
-        >
-          <Box
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            <Avatar
-              src={profilePic || undefined}
-              sx={{
-                width: 90,
-                height: 90,
-                fontSize: "2rem",
-                bgcolor: "#ccc",
-                border: "3px solid #eee",
-              }}
+        {/* Soft gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-r from-indigo-50 via-transparent to-pink-50 opacity-60" />
+        <div className="relative flex flex-col items-center gap-3 z-10">
+          <div className="relative group">
+            <img
+              src={profilePic || "/placeholder-avatar.png"}
+              alt="Profile"
+              className="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover transition-transform duration-300 group-hover:scale-105"
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              className="absolute bottom-1 right-1 bg-indigo-500 text-white p-2 rounded-full hover:bg-indigo-600 shadow transition"
             >
-              {!profilePic && userData.name.charAt(0).toUpperCase()}
-            </Avatar>
-
+              {isUploading ? (
+                <svg
+                  className="animate-spin h-4 w-4"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                >
+                  <circle cx="12" cy="12" r="10" strokeWidth="4" />
+                </svg>
+              ) : (
+                <FiCamera size={16} />
+              )}
+            </button>
             <input
               type="file"
-              accept="image/*"
-              style={{ display: "none" }}
               ref={fileInputRef}
+              accept="image/*"
               onChange={handleProfilePicChange}
+              className="hidden"
             />
+          </div>
+        </div>
 
-            <LoadingButton
-              size="small"
-              color="primary"
-              onClick={() => fileInputRef.current?.click()}
-              loading={isUploading}
-              loadingPosition="start"
-              startIcon={<CameraAltIcon fontSize="small" />}
-            >
-              Change Picture
-            </LoadingButton>
-          </Box>
-
-          <Box sx={{ flex: 1 }}>
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              <TextField
-                variant="standard"
+        <div className="flex-1 z-10">
+          <div className="flex items-center gap-3">
+            {isEditingUsername ? (
+              <input
+                type="text"
                 value={usernameValue}
                 onChange={(e) => setUsernameValue(e.target.value)}
-                disabled={!isEditingUsername}
-                sx={{
-                  fontSize: "1.5rem",
-                  minWidth: "150px",
-                  maxWidth: "250px",
-                }}
+                className="text-2xl font-semibold border-b-2 border-indigo-500 focus:outline-none bg-transparent"
               />
-              {!isEditingUsername ? (
-                <IconButton
-                  size="small"
-                  onClick={() => setIsEditingUsername(true)}
-                >
-                  <EditIcon fontSize="small" color="action" />
-                </IconButton>
-              ) : (
-                <Box sx={{ display: "flex", gap: 1 }}>
-                  <LoadingButton
-                    variant="contained"
-                    size="small"
-                    loading={isUpdatingUsername}
-                    onClick={async () => {
-                      setIsUpdatingUsername(true);
-                      try {
-                        const result = await updateUsername(usernameValue);
-                        if (result === "success") {
-                          alert("Username updated");
-                        } else {
-                          alert("There was an error updating your username");
-                        }
-                      } finally {
-                        setIsUpdatingUsername(false);
-                        setIsEditingUsername(false);
-                      }
-                    }}
-                  >
-                    Save
-                  </LoadingButton>
-
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => {
+            ) : (
+              <h2 className="text-2xl font-semibold text-gray-800">
+                {usernameValue}
+              </h2>
+            )}
+            {!isEditingUsername ? (
+              <button
+                onClick={() => setIsEditingUsername(true)}
+                className="text-gray-400 hover:text-indigo-500 transition"
+              >
+                <FiEdit2 />
+              </button>
+            ) : (
+              <div className="flex gap-2">
+                <button
+                  onClick={async () => {
+                    setIsUpdatingUsername(true);
+                    try {
+                      const res = await updateUsername(usernameValue);
+                      if (res === "success") toast.success("Username updated!");
+                    } finally {
+                      setIsUpdatingUsername(false);
                       setIsEditingUsername(false);
-                      setUsernameValue(userData.name);
-                    }}
-                  >
-                    Cancel
-                  </Button>
-                </Box>
-              )}
-            </Box>
-            <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
-              {userData.email}
-            </Typography>
-            <Typography variant="caption" color="text.secondary">
-              Joined at {formattedDate}
-            </Typography>
-          </Box>
-
-          <Button
-            variant="outlined"
-            startIcon={<VpnKeyIcon />}
-            onClick={() => setOpenPasswordModal(true)}
-          >
-            Change Password
-          </Button>
-        </Card>
-
-        <Box sx={{ display: "flex", gap: 2 }}>
-          <Card
-            sx={{
-              flex: 0.7,
-              p: 5,
-              display: "flex",
-              flexDirection: "column",
-              gap: 3,
-            }}
-          >
-            <Typography variant="h6" fontWeight={700}>
-              Your Data
-            </Typography>
-            <Divider />
-            <Box>
-              <Typography variant="subtitle1" fontWeight={700}>
-                ⭐ Most Used Template
-              </Typography>
-              <Typography variant="body2" color="text.secondary">
-                {mostUsedTemplate}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="subtitle1" fontWeight={700}>
-                📂 Created Templates
-              </Typography>
-              <Typography variant="h5" fontWeight={900} color="primary">
-                {projects.length}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="subtitle1" fontWeight={700}>
-                ⬆️ Uploads
-              </Typography>
-              <Typography variant="h5" fontWeight={900} color="secondary">
-                {userUploads.length}
-              </Typography>
-            </Box>
-            <Box>
-              <Typography variant="subtitle1" fontWeight={700}>
-                📊 Number Datasets
-              </Typography>
-              <Typography variant="h5" fontWeight={900} color="success.main">
-                {userDatasets.length}
-              </Typography>
-            </Box>
-          </Card>
-
-          <Card
-            sx={{
-              flex: 2.3,
-              p: 5,
-              display: "flex",
-              flexDirection: "column",
-              gap: 3,
-            }}
-          >
-            <Typography variant="h6" fontWeight={700}>
-              History
-            </Typography>
-            <Divider />
-
-            <Box sx={{ flex: 1, minHeight: 200 }}>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 0.5 }}>
-                Rendering History
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                This graph shows the quantity of videos you have rendered since
-                day 1.
-              </Typography>
-
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={renderingHistoryData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="day" />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="renders"
-                    stroke="#1976d2"
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </Box>
-
-            <Box sx={{ flex: 1, minHeight: 200, my: 10 }}>
-              <Typography variant="subtitle1" fontWeight={600} sx={{ mb: 0.5 }}>
-                Templates Usage Comparison
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                This graph shows the comparison of the templates you have been
-                using and rendering since day 1.
-              </Typography>
-
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={templatesUsageData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="template" />
-                  <YAxis allowDecimals={false} />
-                  <Tooltip />
-                  <Legend />
-                  <Line
-                    type="monotone"
-                    dataKey="usage"
-                    stroke="#d81b60"
-                    strokeWidth={2}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </Box>
-          </Card>
-        </Box>
-      </Box>
-
-      <Dialog
-        open={openPasswordModal}
-        onClose={() => setOpenPasswordModal(false)}
-        fullWidth
-        maxWidth="xs"
-      >
-        <DialogTitle>
-          Change Password
-          <IconButton
-            aria-label="close"
-            onClick={() => setOpenPasswordModal(false)}
-            sx={{ position: "absolute", right: 8, top: 8 }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }}
-        >
-          <TextField
-            type={showOldPassword ? "text" : "password"}
-            label="Old Password"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-            fullWidth
-            InputProps={{
-              endAdornment: (
-                <IconButton onClick={() => setShowOldPassword((prev) => !prev)}>
-                  {showOldPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              ),
-            }}
-          />
-
-          <TextField
-            type={showNewPassword ? "text" : "password"}
-            label="New Password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            fullWidth
-            InputProps={{
-              endAdornment: (
-                <IconButton onClick={() => setShowNewPassword((prev) => !prev)}>
-                  {showNewPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              ),
-            }}
-          />
-
-          <TextField
-            type={showConfirmPassword ? "text" : "password"}
-            label="Confirm New Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            fullWidth
-            InputProps={{
-              endAdornment: (
-                <IconButton
-                  onClick={() => setShowConfirmPassword((prev) => !prev)}
+                    }
+                  }}
+                  className="px-3 py-1 rounded-full text-white bg-indigo-500 hover:bg-indigo-600 text-sm"
                 >
-                  {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
-                </IconButton>
-              ),
-            }}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenPasswordModal(false)}>Cancel</Button>
-          <LoadingButton
-            variant="contained"
-            color="primary"
-            loading={isUpdatingPassword}
-            onClick={async () => {
-              if (newPassword !== confirmPassword) {
-                alert("Passwords do not match");
-                return;
-              }
+                  {isUpdatingUsername ? "Saving..." : "Save"}
+                </button>
+                <button
+                  onClick={() => setIsEditingUsername(false)}
+                  className="px-3 py-1 border border-gray-300 rounded-full text-sm hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+              </div>
+            )}
+          </div>
+          <p className="text-gray-500 mt-1">{userData.email}</p>
+          <p className="text-xs text-gray-400 mt-0.5">
+            Joined {formattedDate}
+          </p>
+        </div>
 
-              setIsUpdatingPassword(true);
-              try {
-                const result = await updatePassword(oldPassword, newPassword);
-                if (result === "success") {
-                  alert("Password updated successfully");
-                  setOpenPasswordModal(false);
-                  setOldPassword("");
-                  setNewPassword("");
-                  setConfirmPassword("");
-                } else {
-                  alert(result);
-                }
-              } finally {
-                setIsUpdatingPassword(false);
-              }
-            }}
+        <button
+          onClick={() => setOpenPasswordModal(true)}
+          className="z-10 border border-gray-200 px-4 py-2 rounded-full flex items-center gap-2 hover:bg-gray-50 transition"
+        >
+          <FiLock /> Change Password
+        </button>
+      </motion.div>
+
+      {/* ==== Stats ==== */}
+      <motion.div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mt-8"
+        layout
+      >
+        {[
+          { label: "Most Used Template", value: mostUsedTemplate, icon: <FiTrendingUp />, color: "text-indigo-600" },
+          { label: "Created Templates", value: projects.length, icon: <FiPieChart />, color: "text-pink-500" },
+          { label: "Uploads", value: userUploads.length, icon: <FiCamera />, color: "text-purple-500" },
+          { label: "Datasets", value: userDatasets.length, icon: <FiTrendingUp />, color: "text-green-500" },
+        ].map((stat, idx) => (
+          <motion.div
+            key={idx}
+            whileHover={{ scale: 1.03 }}
+            className="bg-white border border-gray-100 rounded-2xl p-6 shadow-sm hover:shadow-md transition"
           >
-            Save
-          </LoadingButton>
-        </DialogActions>
-      </Dialog>
-    </Box>
+            <div className="flex items-center gap-3">
+              <div className={`text-2xl ${stat.color}`}>{stat.icon}</div>
+              <div>
+                <p className="text-sm text-gray-500">{stat.label}</p>
+                <p className="text-lg font-semibold text-gray-800">{stat.value}</p>
+              </div>
+            </div>
+          </motion.div>
+        ))}
+      </motion.div>
+
+      {/* ==== Charts ==== */}
+      <div className="mt-10 grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <motion.div
+          whileHover={{ scale: 1.01 }}
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
+        >
+          <h3 className="font-semibold text-gray-800 mb-2">Rendering History</h3>
+          <p className="text-sm text-gray-500 mb-4">Your daily render count.</p>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={renderingHistoryData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="day" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Line type="monotone" dataKey="renders" stroke="#6366F1" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
+        </motion.div>
+
+        <motion.div
+          whileHover={{ scale: 1.01 }}
+          className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6"
+        >
+          <h3 className="font-semibold text-gray-800 mb-2">Template Usage</h3>
+          <p className="text-sm text-gray-500 mb-4">Frequency of template usage.</p>
+          <ResponsiveContainer width="100%" height={250}>
+            <LineChart data={templatesUsageData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="template" />
+              <YAxis allowDecimals={false} />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="usage" stroke="#EC4899" strokeWidth={2} />
+            </LineChart>
+          </ResponsiveContainer>
+        </motion.div>
+      </div>
+
+      {/* ==== Password Modal ==== */}
+      <AnimatePresence>
+        {openPasswordModal && (
+          <motion.div
+            className="fixed inset-0 bg-black/40 flex items-center justify-center z-50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6 relative"
+              initial={{ scale: 0.9 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.9 }}
+            >
+              <button
+                onClick={() => setOpenPasswordModal(false)}
+                className="absolute top-3 right-3 text-gray-400 hover:text-gray-600"
+              >
+                <FiX />
+              </button>
+              <h2 className="text-lg font-semibold mb-4">Change Password</h2>
+              {["old", "new", "confirm"].map((field) => (
+                <div key={field} className="mb-3">
+                  <label className="block text-sm text-gray-600 mb-1 capitalize">
+                    {field === "old"
+                      ? "Old Password"
+                      : field === "new"
+                      ? "New Password"
+                      : "Confirm Password"}
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword[field as keyof typeof showPassword] ? "text" : "password"}
+                      value={passwords[field as keyof typeof passwords]}
+                      onChange={(e) =>
+                        setPasswords({ ...passwords, [field]: e.target.value })
+                      }
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 pr-10 text-sm focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400"
+                    />
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setShowPassword((prev) => ({
+                          ...prev,
+                          [field]: !prev[field as keyof typeof prev],
+                        }))
+                      }
+                      className="absolute right-3 top-2.5 text-gray-400 hover:text-gray-600"
+                    >
+                      {showPassword[field as keyof typeof showPassword] ? (
+                        <FiEyeOff />
+                      ) : (
+                        <FiEye />
+                      )}
+                    </button>
+                  </div>
+                </div>
+              ))}
+              <div className="flex justify-end gap-2 mt-4">
+                <button
+                  onClick={() => setOpenPasswordModal(false)}
+                  className="px-4 py-2 border border-gray-300 rounded-full text-sm hover:bg-gray-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={async () => {
+                    if (passwords.new !== passwords.confirm)
+                      return toast.error("Passwords do not match");
+                    setIsUpdatingPassword(true);
+                    try {
+                      const res = await updatePassword(passwords.old, passwords.new);
+                      if (res === "success") {
+                        toast.success("Password updated successfully!");
+                        setOpenPasswordModal(false);
+                      }
+                    } finally {
+                      setIsUpdatingPassword(false);
+                    }
+                  }}
+                  className="px-5 py-2 rounded-full text-white bg-indigo-500 hover:bg-indigo-600 text-sm"
+                >
+                  {isUpdatingPassword ? "Saving..." : "Save"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };

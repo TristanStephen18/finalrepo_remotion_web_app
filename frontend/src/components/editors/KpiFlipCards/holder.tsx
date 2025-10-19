@@ -1,22 +1,22 @@
 import React, { useState, useRef, useEffect } from "react";
-import { BackgroundSecTrial } from "../Global/sidenav_sections/bg";
-import { KpiFlipSideNav } from "./sidenav";
+import { BackgroundSecTrial } from "../Global/sidenav_sections/Backgrounds";
+import { KpiFlipSideNav } from "./Sidenav";
 import type { CardData } from "../../remotion_compositions/KpiFlipCards";
 import { KpiFlipCardsPreview } from "../../layout/EditorPreviews/KpiFlipCardsPreview";
-import { TextSettingsPanel } from "./sidenav_sections/text";
-import { CardsLayoutPanel } from "./sidenav_sections/layout";
-import { CardStylingPanel } from "./sidenav_sections/cardstyling";
-import { AnimationSettingsPanel } from "./sidenav_sections/animation";
-import { CardDataPanel } from "./sidenav_sections/data";
-import { defaultpanelwidth } from "../../../data/defaultvalues";
-import { ExportModal } from "../../ui/modals/exportmodal";
-import { TopNavWithSave } from "../../navigations/single_editors/withsave";
-import { useProjectSave } from "../../../hooks/saveproject";
-import { SaveProjectModal } from "../../ui/modals/savemodal";
-import { LoadingOverlay } from "../../ui/modals/loadingprojectmodal";
+import { TextSettingsPanel } from "./sidenav_sections/Text";
+import { CardsLayoutPanel } from "./sidenav_sections/Layout";
+import { CardStylingPanel } from "./sidenav_sections/CardStyling";
+import { AnimationSettingsPanel } from "./sidenav_sections/Animation";
+import { CardDataPanel } from "./sidenav_sections/Data";
+import { defaultpanelwidth } from "../../../data/DefaultValues";
+import { ExportModal } from "../../ui/modals/ExportModal";
+import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
+import { useProjectSave } from "../../../hooks/SaveProject";
+import { SaveProjectModal } from "../../ui/modals/SaveModal";
+import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
 import { useParams } from "react-router-dom";
-import { useFileUpload } from "../../../hooks/uploads/handleimageupload";
-import { useBackgroundImages } from "../../../hooks/datafetching/userimagesandonlineimages";
+import { useFileUpload } from "../../../hooks/uploads/HandleImageUpload";
+import { useBackgroundImages } from "../../../hooks/datafetching/UserImagesAndOnlineImages";
 
 export const KpiFlipCardEditor: React.FC = () => {
   const { id } = useParams();
@@ -31,7 +31,7 @@ export const KpiFlipCardEditor: React.FC = () => {
 
   // Background
   const [backgroundImage, setBackgroundImage] = useState(
-    "/bgimages/colors/bg1.jpg"
+    `/bgimages/colors/bg1.jpg`
   );
   const [backgroundSource, setBackgroundSource] = useState<
     "upload" | "default"
@@ -186,7 +186,7 @@ export const KpiFlipCardEditor: React.FC = () => {
       if (!finalImageUrl.startsWith(origin))
         finalImageUrl = `${origin}${finalImageUrl}`;
 
-      const response = await fetch("/generatevideo/kpiflipcard", {
+      const response = await fetch(`/generatevideo/kpiflipcard`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -221,11 +221,11 @@ export const KpiFlipCardEditor: React.FC = () => {
       const result = await response.json();
       const renderUrl = result.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
           body: JSON.stringify({
             templateId: 4,
@@ -267,9 +267,7 @@ export const KpiFlipCardEditor: React.FC = () => {
   } = useProjectSave({
     templateId: 4, // 👈 unique template ID for KPI Flip
     buildProps: () => ({
-      backgroundImage: backgroundImage.startsWith("/")
-        ? `${window.location.origin}${backgroundImage}`
-        : backgroundImage,
+      backgroundImage,
       title,
       titleFontSize,
       titleFontColor,
@@ -293,7 +291,7 @@ export const KpiFlipCardEditor: React.FC = () => {
       cardFrontColor,
       valueFontSize,
     }),
-    videoEndpoint: "/generatevideo/kpiflipcard",
+    videoEndpoint: `/generatevideo/kpiflipcard`,
   });
 
   // 🟢 Load project if editing existing

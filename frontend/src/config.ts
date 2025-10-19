@@ -1,0 +1,1 @@
+export const backendPrefix = 'http://localhost:3000';

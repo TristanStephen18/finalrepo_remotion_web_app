@@ -10,7 +10,7 @@ export const useUploadHooks = () => {
 
   const fetchUploads = () => {
     setLoadingUploads(true);
-    fetch("/useruploads", {
+    fetch(`/useruploads`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
       },

@@ -5,7 +5,7 @@ import {
   Typography,
 } from "@mui/material";
 import type React from "react";
-import { triviaNiches } from "../../data/factcardsniches";
+import { triviaNiches } from "../../data/FactCardsNiches";
 
 export const NicheSelectionFactCards: React.FC<{
   selectedNiches: string[];

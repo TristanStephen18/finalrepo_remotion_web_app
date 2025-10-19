@@ -12,9 +12,9 @@ import {
   Box,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import { templateCategories } from "../../../data/dashboardcardsdata"; 
-import { TemplateNavigator } from "../../../utils/templatenavigator";
-import { ModalTemplateCard } from "../dsahboard/templatecardmodal";
+import { templateCategories } from "../../../data/DashboardCardsData"; 
+import { TemplateNavigator } from "../../../utils/TemplateNavigator";
+import { ModalTemplateCard } from "../dsahboard/TemplateCardModal";
 
 interface ChooseTemplateModalProps {
   open: boolean;
@@ -149,6 +149,7 @@ export const ChooseTemplateModal: React.FC<ChooseTemplateModalProps> = ({
                 key={template.name}
                 label={template.name}
                 description={template.description}
+                url={template.url}
                 onSelect={(label) => {
                   const location = TemplateNavigator(label);
                   window.open(location, "_blank");

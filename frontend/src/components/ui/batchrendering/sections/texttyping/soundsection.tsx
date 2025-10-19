@@ -2,7 +2,7 @@ import { Box, Button, IconButton, Typography } from "@mui/material";
 import { PauseIcon } from "lucide-react";
 import React from "react";
 import PlayArrowIcon from "@mui/icons-material/PlayArrow";
-import { AUDIO_FILES } from "../../../../../data/texttypingaudios";
+import { AUDIO_FILES } from "../../../../../data/TextTypingAudios";
 import ClearAllIcon from "@mui/icons-material/ClearAll";
 import SelectAllIcon from "@mui/icons-material/SelectAll";
 

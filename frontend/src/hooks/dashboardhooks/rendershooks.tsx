@@ -7,7 +7,7 @@ export const useRendersHooks = () =>{
     
     const fetchRenders = () => {
         setLoadingRenders(true);
-        fetch("/renders", {
+        fetch(`/renders`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
           },

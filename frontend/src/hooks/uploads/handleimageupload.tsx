@@ -20,10 +20,10 @@ export function useFileUpload(
   options: UseFileUploadOptions
 ): UseFileUploadResult {
   const {
-    uploadUrl = "/uploadhandler/upload-image",
+    uploadUrl = `/uploadhandler/upload-image`,
     fieldName = "image",
     saveRecord = true,
-    recordUrl = "/useruploads",
+    recordUrl = `/useruploads`,
     type,
   } = options;
 

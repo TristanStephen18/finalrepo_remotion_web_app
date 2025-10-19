@@ -26,7 +26,7 @@ export function useVideoUpload(): UseVideoUploadResult {
       const formData = new FormData();
       formData.append("video", file);
 
-      const response = await fetch("/uploadhandler/upload-video", {
+      const response = await fetch(`/uploadhandler/upload-video`, {
         method: "POST",
         body: formData,
       });
@@ -43,7 +43,7 @@ export function useVideoUpload(): UseVideoUploadResult {
       setDuration(videoDuration);
 
       // 🔹 Step 2: Save record in Neon DB
-      const saveResponse = await fetch("/useruploads", {
+      const saveResponse = await fetch(`/useruploads`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
