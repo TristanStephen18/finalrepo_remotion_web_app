@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../css/Login.css";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { backendPrefix } from "../../config";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -29,7 +30,7 @@ const LoginPage: React.FC = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:3000/auth/login", {
+      const response = await fetch(`${backendPrefix}/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

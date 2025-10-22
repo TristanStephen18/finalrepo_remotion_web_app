@@ -128,7 +128,7 @@ const RedditPost: React.FC<{ title: string; text: string }> = ({
           style={{ display: "flex", alignItems: "center", marginBottom: 24 }}
         >
           <img
-            src={"/images/reddit.png"}
+            src={"https://res.cloudinary.com/dnxc1lw18/image/upload/v1760981744/Reddit_Logo_uhx1je.png"}
             style={{
               width: 60,
               height: 60,

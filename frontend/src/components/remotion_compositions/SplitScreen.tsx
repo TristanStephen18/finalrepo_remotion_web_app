@@ -2,7 +2,6 @@
 import React from "react";
 import {
   AbsoluteFill,
-  staticFile,
   Video,
   useCurrentFrame,
   interpolate,
@@ -19,8 +18,8 @@ export type SplitScreenProps = {
   topVolume?: number;
   bottomVolume?: number;
   swap?: boolean;
-  transitionDuration?: number;    // in frames
-  slideOffsetPercent?: number;    // how far they travel (default 30%)
+  transitionDuration?: number; // in frames
+  slideOffsetPercent?: number; // how far they travel (default 30%)
 };
 
 export const SplitScreen: React.FC<SplitScreenProps> = ({
@@ -61,22 +60,26 @@ export const SplitScreen: React.FC<SplitScreenProps> = ({
 
   const top = (
     <div style={topStyle}>
-      <Video
-        src={staticFile(topVideoUrl)}
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        volume={topVolume}
-      />
+      {topVideoUrl != "" && (
+        <Video
+          src={topVideoUrl}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          volume={topVolume}
+        />
+      )}
     </div>
   );
 
   const bottom = (
     <div style={bottomStyle}>
-      <Video
-        src={staticFile(bottomVideoUrl)}
-        style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        volume={bottomVolume}
-        loop
-      />
+      {bottomVideoUrl != "" && (
+        <Video
+          src={bottomVideoUrl}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          volume={bottomVolume}
+          loop
+        />
+      )}
     </div>
   );
 

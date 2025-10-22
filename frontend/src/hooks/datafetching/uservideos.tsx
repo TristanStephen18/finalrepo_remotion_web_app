@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { backendPrefix } from "../../config";
+import { bgVideosFromCloudinary } from "../../data/bgvideos";
 
 export const userVideos = () => {
   const [recentVideos, setRecentVideos] = useState<string[]>([]);
@@ -8,29 +10,14 @@ export const userVideos = () => {
 
   function getAllDefaultVideos() {
     setDefaultVidsLoading(true);
-  const videoCounts: Record<string, number> = {
-    minecraft: 8,
-    subwaysurfers: 7,
-    templerun: 3,
-    ugc: 5
-  };
-  const videos: string[] = [];
-  Object.keys(videoCounts).forEach(tab => {
-    const prefix = tab === "minecraft" ? "m" : 
-                  tab === "subwaysurfers" ? "ss" : 
-                  tab === "templerun" ? "tr" : "ugc";
-    for (let i = 1; i <= videoCounts[tab]; i++) {
-      videos.push(`/defaultvideos/${tab}/${prefix}${i}.mp4`);
-    }
-  });
-//   return videos;
-setDefaultVideos(videos);
-setDefaultVidsLoading(false);
-}
+
+    setDefaultVideos(bgVideosFromCloudinary);
+    setDefaultVidsLoading(false);
+  }
 
   const fetchUserVideos = () => {
     setLoadingVideos(true);
-    fetch(`/useruploads/videos`, {
+    fetch(`${backendPrefix}/useruploads/videos`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -55,6 +42,6 @@ setDefaultVidsLoading(false);
     setRecentVideos,
     getAllDefaultVideos,
     defaultVideos,
-    defaultvidsloading
+    defaultvidsloading,
   };
 };

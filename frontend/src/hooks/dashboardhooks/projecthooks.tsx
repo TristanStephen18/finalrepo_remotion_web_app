@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { backendPrefix } from "../../config";
 
 export const useProjectHooks = () => {
   const [projects, setProjects] = useState<any[]>([]);
@@ -11,7 +12,7 @@ export const useProjectHooks = () => {
 
   const fetchProjects = async () => {
     try {
-      const res = await fetch(`/projects`, {
+      const res = await fetch(`${backendPrefix}/projects`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -44,7 +45,7 @@ export const useProjectHooks = () => {
     try {
       await Promise.all(
         selectedProjects.map((id) =>
-          fetch(`/projects/${id}`, {
+          fetch(`${backendPrefix}/projects/${id}`, {
             method: "DELETE",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

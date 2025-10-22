@@ -16,6 +16,7 @@ import { KpiFlipCardsBatchOutputs } from "../../components/ui/batchrendering/sec
 import { useDatasetsFetching } from "../../hooks/datafetching/DatasetFilesFetching";
 import { useDatasetUpload } from "../../hooks/uploads/HandleDatasetsFileUpload";
 import { FiDatabase, FiDroplet, FiGrid, FiImage, FiMenu, FiType, FiX } from "react-icons/fi";
+import { backendPrefix } from "../../config";
 
 export const KpiFlipBatchRendering: React.FC = () => {
   const { fetchUserDatasets, userDatasets } = useDatasetsFetching();
@@ -68,7 +69,7 @@ export const KpiFlipBatchRendering: React.FC = () => {
   const fetchAIDataset = async (quantity: number) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/generate/kpiflipcardsdataset`, {
+      const res = await fetch(`${backendPrefix}/api/generate/kpiflipcardsdataset`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -93,7 +94,7 @@ export const KpiFlipBatchRendering: React.FC = () => {
     // const fontsizeindicator = titleAndSubtitleFontSizeIndicator(combo.bar.title);
     try {
       let finalImageUrl = combo.bg;
-      const response = await fetch(`/generatevideo/kpiflipcard`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/kpiflipcard`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -132,7 +133,7 @@ export const KpiFlipBatchRendering: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

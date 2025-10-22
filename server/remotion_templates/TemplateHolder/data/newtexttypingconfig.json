@@ -1,12 +1,13 @@
 {
   "phrase": {
     "lines": [
-      "After awhile you could get used to anything"
+      "Life is like riding a bicycle. To keep your balance, you must keep moving.",
+      "Albert Einstein"
     ],
-    "category": "business",
-    "mood": "minimalist"
+    "category": "growth",
+    "mood": "wise"
   },
   "backgroundIndex": 2,
-  "fontIndex": 2,
+  "fontIndex": 0,
   "audioIndex": 1
 }

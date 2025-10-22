@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { backendPrefix } from "../../config";
 
 export const useUploadHooks = () => {
   const [uploads, setUploads] = useState<any[]>([]);
@@ -10,7 +11,7 @@ export const useUploadHooks = () => {
 
   const fetchUploads = () => {
     setLoadingUploads(true);
-    fetch(`/useruploads`, {
+    fetch(`${backendPrefix}/useruploads`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
       },
@@ -30,7 +31,7 @@ export const useUploadHooks = () => {
     try {
       await Promise.all(
         selectedUploads.map((id) =>
-          fetch(`/useruploads/${id}`, {
+          fetch(`${backendPrefix}/useruploads/${id}`, {
             method: "DELETE",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

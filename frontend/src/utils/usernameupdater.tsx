@@ -1,8 +1,9 @@
 import toast from "react-hot-toast";
+import { backendPrefix } from "../config";
 
 export const updateUsername = async (username: string) => {
   try {
-    const res = await fetch(`/auth/update-username`, {
+    const res = await fetch(`${backendPrefix}/auth/update-username`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

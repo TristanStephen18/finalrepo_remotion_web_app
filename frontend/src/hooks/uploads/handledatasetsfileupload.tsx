@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { detectFileType } from "../../utils/FileTypeDetector";
+import { backendPrefix } from "../../config";
 
 interface useDatasetUploadOptions {
   uploadUrl?: string;
@@ -20,10 +21,10 @@ export function useDatasetUpload(
   options: useDatasetUploadOptions
 ): useDatasetUploadResult {
   const {
-    uploadUrl = `/uploadhandler/upload-datasets`,
+    uploadUrl = `${backendPrefix}/uploadhandler/upload-datasets`,
     fieldName = "file",
     saveRecord = true,
-    recordUrl = `/datasets`,
+    recordUrl = `${backendPrefix}/datasets`,
     template,
   } = options;
 

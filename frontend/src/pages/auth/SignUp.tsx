@@ -3,6 +3,7 @@ import "../css/Login.css";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Visibility from "@mui/icons-material/Visibility";
 import PersonIcon from "@mui/icons-material/Person";
+import { backendPrefix } from "../../config";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -42,7 +43,7 @@ const SignupPage: React.FC = () => {
 
     try {
       setLoading(true);
-      const response = await fetch("/auth/signup", {
+      const response = await fetch(`${backendPrefix}/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

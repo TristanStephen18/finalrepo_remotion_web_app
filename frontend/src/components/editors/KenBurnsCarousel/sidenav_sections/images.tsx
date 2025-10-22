@@ -19,6 +19,7 @@ import {
   sortableKeyboardCoordinates,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { backendPrefix } from "../../../../config";
 
 export const KenBurnsImagesPanel: React.FC<{
   images: string[];
@@ -54,7 +55,7 @@ export const KenBurnsImagesPanel: React.FC<{
     formData.append("image", file);
 
     try {
-      const res = await fetch("/uploadhandler/upload-kenburns-image", {
+      const res = await fetch(`${backendPrefix}/uploadhandler/upload-kenburns-image`, {
         method: "POST",
         body: formData,
       });
@@ -66,7 +67,7 @@ export const KenBurnsImagesPanel: React.FC<{
           newImages[index] = data.url;
           return newImages;
         });
-         const saveResponse = await fetch(`/useruploads`, {
+         const saveResponse = await fetch(`${backendPrefix}/useruploads`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -283,7 +284,6 @@ const SortableImage: React.FC<{
         userSelect: "none",
       }}
     >
-      {/* drag handle */}
       <div
         title="Change the position of this image?"
         {...attributes}

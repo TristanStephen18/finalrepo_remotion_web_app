@@ -14,6 +14,7 @@ import { useProjectSave } from "../../../hooks/SaveProject";
 import { SaveProjectModal } from "../../ui/modals/SaveModal";
 import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
 import { useParams } from "react-router-dom";
+import { backendPrefix } from "../../../config";
 
 
 export const NewTypingEditor: React.FC = () => {
@@ -103,7 +104,7 @@ export const NewTypingEditor: React.FC = () => {
   useEffect(() => {
     if (id) {
       setIsLoading(true);
-      fetch(`/projects/${id}`, {
+      fetch(`${backendPrefix}/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((res) => {
@@ -155,7 +156,7 @@ export const NewTypingEditor: React.FC = () => {
   const handleAISuggestion = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch(`/api/generate-phrase`, {
+      const response = await fetch(`${backendPrefix}/api/generate-phrase`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ category, mood }),
@@ -177,7 +178,7 @@ export const NewTypingEditor: React.FC = () => {
   const handleExport = async (format: string) => {
     setIsExporting(true);
     try {
-      const response = await fetch(`/generatevideo/newtexttypingrender`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/newtexttypingrender`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -195,7 +196,7 @@ export const NewTypingEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -248,7 +249,7 @@ export const NewTypingEditor: React.FC = () => {
       audioIndex: soundIndex,
       duration,
     }),
-    videoEndpoint: `/generatevideo/newtexttypingrender`,
+    videoEndpoint: `${backendPrefix}/generatevideo/newtexttypingrender`,
   });
 
   // 🟢 Persist state in localStorage

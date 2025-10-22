@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { backendPrefix } from "../../config";
 
 export const useDatasetsFetching = () => {
   const [loadingDatasets, setLoadingDatasets] = useState(false);
@@ -7,7 +8,7 @@ export const useDatasetsFetching = () => {
 
   const fetchUserDatasets = () => {
     setLoadingDatasets(true);
-    fetch(`/datasets`, {
+    fetch(`${backendPrefix}/datasets`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
       },
@@ -28,7 +29,7 @@ export const useDatasetsFetching = () => {
     try {
       await Promise.all(
         selectedDatasets.map((id) =>
-          fetch(`/datasets/${id}`, {
+          fetch(`${backendPrefix}/datasets/${id}`, {
             method: "DELETE",
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,

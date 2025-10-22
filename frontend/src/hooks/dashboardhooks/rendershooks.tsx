@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { backendPrefix } from "../../config";
 
 export const useRendersHooks = () =>{
      const [renders, setRenders] = useState<any[]>([]);
@@ -7,7 +8,7 @@ export const useRendersHooks = () =>{
     
     const fetchRenders = () => {
         setLoadingRenders(true);
-        fetch(`/renders`, {
+        fetch(`${backendPrefix}/renders`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
           },
@@ -36,7 +37,7 @@ export const useRendersHooks = () =>{
         try {
           await Promise.all(
             selectedRenders.map((id) =>
-              fetch(`/renders/${id}`, {
+              fetch(`${backendPrefix}/renders/${id}`, {
                 method: "DELETE",
                 headers: {
                   Authorization: `Bearer ${localStorage.getItem("token")}`,

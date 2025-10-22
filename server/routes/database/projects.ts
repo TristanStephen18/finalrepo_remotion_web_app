@@ -6,6 +6,7 @@ import type { AuthRequest } from "../../utils/authmiddleware.ts";
 import { requireAuth } from "../../utils/authmiddleware.ts";
 import { projects } from "../../db/schema.ts";
 import { db } from "../../db/client.ts";
+import cloudinary from "../../utils/cloudinaryClient.ts";
 
 const router = Router();
 
@@ -35,7 +36,14 @@ router.post("/save", requireAuth, async (req: AuthRequest, res: Response) => {
   // Insert new project with optional projectVidUrl
   const [newProject] = await db
     .insert(projects)
-    .values({ userId, title, templateId, props, projectVidUrl, lastUpdated: new Date() })
+    .values({
+      userId,
+      title,
+      templateId,
+      props,
+      projectVidUrl,
+      lastUpdated: new Date(),
+    })
     .returning();
 
   res.json({ message: "Project saved successfully", project: newProject });
@@ -136,6 +144,30 @@ router.delete("/:id", requireAuth, async (req: AuthRequest, res: Response) => {
       return res.status(404).json({ error: "Project not found" });
     }
 
+    if (existing.projectVidUrl) {
+      try {
+        const match = existing.projectVidUrl.match(
+          /upload\/(?:v\d+\/)?([^\.]+)/
+        );
+        const publicId = match ? match[1] : null;
+
+        if (publicId) {
+          const result = await cloudinary.uploader.destroy(publicId, {
+            resource_type: "video",
+          });
+
+          console.log("☁️ Cloudinary deletion result:", result);
+        } else {
+          console.warn(
+            "⚠️ Could not extract Cloudinary public_id from URL:",
+            existing.projectVidUrl
+          );
+        }
+      } catch (cloudError) {
+        console.error("❌ Cloudinary deletion error:", cloudError);
+      }
+    }
+
     // Delete the project
     await db.delete(projects).where(eq(projects.id, Number(id)));
 
@@ -145,7 +177,5 @@ router.delete("/:id", requireAuth, async (req: AuthRequest, res: Response) => {
     res.status(500).json({ error: "Failed to delete project" });
   }
 });
-
-
 
 export default router;

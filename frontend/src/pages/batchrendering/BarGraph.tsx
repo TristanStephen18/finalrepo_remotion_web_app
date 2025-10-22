@@ -26,6 +26,7 @@ import {
   FiType,
   FiX,
 } from "react-icons/fi";
+import { backendPrefix } from "../../config";
 
 export const BarGraphBatchRendering: React.FC = () => {
   const { fetchUserDatasets, userDatasets } = useDatasetsFetching();
@@ -75,7 +76,7 @@ export const BarGraphBatchRendering: React.FC = () => {
   const fetchAIDataset = async (quantity: number) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/generate/bargraphdataset`, {
+      const res = await fetch(`${backendPrefix}/api/generate/bargraphdataset`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ quantity }),
@@ -100,7 +101,7 @@ export const BarGraphBatchRendering: React.FC = () => {
     );
     try {
       let finalImageUrl = combo.bg;
-      const response = await fetch(`/generatevideo/bargraph`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/bargraph`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -130,7 +131,7 @@ export const BarGraphBatchRendering: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

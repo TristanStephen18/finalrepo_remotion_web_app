@@ -1,4 +1,5 @@
 import React from "react";
+import { people, randompics, vectors } from "../../../../data/avatars";
 
 export const AvatarSelector: React.FC<{
   avatars: { left: string; right: string };
@@ -12,9 +13,9 @@ export const AvatarSelector: React.FC<{
   };
 
   const categories = {
-    vector: Array.from({ length: 10 }, (_, i) => `/images/vectors/v${i + 1}.jpg`),
-    people: Array.from({ length: 10 }, (_, i) => `/images/people/p${i + 1}.jpg`),
-    random: Array.from({ length: 10 }, (_, i) => `/images/random/r${i + 1}.jpg`),
+    vector: vectors,
+    people: people,
+    random: randompics,
   };
 
   const getRole = (src: string): "left" | "right" | null => {

@@ -36,7 +36,7 @@ router.post("/signup", async (req, res) => {
         passwordHash,
         provider: "local",
         providerId: "",
-        profilePicture: "pfp.jpg",
+        profilePicture: "https://res.cloudinary.com/dnxc1lw18/image/upload/v1761048476/pfp_yitfgl.jpg",
         verified: false,
       })
       .returning();
@@ -68,7 +68,7 @@ router.get("/verify", async (req, res) => {
       .set({ verified: true })
       .where(eq(users.id, decoded.userId));
 
-    res.redirect("/login?verified=true");
+    res.redirect("http://localhost:5173/login?verified=true");
   } catch (err) {
     console.error("Verification error:", err);
     res.status(400).json({ error: "Invalid or expired token" });

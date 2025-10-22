@@ -13,6 +13,7 @@ import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
 import { useVideoUpload } from "../../../hooks/uploads/HandleVideoUploads";
 import { userVideos } from "../../../hooks/datafetching/UserVideos";
+import { backendPrefix } from "../../../config";
 
 
 export const SplitScreenEditor: React.FC = () => {
@@ -21,8 +22,8 @@ export const SplitScreenEditor: React.FC = () => {
   const [templateName, setTemplateName] = useState(
     "🎬 Split Screen Video Template"
   );
-  const [bottomVideoUrl, setBottomVideoUrl] = useState("");
-  const [topVideoUrl, setTopVideoUrl] = useState("");
+  const [bottomVideoUrl, setBottomVideoUrl] = useState(``);
+  const [topVideoUrl, setTopVideoUrl] = useState(``);
   const [bottomHeightPercent, setBottomHeightPercent] = useState(50);
   const [topHeightPercent, setTopHeightPercent] = useState(50);
   const [bottomOpacity, setBottomOpacity] = useState(1);
@@ -129,7 +130,7 @@ export const SplitScreenEditor: React.FC = () => {
   const handleExport = async (format: string) => {
     setIsExporting(true);
     try {
-      const response = await fetch(`/generatevideo/splitscreen`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/splitscreen`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -150,7 +151,7 @@ export const SplitScreenEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -207,14 +208,14 @@ export const SplitScreenEditor: React.FC = () => {
       topVolume,
       duration,
     }),
-    videoEndpoint: `/generatevideo/splitscreen`,
+    videoEndpoint: `${backendPrefix}/generatevideo/splitscreen`,
   });
 
   // 🟢 Load project if editing existing
   useEffect(() => {
     if (id) {
       setIsLoading(true);
-      fetch(`/projects/${id}`, {
+      fetch(`${backendPrefix}/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((res) => {

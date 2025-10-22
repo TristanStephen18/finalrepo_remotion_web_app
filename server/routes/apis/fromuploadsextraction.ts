@@ -16,12 +16,11 @@ router.post("/", requireAuth, async (req, res) => {
     return res.status(400).json({ error: "Missing type or url" });
   }
   let filedata;
-  const actualFilePath = path.join(process.cwd(), "server/public", fileurl);
 
   if (type === "json") {
-    filedata = await extractFromJsonPath(actualFilePath);
+    filedata = await extractFromJsonPath(fileurl);
   } else {
-    filedata = await extractFromXlsxPath(actualFilePath);
+    filedata = await extractFromXlsxPath(fileurl);
   }
 
   try {

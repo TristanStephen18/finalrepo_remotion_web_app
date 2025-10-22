@@ -1,8 +1,9 @@
 import toast from "react-hot-toast";
+import { backendPrefix } from "../config";
 
 export async function updatePassword(oldPassword: string, newPassword: string) {
   try {
-    const response = await fetch(`/auth/update-password`, {
+    const response = await fetch(`${backendPrefix}/auth/update-password`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

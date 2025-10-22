@@ -12,6 +12,7 @@ import {
   updateStoryTellingScriptJson,
 } from "../../controllers/functions/jsonupdater.ts";
 import { getAudioDurationInSeconds } from "get-audio-duration";
+import { supabase, SUPABASE_BUCKET } from "../../utils/supabaseClient.ts";
 
 dotenv.config();
 const router = Router();
@@ -28,10 +29,31 @@ async function streamToBuffer(stream: Readable): Promise<Buffer> {
   return Buffer.concat(chunks);
 }
 
+async function uploadToSupabase(filePath: string, remotePath: string) {
+  const fileBuffer = fs.readFileSync(filePath);
+  const { data, error } = await supabase.storage
+    .from(SUPABASE_BUCKET)
+    .upload(remotePath, fileBuffer, {
+      contentType: "audio/mpeg",
+      upsert: true,
+    });
+
+  if (error) {
+    console.error("❌ Supabase upload failed:", error.message);
+    throw error;
+  }
+
+  const { data: publicUrlData } = supabase.storage
+    .from(SUPABASE_BUCKET)
+    .getPublicUrl(remotePath);
+
+  return publicUrlData.publicUrl;
+}
+
+
 router.post("/test-generate", async (req, res) => {
   console.log(req.body.chats);
   try {
-    // Voices provided in body or fallback default pair
     const voices: string[] = req.body.voices || [
       "EXAVITQu4vr4xnSDxMaL",
       "XrExE9yKIg1WjnnlVkGX",
@@ -46,13 +68,11 @@ router.post("/test-generate", async (req, res) => {
       return res.status(400).json({ error: "No chats provided" });
     }
 
-    // 🔑 Map each unique speaker to a voiceId
+    // 🔑 Map speakers to voices
     const speakerToVoice: Record<string, string> = {};
     let nextVoiceIndex = 0;
-
     function getVoiceForSpeaker(speaker: string) {
       if (!speakerToVoice[speaker]) {
-        // assign next available voice (cycle if more speakers than voices)
         speakerToVoice[speaker] = voices[nextVoiceIndex % voices.length];
         nextVoiceIndex++;
       }
@@ -63,7 +83,7 @@ router.post("/test-generate", async (req, res) => {
     const segments: any[] = [];
     let currentTime = 0;
 
-    // 🔊 Generate TTS for each chat line
+    // 🔊 Generate TTS for each chat
     for (let i = 0; i < chats.length; i++) {
       const { text, speaker } = chats[i];
       const voiceId = getVoiceForSpeaker(speaker);
@@ -74,7 +94,6 @@ router.post("/test-generate", async (req, res) => {
         preview: text.slice(0, 80),
       });
 
-      // Generate audio
       const audioStream = await elevenLabs.generate({
         voice: voiceId,
         model_id: "eleven_multilingual_v2",
@@ -84,15 +103,12 @@ router.post("/test-generate", async (req, res) => {
       const buffer = await streamToBuffer(audioStream as Readable);
       audioBuffers.push(buffer);
 
-      // Save temp file to measure duration
-      const tmpFile = path.join(
-        os.tmpdir(),
-        `utterance-${i}-${Date.now()}.mp3`
-      );
+      // Temporary file to get duration
+      const tmpFile = path.join(os.tmpdir(), `utterance-${i}-${Date.now()}.mp3`);
       fs.writeFileSync(tmpFile, buffer);
       const dur = await getAudioDurationInSeconds(tmpFile);
+      fs.unlinkSync(tmpFile); // cleanup temp file
 
-      // Push segment timing
       segments.push({
         text,
         start_time: currentTime,
@@ -103,60 +119,67 @@ router.post("/test-generate", async (req, res) => {
         },
       });
 
-      currentTime += dur; // advance timeline
+      currentTime += dur;
     }
 
-    // 🔊 Stitch final audio
+    // 🔊 Combine all buffers
     const finalAudio = Buffer.concat(audioBuffers);
+    const fileName = `fakeconvo-${Date.now()}.mp3`;
+    const remotePath = `audios/fakeconvo/${fileName}`;
 
-    // 💾 Save audio files
-    const audioFileName = "fakeconvo.mp3";
-    const serverfilename = `fakeconvo-${Date.now()}.mp3`;
+    // ☁️ Upload final audio to Supabase
+    const { data, error } = await supabase.storage
+      .from(SUPABASE_BUCKET)
+      .upload(remotePath, finalAudio, {
+        contentType: "audio/mpeg",
+        upsert: true,
+      });
 
-    const savePaths = [
-      path.join(
-        process.cwd(),
-        "server/public/audios/fakeconvo",
-        serverfilename
-      ),
-      path.join(
-        process.cwd(),
-        "server/remotion_templates/TemplateHolder/public",
-        audioFileName
-      ),
-    ];
+    if (error) {
+      console.error("❌ Supabase upload failed:", error.message);
+      return res.status(500).json({ error: "Supabase upload failed" });
+    }
 
-    savePaths.forEach((savePath) => {
-      fs.mkdirSync(path.dirname(savePath), { recursive: true });
-      fs.writeFileSync(savePath, finalAudio);
-    });
+    // 🌐 Get public URL
+    const { data: publicUrlData } = supabase.storage
+      .from(SUPABASE_BUCKET)
+      .getPublicUrl(remotePath);
 
-    const duration = await getAudioDurationInSeconds(savePaths[0]);
+    const publicUrl = publicUrlData.publicUrl;
+    console.log("✅ Uploaded to Supabase:", publicUrl);
 
-    // 📦 Build chats.json
+    // ⏱️ Duration of the full audio
+    const tmpFinal = path.join(os.tmpdir(), `final-${Date.now()}.mp3`);
+    fs.writeFileSync(tmpFinal, finalAudio);
+    const duration = await getAudioDurationInSeconds(tmpFinal);
+    fs.unlinkSync(tmpFinal);
+
+    // 📦 Build chats JSON
     const chatsjson = {
       language_code: "eng",
       segments,
     };
 
+    updatechatsJsonfile(chatsjson);
+
+    // ✅ Send response
     res.json({
       language_code: "eng",
-      serverfilename: `fakeconvo/${serverfilename}`,
+      audioUrl: publicUrl,
       segments,
-      duration: duration + 1, // add small padding
+      duration: duration + 1,
     });
-
-    updatechatsJsonfile(chatsjson);
   } catch (err) {
     console.error("Generation error:", err);
-    res
-      .status(500)
-      .json({ error: "Failed to generate conversation", details: String(err) });
+    res.status(500).json({
+      error: "Failed to generate conversation",
+      details: String(err),
+    });
   }
 });
 
-router.post("/reddit", async (req, res) => {
 
+router.post("/reddit", async (req, res) => {
   console.log("template updating");
   try {
     const { title, textcontent, voiceid } = req.body;
@@ -167,7 +190,6 @@ router.post("/reddit", async (req, res) => {
       });
     }
 
-    // ✅ Smart combine (only add period if missing)
     const endsWithPunct = /[.!?]$/.test(title.trim());
     const story = endsWithPunct
       ? `${title.trim()} ${textcontent.trim()}`
@@ -179,42 +201,49 @@ router.post("/reddit", async (req, res) => {
       preview: story.slice(0, 80),
     });
 
-    // 🔊 Generate TTS
+    // 🔊 Generate TTS from ElevenLabs
     const audioStream = await elevenLabs.generate({
       voice: voiceid,
       model_id: "eleven_multilingual_v2",
       text: story,
     });
 
+    // Convert stream → buffer
     const buffer = await streamToBuffer(audioStream as Readable);
 
-    const serverfilename = `reddit-${Date.now()}.mp3`;
-    const audioFileName = "reddit.mp3";
+    // 🔼 Upload to Supabase directly (no local save)
+    const fileName = `reddit-${Date.now()}.mp3`;
+    const remotePath = `audios/reddit/${fileName}`;
 
-    const savePaths = [
-      path.join(process.cwd(), "server/public/audios/reddit", serverfilename),
-      path.join(
-        process.cwd(),
-        "server/remotion_templates/TemplateHolder/public",
-        audioFileName
-      ),
-    ];
+    const { data, error } = await supabase.storage
+      .from(SUPABASE_BUCKET)
+      .upload(remotePath, buffer, {
+        contentType: "audio/mpeg",
+        upsert: true,
+      });
 
-    savePaths.forEach((savePath) => {
-      fs.mkdirSync(path.dirname(savePath), { recursive: true });
-      fs.writeFileSync(savePath, buffer);
-    });
+    if (error) {
+      console.error("❌ Supabase upload failed:", error.message);
+      return res.status(500).json({ error: "Supabase upload failed" });
+    }
 
-    const audioPath = savePaths[0];
-    const duration = await getAudioDurationInSeconds(audioPath);
+    // 🔗 Get public URL
+    const { data: publicData } = supabase.storage
+      .from(SUPABASE_BUCKET)
+      .getPublicUrl(remotePath);
+    const publicUrl = publicData.publicUrl;
 
-    console.log("📐 Performing forced alignment...");
+    console.log("✅ Uploaded to Supabase:", publicUrl);
+
+    // ⚡ You can still do forced alignment using the buffer
+    const tempPath = path.join(os.tmpdir(), fileName);
+    fs.writeFileSync(tempPath, buffer);
+    const duration = await getAudioDurationInSeconds(tempPath);
+
     const alignment = await elevenLabs.forcedAlignment.create({
-      file: fs.createReadStream(audioPath),
+      file: fs.createReadStream(tempPath),
       text: story,
     });
-
-    console.log("✅ Alignment received");
 
     const words = alignment.words.map((w: any) => ({
       word: w.text,
@@ -232,13 +261,11 @@ router.post("/reddit", async (req, res) => {
 
     updateRedditScriptJson(script);
 
-    const result = {
+    res.json({
       script,
       duration,
-      serverfilename: `/soundeffects/reddit/${serverfilename}`,
-    };
-
-    res.json(result);
+      audioUrl: publicUrl, // ✅ URL from Supabase
+    });
   } catch (err) {
     console.error("Single TTS + alignment error:", err);
     res.status(500).json({
@@ -249,58 +276,69 @@ router.post("/reddit", async (req, res) => {
 });
 
 router.post("/story", async (req, res) => {
-
   console.log("template updating");
   try {
     const { content, voiceid } = req.body;
 
     if (!content || !voiceid) {
       return res.status(400).json({
-        error: "Missing required fields: title, textcontent, voiceid",
+        error: "Missing required fields: content or voiceid",
       });
     }
+
     console.log("🎤 Generating single TTS...", {
       voiceid,
       preview: content.slice(0, 80),
     });
 
-    // 🔊 Generate TTS
+    // 🔊 Generate TTS from ElevenLabs
     const audioStream = await elevenLabs.generate({
       voice: voiceid,
       model_id: "eleven_multilingual_v2",
       text: content,
     });
 
+    // Convert stream → buffer
     const buffer = await streamToBuffer(audioStream as Readable);
 
-    const serverfilename = `story-${Date.now()}.mp3`;
-    const audioFileName = "story.mp3";
+    // 📦 Upload directly to Supabase
+    const fileName = `story-${Date.now()}.mp3`;
+    const remotePath = `audios/story/${fileName}`;
 
-    const savePaths = [
-      path.join(process.cwd(), "server/public/audios/story", serverfilename),
-      path.join(
-        process.cwd(),
-        "server/remotion_templates/TemplateHolder/public",
-        audioFileName
-      ),
-    ];
+    const { data, error } = await supabase.storage
+      .from(SUPABASE_BUCKET)
+      .upload(remotePath, buffer, {
+        contentType: "audio/mpeg",
+        upsert: true,
+      });
 
-    savePaths.forEach((savePath) => {
-      fs.mkdirSync(path.dirname(savePath), { recursive: true });
-      fs.writeFileSync(savePath, buffer);
-    });
+    if (error) {
+      console.error("❌ Supabase upload failed:", error.message);
+      return res.status(500).json({ error: "Supabase upload failed" });
+    }
 
-    const audioPath = savePaths[0];
-    const duration = await getAudioDurationInSeconds(audioPath);
+    // 🌐 Get public URL from Supabase
+    const { data: publicData } = supabase.storage
+      .from(SUPABASE_BUCKET)
+      .getPublicUrl(remotePath);
+    const publicUrl = publicData.publicUrl;
+
+    console.log("✅ Uploaded to Supabase:", publicUrl);
+
+    // ⏱️ Write to temp file for duration + alignment
+    const tmpPath = path.join(os.tmpdir(), fileName);
+    fs.writeFileSync(tmpPath, buffer);
+
+    const duration = await getAudioDurationInSeconds(tmpPath);
 
     console.log("📐 Performing forced alignment...");
     const alignment = await elevenLabs.forcedAlignment.create({
-      file: fs.createReadStream(audioPath),
+      file: fs.createReadStream(tmpPath),
       text: content,
     });
-
     console.log("✅ Alignment received");
 
+    // 🧩 Format alignment data
     const words = alignment.words.map((w: any) => ({
       word: w.text,
       start: w.start,
@@ -313,15 +351,18 @@ router.post("/story", async (req, res) => {
       words,
     };
 
+    // 📝 Update your story JSON
     updateStoryTellingScriptJson(script);
 
-    const result = {
+    // 🧹 Optional cleanup (delete temp file)
+    fs.unlinkSync(tmpPath);
+
+    // ✅ Respond with Supabase URL
+    res.json({
       script,
       duration,
-      serverfilename: `/soundeffects/story/${serverfilename}`,
-    };
-
-    res.json(result);
+      audioUrl: publicUrl,
+    });
   } catch (err) {
     console.error("Single TTS + alignment error:", err);
     res.status(500).json({

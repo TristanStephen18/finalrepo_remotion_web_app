@@ -20,6 +20,7 @@ import { BarGraphNavs } from './Sidenav';
 import { TypographyPanelBarGraphTemplate } from './sidenav_sections/Header';
 import { DataPanel } from './sidenav_sections/DataEnrty';
 import { BarGraphControlsPanel } from './sidenav_sections/BarGraphConfig';
+import { backendPrefix } from "../../../config";
 
 export const BarGraphEditor: React.FC = () => {
   const { id } = useParams();
@@ -129,7 +130,7 @@ export const BarGraphEditor: React.FC = () => {
     try {
       let finalImageUrl = backgroundImage;
 
-      const response = await fetch(`/generatevideo/bargraph`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/bargraph`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -158,7 +159,7 @@ export const BarGraphEditor: React.FC = () => {
       setExportUrl(result.url);
       const renderUrl = result.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -219,13 +220,13 @@ export const BarGraphEditor: React.FC = () => {
       backgroundImage: backgroundImage,
       duration,
     }),
-    videoEndpoint: `/generatevideo/bargraph`,
+    videoEndpoint: `${backendPrefix}/generatevideo/bargraph`,
   });
 
   useEffect(() => {
     if (id) {
       setIsLoading(true);
-      fetch(`/projects/${id}`, {
+      fetch(`${backendPrefix}/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((res) => {

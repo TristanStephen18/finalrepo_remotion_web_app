@@ -132,7 +132,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
         <div className="relative flex flex-col items-center gap-3 z-10">
           <div className="relative group">
             <img
-              src={profilePic || "/placeholder-avatar.png"}
+              src={profilePic}
               alt="Profile"
               className="w-28 h-28 rounded-full border-4 border-white shadow-lg object-cover transition-transform duration-300 group-hover:scale-105"
             />

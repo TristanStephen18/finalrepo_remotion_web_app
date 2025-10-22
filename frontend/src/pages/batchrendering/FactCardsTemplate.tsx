@@ -20,6 +20,7 @@ import { FactCardsBatchRenderingAnimationSelectionSection } from "../../componen
 import { useDatasetsFetching } from "../../hooks/datafetching/DatasetFilesFetching";
 import { useDatasetUpload } from "../../hooks/uploads/HandleDatasetsFileUpload";
 import { FiActivity, FiDatabase, FiDroplet, FiGrid, FiImage, FiMenu, FiType, FiX } from "react-icons/fi";
+import { backendPrefix } from "../../config";
 
 export const FactCardsBatchRendering: React.FC = () => {
   const { fetchUserDatasets, userDatasets } = useDatasetsFetching();
@@ -75,7 +76,7 @@ export const FactCardsBatchRendering: React.FC = () => {
     } else {
       setLoading(true);
       try {
-        const res = await fetch(`/api/generate/factcardsdataset`, {
+        const res = await fetch(`${backendPrefix}/api/generate/factcardsdataset`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -105,7 +106,7 @@ export const FactCardsBatchRendering: React.FC = () => {
       if (finalImageUrl.startsWith("/")) {
         finalImageUrl = `${window.location.origin}${finalImageUrl}`;
       }
-      const response = await fetch(`/generatevideo/factstemplaterender`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/factstemplaterender`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -135,7 +136,7 @@ export const FactCardsBatchRendering: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

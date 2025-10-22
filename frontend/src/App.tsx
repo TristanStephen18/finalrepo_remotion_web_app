@@ -100,6 +100,14 @@ function App() {
           }
         />
         <Route
+          path="/project/:id/factcards"
+          element={
+            <RequireAuth>
+              <FactCardsEditor />
+            </RequireAuth>
+          }
+        />
+        <Route
           path="/template/factcards/mode/batchrendering"
           element={
             <RequireAuth>

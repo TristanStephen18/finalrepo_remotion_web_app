@@ -1,4 +1,5 @@
 import React, { useRef, useState } from "react";
+import { backgroundmusics } from "../../../data/bgmusics";
 
 
 export const MusicSelector: React.FC<{
@@ -8,10 +9,7 @@ export const MusicSelector: React.FC<{
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState<string | null>(null);
 
-  const tracks = Array.from(
-    { length: 11 },
-    (_, i) => `/soundeffects/bgmusic/bg${i + 1}.mp3`
-  );
+  const tracks = backgroundmusics;
 
   const handlePreview = (src: string) => {
     if (playing === src && audioRef.current) {

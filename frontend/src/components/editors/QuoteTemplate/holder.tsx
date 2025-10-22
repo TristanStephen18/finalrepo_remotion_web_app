@@ -18,6 +18,7 @@ import { SaveProjectModal } from "../../ui/modals/SaveModal";
 import { useFileUpload } from "../../../hooks/uploads/HandleImageUpload";
 import { useBackgroundImages } from "../../../hooks/datafetching/UserImagesAndOnlineImages";
 import toast from "react-hot-toast";
+import { backendPrefix } from "../../../config";
 
 export const QuoteTemplateEditor: React.FC = () => {
   const { id } = useParams();
@@ -34,7 +35,7 @@ export const QuoteTemplateEditor: React.FC = () => {
   const [quote, setQuote] = useState("Your Quote");
   const [author, setAuthor] = useState("Author");
   const [backgroundImage, setBackgroundImage] = useState(
-    `/bgimages/colors/bg1.jpg`
+    `https://res.cloudinary.com/dnxc1lw18/image/upload/v1760979566/bg11_deliyh.jpg`
   );
   const [backgroundSource, setBackgroundSource] = useState<
     "upload" | "default"
@@ -105,7 +106,7 @@ export const QuoteTemplateEditor: React.FC = () => {
     if (id) {
   
       setIsLoading(true);
-      fetch(`/projects/${id}`, {
+      fetch(`${backendPrefix}/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((res) => {
@@ -146,7 +147,7 @@ export const QuoteTemplateEditor: React.FC = () => {
   const handleAISuggestion = async () => {
     setIsGenerating(true);
     try {
-      const response = await fetch(`/api/generate-quote`, {
+      const response = await fetch(`${backendPrefix}/api/generate-quote`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       });
@@ -182,7 +183,7 @@ export const QuoteTemplateEditor: React.FC = () => {
 
     try {
       let finalImageUrl = backgroundImage;
-      const response = await fetch(`/generatevideo/quotetemplatewchoices`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/quotetemplatewchoices`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -206,7 +207,7 @@ export const QuoteTemplateEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -278,7 +279,7 @@ export const QuoteTemplateEditor: React.FC = () => {
       fontfamily: fontFamily,
       duration,
     }),
-    videoEndpoint: `/generatevideo/quotetemplatewchoices`,
+    videoEndpoint: `${backendPrefix}/generatevideo/quotetemplatewchoices`,
   });
 
   useEffect(() => {

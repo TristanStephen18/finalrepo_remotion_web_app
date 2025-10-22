@@ -83,9 +83,9 @@ export const ChooseUserDatasetsModal: React.FC<
                 const isSelected = selectedDataset === (dataset.id || idx);
                 let iconSrc = "";
                 if (dataset.type === "json") {
-                  iconSrc = "/images/json.png";
+                  iconSrc = "https://res.cloudinary.com/dnxc1lw18/image/upload/v1761045051/json_n749ko.png";
                 } else if (dataset.type === "xlsx") {
-                  iconSrc = "/images/xlsx.png";
+                  iconSrc = "https://res.cloudinary.com/dnxc1lw18/image/upload/v1761045053/xlsx_uvojck.png";
                 }
                 return (
                   <Box
@@ -139,7 +139,7 @@ export const ChooseUserDatasetsModal: React.FC<
                       fontWeight={600}
                       sx={{ mb: 0.5, wordBreak: "break-all", fontSize: 10 }}
                     >
-                      {dataset.url.replaceAll("/datasets/", "") ||
+                      {dataset.url.replaceAll("https://rsnemknhybirnaxoffur.supabase.co/storage/v1/object/public/Remotion%20Web%20App%20file%20bucket/datasets/", "") ||
                         `Dataset ${idx + 1}`}
                     </Typography>
                     <Typography

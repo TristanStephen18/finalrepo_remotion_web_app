@@ -16,6 +16,7 @@ import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
 import { useFileUpload } from "../../../hooks/uploads/HandleImageUpload";
 import { useBackgroundImages } from "../../../hooks/datafetching/UserImagesAndOnlineImages";
+import { backendPrefix } from "../../../config";
 
 export const FactCardsEditor: React.FC = () => {
   const { id } = useParams();
@@ -44,7 +45,7 @@ export const FactCardsEditor: React.FC = () => {
   const [subtitleFontFamily, setSubtitleFontFamily] = useState("Russo");
 
   const [backgroundImage, setBackgroundImage] = useState(
-    "/bgimages/colors/bg1.jpg"
+    `https://res.cloudinary.com/dnxc1lw18/image/upload/v1760979566/bg11_deliyh.jpg`
   );
   const [backgroundSource, setBackgroundSource] = useState<
     "upload" | "default"
@@ -121,7 +122,7 @@ export const FactCardsEditor: React.FC = () => {
     setIsExporting(true);
     try {
       let finalImageUrl = backgroundImage;
-      const response = await fetch(`/generatevideo/factstemplaterender`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/factstemplaterender`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -143,7 +144,7 @@ export const FactCardsEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -200,14 +201,14 @@ export const FactCardsEditor: React.FC = () => {
       fontFamilySubtitle: subtitleFontFamily,
       duration,
     }),
-    videoEndpoint: `/generatevideo/factstemplaterender`,
+    videoEndpoint: `${backendPrefix}/generatevideo/factstemplaterender`,
   });
 
 
   useEffect(() => {
     if (id) {
       setIsLoading(true);
-      fetch(`/projects/${id}`, {
+      fetch(`${backendPrefix}/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((res) => {

@@ -17,6 +17,7 @@ import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
 import { useVideoUpload } from "../../../hooks/uploads/HandleVideoUploads";
 import { userVideos } from "../../../hooks/datafetching/UserVideos";
+import { backendPrefix } from "../../../config";
 
 type ChatLine = { speaker: "person_1" | "person_2"; text: string };
 
@@ -43,15 +44,15 @@ export const FakeTextConversationEditor: React.FC = () => {
   const [fontSize, setFontSize] = useState(28);
   const [fontColor, setFontColor] = useState("");
 
-  const [bgVideo, setBgVideo] = useState(`/defaultvideos/minecraft/m1.mp4`);
-  const [chatAudio, setChatAudio] = useState(`/fakeconvo/fakeconvo.mp3`);
+  const [bgVideo, setBgVideo] = useState(`https://res.cloudinary.com/dnxc1lw18/video/upload/v1760964769/ss4_yvpblt.mp4`);
+  const [chatAudio, setChatAudio] = useState(`https://rsnemknhybirnaxoffur.supabase.co/storage/v1/object/public/Remotion%20Web%20App%20file%20bucket/other_audios/fakeconvo.mp3`);
   const [serverAudio, setServerAudio] = useState("");
   const [musicAudio, setMusicAudio] = useState(
-    `/soundeffects/bgmusic/bg10.mp3`
+    `https://rsnemknhybirnaxoffur.supabase.co/storage/v1/object/public/Remotion%20Web%20App%20file%20bucket/bgmusics/bg10.mp3`
   );
   const [avatars, setAvatars] = useState({
-    left: `/images/vectors/v1.jpg`,
-    right: `/images/vectors/v8.jpg`,
+    left: `https://res.cloudinary.com/dnxc1lw18/image/upload/v1760977048/v7_njhvnm.avif`,
+    right: `https://res.cloudinary.com/dnxc1lw18/image/upload/v1760977048/v10_lzbfv0.jpg`,
   });
 
   const [isUpdatingTemplate, setIsUpdatingTemplate] = useState(false);
@@ -63,8 +64,6 @@ export const FakeTextConversationEditor: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
 
   const defaultvalues = {
-    chatPath: "chats.json",
-    chatAudio: "fakeconvo.mp3",
     musicBase: 0.12,
     musicWhileTalking: 0.06,
     duckAttackMs: 120,
@@ -123,15 +122,15 @@ export const FakeTextConversationEditor: React.FC = () => {
     setIsUpdatingTemplate(true);
     try {
       const payload = { voices: [voice1, voice2], chats };
-      const res = await fetch(`/sound/test-generate`, {
+      const res = await fetch(`${backendPrefix}/sound/test-generate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
       });
       const data = await res.json();
       setChatData(data);
-      setChatAudio(data.serverfilename);
-      setServerAudio(data.serverfilename);
+      setChatAudio(data.audioUrl);
+      setServerAudio(data.audioUrl);
       setDuration(Math.ceil(data.duration));
     } catch (err) {
       console.error("Failed to update template ❗", err);
@@ -144,13 +143,13 @@ export const FakeTextConversationEditor: React.FC = () => {
   const handleExport = async (format: string) => {
     setIsExporting(true);
     try {
-      const response = await fetch(`/generatevideo/faketextconvo`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/faketextconvo`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          chatPath: defaultvalues.chatPath,
+          chatPath: "chats.json",
           bgVideo,
-          chatAudio: defaultvalues.chatAudio,
+          chatAudio,
           musicAudio,
           musicBase: defaultvalues.musicBase,
           musicWhileTalking: defaultvalues.musicWhileTalking,
@@ -169,7 +168,7 @@ export const FakeTextConversationEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -221,9 +220,9 @@ export const FakeTextConversationEditor: React.FC = () => {
         chatdata,
         duration,
         serverAudio,
-        chatPath: defaultvalues.chatPath,
+        chatPath: "chats.json",
         bgVideo,
-        chatAudio: defaultvalues.chatAudio,
+        chatAudio,
         musicAudio,
         musicBase: defaultvalues.musicBase,
         musicWhileTalking: defaultvalues.musicWhileTalking,
@@ -237,7 +236,7 @@ export const FakeTextConversationEditor: React.FC = () => {
         avatars,
       };
     },
-    videoEndpoint:`/generatevideo/faketextconvo`,
+    videoEndpoint:`${backendPrefix}/generatevideo/faketextconvo`,
 
     filterRenderProps: (props) => {
       const {
@@ -257,7 +256,7 @@ export const FakeTextConversationEditor: React.FC = () => {
   useEffect(() => {
     if (id) {
       setIsLoading(true);
-      fetch(`/projects/${id}`, {
+      fetch(`${backendPrefix}/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((res) => {

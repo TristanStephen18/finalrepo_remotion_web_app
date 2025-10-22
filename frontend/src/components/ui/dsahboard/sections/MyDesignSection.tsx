@@ -137,7 +137,7 @@ export const MyTemplatesSection: React.FC<MyDesignProps> = ({
             {filteredProjects.map((project) => (
               <div
                 key={project.id}
-                className="relative bg-white/70 backdrop-blur-md border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition transform hover:-translate-y-1 group"
+                className="relative bg-white/70 backdrop-blur-md border border-gray-100 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition transform hover:-translate-y-1 group cursor-pointer"
                 onMouseEnter={() => setHoveredId(project.id)}
                 onMouseLeave={() => setHoveredId(null)}
               >

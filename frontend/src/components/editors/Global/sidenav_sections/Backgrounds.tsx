@@ -1,5 +1,6 @@
 import type React from "react";
 import { useState } from "react";
+import { serverImages } from "../../../../data/BackgroundImages";
 
 export interface BgProps {
   backgroundSource: string;
@@ -18,8 +19,6 @@ export interface BgProps {
   setSearchQuery: React.Dispatch<React.SetStateAction<string>>;
   fetchOnlineImages: (query: string) => void;
 }
-
-const DEFAULT_TABS = ["philosophy", "colors", "sceneries"];
 
 export const BackgroundSecTrial: React.FC<BgProps> = ({
   backgroundImage,
@@ -182,30 +181,27 @@ export const BackgroundSecTrial: React.FC<BgProps> = ({
               gap: "0.75rem",
             }}
           >
-            {DEFAULT_TABS.flatMap((cat) =>
-              Array.from({ length: 21 }).map((_, i) => {
-                const imgUrl = `/bgimages/${cat}/bg${i + 1}.jpg`;
-                return (
-                  <img
-                    key={`${cat}-${i}`}
-                    src={imgUrl}
-                    alt={`bg-${cat}-${i + 1}`}
-                    style={{
-                      width: "100%",
-                      height: "100px",
-                      objectFit: "cover",
-                      borderRadius: "8px",
-                      border:
-                        backgroundImage === imgUrl
-                          ? "3px solid #0077ff"
-                          : "1px solid #ddd",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => setBackgroundImage(imgUrl)}
-                  />
-                );
-              })
-            )}
+            {serverImages.map((url, i) => {
+              const imgUrl = `${url}`;
+              return (
+                <img
+                  src={imgUrl}
+                  alt={`bg-${1 + i}`}
+                  style={{
+                    width: "100%",
+                    height: "100px",
+                    objectFit: "cover",
+                    borderRadius: "8px",
+                    border:
+                      backgroundImage === imgUrl
+                        ? "3px solid #0077ff"
+                        : "1px solid #ddd",
+                    cursor: "pointer",
+                  }}
+                  onClick={() => setBackgroundImage(imgUrl)}
+                />
+              );
+            })}
           </div>
         </div>
       )}

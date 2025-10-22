@@ -17,6 +17,7 @@ import { useParams } from "react-router-dom";
 import { useVideoUpload } from "../../../hooks/uploads/HandleVideoUploads";
 import { userVideos } from "../../../hooks/datafetching/UserVideos";
 import toast from "react-hot-toast";
+import { backendPrefix } from "../../../config";
 
 export const RedditVideoEditor: React.FC = () => {
   const { id } = useParams();
@@ -49,13 +50,13 @@ export const RedditVideoEditor: React.FC = () => {
 
   const [aiVoice, setAiVoice] = useState("21m00Tcm4TlvDq8ikWAM");
   const [voiceoverPath, setVoiceoverPath] = useState(
-    `/soundeffects/reddit/voice.mp3`
+    `https://rsnemknhybirnaxoffur.supabase.co/storage/v1/object/public/Remotion%20Web%20App%20file%20bucket/other_audios/voice%20(1).mp3`
   );
   const [backgroundVideo, setBackgroundVideo] = useState(
-    `/defaultvideos/minecraft/m1.mp4`
+    "https://res.cloudinary.com/dnxc1lw18/video/upload/v1760964482/m1_c7h3ki.mp4"
   );
   const [backgroundMusicPath, setBackgroundMusicPath] = useState(
-    `/soundeffects/bgmusic/bg11.mp3`
+    `https://rsnemknhybirnaxoffur.supabase.co/storage/v1/object/public/Remotion%20Web%20App%20file%20bucket/bgmusics/bg11.mp3`
   );
   const [serverAudio, setServerAudio] = useState("");
 
@@ -123,7 +124,7 @@ export const RedditVideoEditor: React.FC = () => {
       setPostError(null);
       setFetchedPost(null);
 
-      const res = await fetch(`/reddit/getpost`, {
+      const res = await fetch(`${backendPrefix}/reddit/getpost`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ url: postUrl }),
@@ -150,7 +151,7 @@ export const RedditVideoEditor: React.FC = () => {
     setIsUpdatingTemplate(true);
     if (fetchedPost) {
       try {
-        const res = await fetch(`/sound/reddit`, {
+        const res = await fetch(`${backendPrefix}/sound/reddit`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -161,8 +162,9 @@ export const RedditVideoEditor: React.FC = () => {
         });
         const data = await res.json();
         setRedditData(data.script);
-        setVoiceoverPath(data.serverfilename);
-        setServerAudio(data.serverfilename);
+        console.log(data.audioUrl);
+        setVoiceoverPath(data.audioUrl);
+        setServerAudio(data.audioUrl);
         setDuration(Math.ceil(data.duration) + 2);
 
         toast.success("Reddit post extraction successful");
@@ -181,11 +183,11 @@ export const RedditVideoEditor: React.FC = () => {
   const handleExport = async (format: string) => {
     setIsExporting(true);
     try {
-      const response = await fetch(`/generatevideo/redditvideo`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/redditvideo`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          voiceoverPath: defaulvalues.voiceoverPath,
+          voiceoverPath,
           duration,
           fontSize,
           fontFamily,
@@ -200,7 +202,7 @@ export const RedditVideoEditor: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -252,7 +254,7 @@ export const RedditVideoEditor: React.FC = () => {
       redditData,
       aiVoice,
       serverAudio,
-      voiceoverPath: defaulvalues.voiceoverPath,
+      voiceoverPath,
       duration,
       fontSize,
       fontFamily,
@@ -261,7 +263,7 @@ export const RedditVideoEditor: React.FC = () => {
       backgroundVideo,
       backgroundMusicPath,
     }),
-    videoEndpoint: `/generatevideo/redditvideo`,
+    videoEndpoint: `${backendPrefix}/generatevideo/redditvideo`,
 
     // 👇 Filter before hitting the render API
     filterRenderProps: (props) => {
@@ -282,7 +284,7 @@ export const RedditVideoEditor: React.FC = () => {
   useEffect(() => {
     if (id) {
       setIsLoading(true);
-      fetch(`/projects/${id}`, {
+      fetch(`${backendPrefix}/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((res) => {
@@ -301,7 +303,7 @@ export const RedditVideoEditor: React.FC = () => {
           setRedditData(props.redditData || script);
           setAiVoice(props.aiVoice || "21m00Tcm4TlvDq8ikWAM");
           setVoiceoverPath(
-            props.serverAudio || `/soundeffects/reddit/voice.mp3`
+            props.serverAudio || `${backendPrefix}/soundeffects/reddit/voice.mp3`
           );
           setDuration(props.duration || Math.ceil(script.duration) + 2);
 

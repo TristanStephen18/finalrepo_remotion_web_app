@@ -41,9 +41,9 @@ export const ChatStylePanel: React.FC<{
 }) => {
   const themes = [
     { id: "default", label: "Default", logo: null },
-    { id: "discord", label: "Discord", logo: "/images/logos/discord.jpg" },
-    { id: "messenger", label: "Messenger", logo: "/images/logos/messenger.webp" },
-    { id: "whatsapp", label: "WhatsApp", logo: "/images/logos/whatsapp.png" },
+    { id: "discord", label: "Discord", logo: "https://res.cloudinary.com/dnxc1lw18/image/upload/v1761045041/discord_pqilu3.jpg" },
+    { id: "messenger", label: "Messenger", logo: "https://res.cloudinary.com/dnxc1lw18/image/upload/v1761045042/messenger_dxq7un.webp" },
+    { id: "whatsapp", label: "WhatsApp", logo: "https://res.cloudinary.com/dnxc1lw18/image/upload/v1761045042/whatsapp_yjrk46.png" },
   ];
 
   return (

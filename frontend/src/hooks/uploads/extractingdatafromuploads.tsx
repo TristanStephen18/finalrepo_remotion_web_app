@@ -1,10 +1,12 @@
+import { backendPrefix } from "../../config";
+
 export async function useDatasetFromUploads(
   fileUrl: string,
   template: string,
   type: string
 ) {
   try {
-    const res = await fetch(`/fromuploadsdataset`, {
+    const res = await fetch(`${backendPrefix}/fromuploadsdataset`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

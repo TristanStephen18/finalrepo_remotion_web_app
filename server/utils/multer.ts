@@ -77,6 +77,7 @@ const uploadDatasets = multer({
 });
 
 
+
 const videoStorage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = path.join(
@@ -142,4 +143,11 @@ const uploadKenBurns = multer({
   },
 });
 
-export { uploadVideo, upload, videoStorage, storage, uploadKenBurns, uploadDatasets };
+const uploadMemory = multer({
+  storage: multer.memoryStorage(),
+  limits: {
+    fileSize: 200 * 1024 * 1024, // 200MB
+  },
+});
+
+export { uploadVideo, upload, videoStorage, storage, uploadKenBurns, uploadDatasets, uploadMemory };

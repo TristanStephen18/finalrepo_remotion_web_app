@@ -2,7 +2,6 @@ import {
   AbsoluteFill,
   Audio,
   Video,
-  staticFile,
   useVideoConfig,
   useCurrentFrame,
   Sequence,
@@ -54,7 +53,7 @@ export const MyRedditVideo: React.FC<MyRedditVideoProps> = ({
     <AbsoluteFill>
       {/* Background Video */}
       <Video
-        src={staticFile(bg)}
+        src={bg}
         muted
         loop
         style={{
@@ -81,7 +80,7 @@ export const MyRedditVideo: React.FC<MyRedditVideoProps> = ({
           fontColor={fontColor}
           sentenceBgColor={sentenceBgColor}
         />
-        <Audio src={staticFile(voiceoverPath)} />
+        <Audio src={voiceoverPath} />
       </Sequence>
 
       {/* Optional background music 🎶 */}
@@ -119,7 +118,7 @@ const RedditPost: React.FC<{ title: string; text: string }> = ({
         {/* Top bar */}
         <div style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
           <img
-            src={"http://localhost:3000/images/reddit.png"}
+            src={"https://res.cloudinary.com/dnxc1lw18/image/upload/v1760981744/Reddit_Logo_uhx1je.png"}
             style={{
               width: 60,
               height: 60,

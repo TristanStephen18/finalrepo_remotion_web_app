@@ -126,7 +126,7 @@ export const CurveLineTrendAnimationSelectionSection: React.FC<
 
               {/* Video preview */}
               <video
-                src="/animation.mp4"
+                src="https://res.cloudinary.com/dnxc1lw18/video/upload/v1760794308/animation_fsvwiv.mp4"
                 autoPlay
                 loop
                 muted

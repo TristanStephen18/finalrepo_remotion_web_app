@@ -1,77 +1,89 @@
 {
-  "backgroundImage": "https://pixabay.com/get/gd5825d9c8ca41584cedab0f9361b692174cb5d817d89d2ebefc5bd4aa843c004439e5ed8c57543b3570b7d32ad2b70f317b7ae9668625b419ac18894222a90a3_640.jpg",
-  "title": "Sales Performance",
+  "backgroundImage": "https://res.cloudinary.com/dnxc1lw18/image/upload/v1760979562/bg6_mtqtio.jpg",
+  "title": "Revenue Over Years",
   "titleFontSize": 93,
-  "titleFontColor": "white",
-  "titleFontFamily": "'Russo One', sans-serif",
-  "subtitle": "Monthly Revenue and Growth Rate",
+  "titleFontColor": "pink",
+  "titleFontFamily": "Arial, sans-serif",
+  "subtitle": "Annual Revenue Data",
   "subtitleFontSize": 36,
-  "subtitleFontColor": "white",
-  "subtitleFontFamily": "'Russo One', sans-serif",
+  "subtitleFontColor": "pink",
+  "subtitleFontFamily": "Arial, sans-serif",
   "cardsData": [
     {
       "front": {
-        "label": "Total Revenue",
-        "value": "$1,250,000",
-        "color": "#FF0000"
+        "label": "2020",
+        "value": "15000",
+        "color": "white"
       },
       "back": {
-        "label": "Previous Month Revenue",
-        "value": "$1,100,000",
-        "color": "#FFA500"
+        "label": "Revenue",
+        "value": "15000",
+        "color": "white"
       }
     },
     {
       "front": {
-        "label": "Month-over-Month Growth",
-        "value": "13.6%",
-        "color": "#008000"
+        "label": "2021",
+        "value": "18000",
+        "color": "white"
       },
       "back": {
-        "label": "Target Growth Rate",
-        "value": "10%",
-        "color": "#800080"
+        "label": "Revenue",
+        "value": "18000",
+        "color": "white"
       }
     },
     {
       "front": {
-        "label": "Average Order Value",
-        "value": "$150",
-        "color": "#0000FF"
+        "label": "2022",
+        "value": "21000",
+        "color": "white"
       },
       "back": {
-        "label": "Last Month AOV",
-        "value": "$135",
-        "color": "#4B0082"
+        "label": "Revenue",
+        "value": "21000",
+        "color": "white"
       }
     },
     {
       "front": {
-        "label": "Conversion Rate",
-        "value": "4.5%",
-        "color": "#FF6347"
+        "label": "2023",
+        "value": "25000",
+        "color": "white"
       },
       "back": {
-        "label": "Previous Month Conversion",
-        "value": "4.1%",
-        "color": "#DA70D6"
+        "label": "Revenue",
+        "value": "25000",
+        "color": "white"
+      }
+    },
+    {
+      "front": {
+        "label": "2024",
+        "value": "30000",
+        "color": "white"
+      },
+      "back": {
+        "label": "Revenue",
+        "value": "30000",
+        "color": "white"
       }
     }
   ],
   "cardWidth": 360,
   "cardHeight": 220,
   "cardBorderRadius": 28,
-  "cardBorderColor": "#FFD700",
-  "cardLabelColor": "#FFFFFF",
-  "cardLabelFontSize": 30.5,
-  "cardContentFontFamily": "'Russo One', sans-serif",
+  "cardBorderColor": "white",
+  "cardLabelColor": "white",
+  "cardLabelFontSize": 14,
+  "cardContentFontFamily": "Arial, sans-serif",
   "cardGrid": {
     "rows": 2,
     "cols": 2
   },
   "delayStart": 0.5,
   "delayStep": 1,
-  "cardColorBack": "#333333",
-  "cardColorFront": "#4CAF50",
-  "valueFontSize": 42
+  "cardColorBack": "black",
+  "cardColorFront": "gray",
+  "valueFontSize": 20
 }

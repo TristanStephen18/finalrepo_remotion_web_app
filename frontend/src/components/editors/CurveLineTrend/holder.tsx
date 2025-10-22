@@ -16,6 +16,7 @@ import { TopNavWithSave } from "../../navigations/single_editors/WithSave";
 import { useParams } from "react-router-dom";
 import isEqual from "lodash/isEqual";
 import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
+import { backendPrefix } from "../../../config";
 
 const initialData = [
   { label: 2015, value: 100 },
@@ -145,7 +146,7 @@ export const CurveLineTrendEditor: React.FC = () => {
 
       setIsSaving(true);
       try {
-        const exportRes = await fetch(`/generatevideo/curvelinetrend`, {
+        const exportRes = await fetch(`${backendPrefix}/generatevideo/curvelinetrend`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -206,7 +207,7 @@ export const CurveLineTrendEditor: React.FC = () => {
       setStatus("Saving design...");
       const currentProps = buildPropsObject();
 
-      const exportRes = await fetch(`/generatevideo/curvelinetrend`, {
+      const exportRes = await fetch(`${backendPrefix}/generatevideo/curvelinetrend`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -223,7 +224,7 @@ export const CurveLineTrendEditor: React.FC = () => {
       const exportResult = await exportRes.json();
       const projectVidUrl = exportResult.url;
 
-      const response = await fetch(`/projects/save`, {
+      const response = await fetch(`${backendPrefix}/projects/save`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -261,7 +262,7 @@ export const CurveLineTrendEditor: React.FC = () => {
   const handleExport = async (format: string) => {
     setIsExporting(true);
     try {
-      const response = await fetch(`/generatevideo/curvelinetrend`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/curvelinetrend`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -292,7 +293,7 @@ export const CurveLineTrendEditor: React.FC = () => {
       setExportUrl(result.url);
       const renderUrl = result.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -350,7 +351,7 @@ export const CurveLineTrendEditor: React.FC = () => {
     if (id) {
       setIsLoading(true);
       // 🟢 User opened from "My Projects"
-      fetch(`/projects/${id}`, {
+      fetch(`${backendPrefix}/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((res) => {

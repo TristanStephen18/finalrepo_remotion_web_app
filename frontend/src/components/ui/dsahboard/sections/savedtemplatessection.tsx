@@ -108,7 +108,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                   description: "Your uploaded data files",
                   icon: (
                     <img
-                      src="/images/json.png"
+                      src="https://res.cloudinary.com/dnxc1lw18/image/upload/v1761045051/json_n749ko.png"
                       alt="dataset"
                       className="w-9 h-9 opacity-80"
                     />
@@ -216,7 +216,6 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
           </div>
         )}
 
-        {/* === DATASETS === */}
         {currentFolder === "datasets" && (
           <div>
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5 gap-3">
@@ -238,7 +237,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
             ) : filteredDatasets.length === 0 ? (
               <div className="text-center py-10 text-gray-500">
                 <img
-                  src="/images/json.png"
+                  src="https://res.cloudinary.com/dnxc1lw18/image/upload/v1761045051/json_n749ko.png"
                   alt="dataset"
                   className="mx-auto w-12 h-12 mb-3 opacity-60"
                 />
@@ -250,9 +249,9 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                   const isSelected = selectedDatasets.includes(dataset.id || idx);
                   const iconSrc =
                     dataset.type === "json"
-                      ? "/images/json.png"
+                      ? "https://res.cloudinary.com/dnxc1lw18/image/upload/v1761045051/json_n749ko.png"
                       : dataset.type === "xlsx"
-                      ? "/images/xlsx.png"
+                      ? "https://res.cloudinary.com/dnxc1lw18/image/upload/v1761045053/xlsx_uvojck.png"
                       : "/images/file.png";
 
                   return (
@@ -277,7 +276,7 @@ export const ProjectsSection: React.FC<ProjectsSectionProps> = ({
                         className="w-14 h-14 mb-2 object-contain"
                       />
                       <p className="text-xs font-medium text-gray-700 break-all max-w-[120px] truncate">
-                        {dataset.url.replaceAll("/datasets/", "")}
+                        {dataset.url.replaceAll("https://rsnemknhybirnaxoffur.supabase.co/storage/v1/object/public/Remotion%20Web%20App%20file%20bucket/datasets/", "")}
                       </p>
                       {isSelected && (
                         <div className="absolute top-2 right-2 bg-indigo-500 text-white rounded-full p-1">

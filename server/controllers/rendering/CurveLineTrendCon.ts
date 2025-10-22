@@ -3,11 +3,11 @@ import { convertVideo } from "../../utils/ffmpeg.ts";
 import { getCompositions, renderMedia } from "@remotion/renderer";
 import fs from "fs";
 import { bundle } from "@remotion/bundler";
-import {
-  updateJson_Bargraph,
-  updateJsonConfig_CurveLineTrend,
-} from "../functions/jsonupdater.ts";
+import { updateJsonConfig_CurveLineTrend } from "../functions/jsonupdater.ts";
 import type { Request, Response } from "express";
+import { entry } from "../entrypoint.ts";
+import os from "os";
+import cloudinary from "../../utils/cloudinaryClient.ts";
 
 export const handleExport = async (req: Request, res: Response) => {
   const { data, format } = req.body;
@@ -28,11 +28,6 @@ export const handleExport = async (req: Request, res: Response) => {
   // );
 
   try {
-    const entry = path.join(
-      process.cwd(),
-      "./server/remotion_templates/TemplateHolder/src/index.ts"
-    );
-
     if (!fs.existsSync(entry)) {
       return res.status(404).json({ error: "Remotion entry file not found" });
     }
@@ -43,15 +38,14 @@ export const handleExport = async (req: Request, res: Response) => {
     if (!comp) {
       return res.status(404).json({ error: "Composition not found" });
     }
+    // 🗂️ 3. Temporary file paths
+    const tmpBaseName = `curvelinetrend-${Date.now()}`;
+    const tmpDir = os.tmpdir();
+    const mp4Path = path.join(tmpDir, `${tmpBaseName}.mp4`);
 
-    const outputDir = path.join(process.cwd(), "server/outputs");
-    if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
+    console.log("🎬 Rendering video to:", mp4Path);
 
-    const baseFile = `curvelinetrend-${Date.now()}`;
-    const mp4File = `${baseFile}.mp4`;
-    const mp4Path = path.join(outputDir, mp4File);
-
-    // Always render MP4 first (Remotion only outputs mp4/webm/mov directly)
+    // 🧠 4. Render MP4 using Remotion
     await renderMedia({
       serveUrl: bundleLocation,
       composition: comp,
@@ -59,28 +53,54 @@ export const handleExport = async (req: Request, res: Response) => {
       outputLocation: mp4Path,
     });
 
-    console.log("✅ Render complete!");
+    console.log("✅ Render complete.");
 
-    let finalFile = mp4File;
+    // 🌀 5. Convert using FFmpeg if needed
     let finalPath = mp4Path;
+    let finalFormat = "mp4";
 
     if (format === "gif" || format === "webm") {
-      // Convert with FFmpeg
+      console.log(`🎞 Converting to ${format}...`);
       finalPath = await convertVideo(mp4Path, format);
-      finalFile = path.basename(finalPath);
+      finalFormat = format;
       console.log(`✅ Converted to ${format}:`, finalPath);
     }
 
-    const protocol = req.protocol;
-    const host = req.get("host"); // e.g. tunnel-name.trycloudflare.com
-    const origin = `${protocol}://${host}`;
+    // ☁️ 6. Upload to Cloudinary
+    console.log("☁️ Uploading to Cloudinary...");
 
-    const fileUrl = `${origin}/videos/${finalFile}`;
+    const resourceType = finalFormat === "gif" ? "image" : "video";
 
+    const uploadResult = await new Promise<any>((resolve, reject) => {
+      cloudinary.uploader.upload(
+        finalPath,
+        {
+          resource_type: resourceType,
+          folder: "remotion_renders",
+          public_id: tmpBaseName,
+          format: finalFormat,
+        },
+        (error, result) => {
+          if (error) reject(error);
+          else resolve(result);
+        }
+      );
+    });
+
+    setTimeout(() => {
+      [mp4Path, finalPath].forEach((file) => {
+        fs.unlink(file, (err) => {
+          if (err) console.warn("⚠️ Failed to delete temp file:", err);
+        });
+      });
+    }, 3000);
+
+    console.log("☁️ Uploaded successfully:", uploadResult.secure_url);
+
+    // ✅ 8. Send response
     return res.json({
-      url: fileUrl,
-      filename: finalFile,
-      format: format || "mp4",
+      url: uploadResult.secure_url,
+      format: finalFormat,
     });
   } catch (err: any) {
     console.error("❌ Error rendering Remotion project:", err);

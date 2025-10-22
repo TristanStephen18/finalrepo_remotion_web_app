@@ -1,41 +1,39 @@
 {
   "data": [
     {
-      "name": "Data1",
-      "value": 124500
+      "name": "2020",
+      "value": 15000
     },
     {
-      "name": "Data2",
-      "value": 110200
+      "name": "2021",
+      "value": 18000
     },
     {
-      "name": "Data3",
-      "value": 87300
+      "name": "2022",
+      "value": 21000
     },
     {
-      "name": "Data4",
-      "value": 76500
+      "name": "2023",
+      "value": 25000
     },
     {
-      "name": "Data5",
-      "value": 54200
-    },
-    {
-      "name": "Data6",
-      "value": 49800
+      "name": "2024",
+      "value": 30000
     }
   ],
-  "title": "Your title",
+  "title": "Annual Revenue Over Years",
   "titleFontColor": "white",
-  "backgroundImage": "http://localhost:3000/bgimages/colors/bg9.jpg",
+  "backgroundImage": "https://res.cloudinary.com/dnxc1lw18/image/upload/v1760979564/bg12_z53lpr.jpg",
   "accent": "#3B82F6",
-  "subtitle": "Your subtitle",
-  "titleFontSize": 80,
-  "subtitleFontSize": 50,
+  "subtitle": "A record of revenue figures from 2020 to 2024",
+  "currency": "",
+  "titleFontSize": 78,
+  "subtitleFontSize": 48,
+  "subtitleColor": "white",
   "barHeight": 100,
   "barGap": 36,
   "barLabelFontSize": 36,
   "barValueFontSize": 36,
-  "fontFamily": "Inter, sans-serif",
+  "fontFamily": "Kode Mono, monospace",
   "duration": 8
 }

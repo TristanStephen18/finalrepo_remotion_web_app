@@ -6,7 +6,6 @@ import {
   interpolate,
   useCurrentFrame,
   useVideoConfig,
-  staticFile,
   Easing,
 } from 'remotion';
 import { AnimatedBackground } from '../editors/NewTextTypingEditor/assets/Backgrounds';
@@ -311,7 +310,7 @@ export const TypingAnimation: React.FC<TypingAnimationProps> = ({
       {/* Audio with smooth fade */}
       {frame <= typingDurationFrames && (
         <Audio
-          src={staticFile(audio.filename)}
+          src={audio.filename}
           startFrom={0}
           endAt={typingDurationFrames}
           volume={(f) => {

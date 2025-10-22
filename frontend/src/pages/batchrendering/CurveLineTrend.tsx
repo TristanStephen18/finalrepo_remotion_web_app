@@ -16,6 +16,7 @@ import { CurveLineTrendOutputsSection } from "../../components/ui/batchrendering
 import { useDatasetUpload } from "../../hooks/uploads/HandleDatasetsFileUpload";
 import { useDatasetsFetching } from "../../hooks/datafetching/DatasetFilesFetching";
 import { FiActivity, FiDatabase, FiGrid, FiImage, FiMenu, FiType, FiX } from "react-icons/fi";
+import { backendPrefix } from "../../config";
 
 export const CurveLineTrendBatchRendering: React.FC = () => {
   const { fetchUserDatasets, userDatasets } = useDatasetsFetching();
@@ -70,7 +71,7 @@ export const CurveLineTrendBatchRendering: React.FC = () => {
   const fetchAIDataset = async (quantity: number) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/generate/curvelinedataset`, {
+      const res = await fetch(`${backendPrefix}/api/generate/curvelinedataset`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ quantity }),
@@ -95,7 +96,7 @@ export const CurveLineTrendBatchRendering: React.FC = () => {
     );
     // const fontsizeindicator = titleAndSubtitleFontSizeIndicator(combo.bar.title);
     try {
-      const response = await fetch(`/generatevideo/curvelinetrend`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/curvelinetrend`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -123,7 +124,7 @@ export const CurveLineTrendBatchRendering: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

@@ -10,6 +10,7 @@ import { SaveProjectModal } from "../../ui/modals/SaveModal";
 import { LoadingOverlay } from "../../ui/modals/LoadingProjectModal";
 import { useProjectSave } from "../../../hooks/SaveProject";
 import { useParams } from "react-router-dom";
+import { backendPrefix } from "../../../config";
 
 
 export const KenBurnsEditor: React.FC = () => {
@@ -20,7 +21,7 @@ export const KenBurnsEditor: React.FC = () => {
     "🎬 Ken Burns Swipe Template"
   );
   const [previewSize, setPreviewSize] = useState(1);
-  const [images, setImages] = useState<string[]>(["/images/holder.jpg"]);
+  const [images, setImages] = useState<string[]>(["https://res.cloudinary.com/dnxc1lw18/image/upload/v1761129583/landscape-placeholder_vmykjj.svg"]);
   const [duration, setDuration] = useState<number>(15);
   const [cardWidthRatio, setCardWidthRatio] = useState<number>(0.75);
   const [cardHeightRatio, setCardHeightRatio] = useState<number>(0.75);
@@ -42,7 +43,7 @@ export const KenBurnsEditor: React.FC = () => {
   const [userUploads, setUserUploads] = useState<any[]>();
 
   const fetchUploads = () => {
-    fetch(`/useruploads/images`, {
+    fetch(`${backendPrefix}/useruploads/images`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -114,7 +115,7 @@ export const KenBurnsEditor: React.FC = () => {
 
       setIsExporting(true);
       try {
-        const response = await fetch(`/generatevideo/kenburnsswipe`, {
+        const response = await fetch(`${backendPrefix}/generatevideo/kenburnsswipe`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -129,7 +130,7 @@ export const KenBurnsEditor: React.FC = () => {
         const data = await response.json();
         const renderUrl = data.url;
         if (renderUrl) {
-          const saveResponse = await fetch(`/renders`, {
+          const saveResponse = await fetch(`${backendPrefix}/renders`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -181,14 +182,14 @@ export const KenBurnsEditor: React.FC = () => {
       cardWidthRatio,
       cardHeightRatio,
     }),
-    videoEndpoint: `/generatevideo/kenburnsswipe`,
+    videoEndpoint: `${backendPrefix}/generatevideo/kenburnsswipe`,
   });
 
   // 🟢 Load project if editing existing
   useEffect(() => {
     if (id) {
       setIsLoading(true);
-      fetch(`/projects/${id}`, {
+      fetch(`${backendPrefix}/projects/${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
       })
         .then((res) => {

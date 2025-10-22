@@ -5,10 +5,10 @@ import {
   Video,
   useCurrentFrame,
   useVideoConfig,
-  staticFile,
   interpolate,
   Easing,
   Img,
+  staticFile,
 } from "remotion";
 
 interface TranscriptSpeaker {
@@ -387,7 +387,7 @@ export const ChatVideo3: React.FC<ChatVideoProps> = ({
     ) => {
       if (!file) return setOK(false);
       try {
-        const url = staticFile(file);
+        const url = file;
         const res = await fetch(url, { method: "HEAD" });
         if (!cancelled) setOK(res.ok || res.status === 405);
       } catch {
@@ -477,7 +477,7 @@ export const ChatVideo3: React.FC<ChatVideoProps> = ({
     <AbsoluteFill style={{ backgroundColor: "#0b0b0b" }}>
       {bgAvailable && !bgFailed ? (
         <Video
-          src={staticFile(bgVideo)}
+          src={bgVideo}
           muted
           loop
           style={{
@@ -554,9 +554,9 @@ export const ChatVideo3: React.FC<ChatVideoProps> = ({
         </div>
       </div>
 
-      {chatAudioAvailable && <Audio src={staticFile(chatAudio)} />}
+      {chatAudioAvailable && <Audio src={chatAudio} />}
       {musicAudioAvailable && (
-        <Audio src={staticFile(musicAudio)} volume={musicVol} />
+        <Audio src={musicAudio} volume={musicVol} />
       )}
     </AbsoluteFill>
   );

@@ -1,5 +1,6 @@
 // hooks/useFileUpload.ts
 import { useState, useCallback } from "react";
+import { backendPrefix } from "../../config";
 
 interface UseFileUploadOptions {
   uploadUrl?: string;  // file upload endpoint
@@ -20,10 +21,10 @@ export function useFileUpload(
   options: UseFileUploadOptions
 ): UseFileUploadResult {
   const {
-    uploadUrl = `/uploadhandler/upload-image`,
+    uploadUrl = `${backendPrefix}/uploadhandler/upload-image`,
     fieldName = "image",
     saveRecord = true,
-    recordUrl = `/useruploads`,
+    recordUrl = `${backendPrefix}/useruploads`,
     type,
   } = options;
 

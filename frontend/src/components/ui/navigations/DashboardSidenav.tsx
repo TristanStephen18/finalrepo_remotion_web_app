@@ -49,7 +49,6 @@ export const DashboardSidebarNav: React.FC<DashboardSidebarNavProps> = ({
 
   return (
     <>
-      {/* HEADER FOR MOBILE */}
       <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-gray-200 flex items-center justify-between px-4 py-3 z-50">
         <div className="flex items-center gap-2">
           <span className="logo__dot"></span>
@@ -155,7 +154,6 @@ export const DashboardSidebarNav: React.FC<DashboardSidebarNavProps> = ({
         </div>
       </aside>
 
-      {/* MOBILE MENU OVERLAY */}
       {mobileOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40 md:hidden"

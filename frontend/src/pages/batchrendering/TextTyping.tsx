@@ -16,6 +16,7 @@ import { TextTypingTemplateBatchOutputsSection } from "../../components/ui/batch
 import { useDatasetsFetching } from "../../hooks/datafetching/DatasetFilesFetching";
 import { useDatasetUpload } from "../../hooks/uploads/HandleDatasetsFileUpload";
 import { FiDatabase, FiGrid, FiImage, FiMenu, FiMusic, FiType, FiX } from "react-icons/fi";
+import { backendPrefix } from "../../config";
 
 export const TextTypingTemplateBatchRendering: React.FC = () => {
 
@@ -92,7 +93,7 @@ export const TextTypingTemplateBatchRendering: React.FC = () => {
         setPhrasesData(mapped);
       } else if (datasetSource === "ai") {
         // ✅ Your provided AI function
-        const res = await fetch(`/api/generate/texttypingdataset`, {
+        const res = await fetch(`${backendPrefix}/api/generate/texttypingdataset`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ quantity: datasetQuantity }),
@@ -155,7 +156,7 @@ export const TextTypingTemplateBatchRendering: React.FC = () => {
     updateCombination(index, { status: "exporting" });
 
     try {
-      const response = await fetch(`/generatevideo/newtexttypingrender`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/newtexttypingrender`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -175,7 +176,7 @@ export const TextTypingTemplateBatchRendering: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch("/renders", {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

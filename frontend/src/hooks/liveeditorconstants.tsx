@@ -7,7 +7,7 @@ export function usePreviewControls() {
      const [previewSize, setPreviewSize] = useState(1);
      
        const [backgroundImage, setBackgroundImage] = useState(
-         "/bgimages/colors/bg1.jpg"
+         `https://res.cloudinary.com/dnxc1lw18/image/upload/v1760979566/bg11_deliyh.jpg`
        );
        const [backgroundSource, setBackgroundSource] = useState<
          "upload" | "default"

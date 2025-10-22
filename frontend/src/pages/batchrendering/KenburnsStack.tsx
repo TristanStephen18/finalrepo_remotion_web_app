@@ -12,6 +12,7 @@ import { KenBurnsBatchOutputs } from "../../components/ui/batchrendering/section
 import { BatchRenderingSideNavFooter } from "../../components/ui/batchrendering/sidenav/Footer";
 import { KenburnsBatchRenderingInidicator } from "../../components/ui/batchrendering/progressindicators/KenBurnsProgressIndicator";
 import { FiGrid, FiHash, FiImage, FiMaximize, FiMenu, FiX } from "react-icons/fi";
+import { backendPrefix } from "../../config";
 
 export const KenBurnsSwipeBatchRendering: React.FC = () => {
   const [userImages, setUserImages] = useState<string[]>([]);
@@ -32,7 +33,7 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
   const [combinations, setCombinations] = useState<any[]>([]);
 
   const fetchUploads = () => {
-    fetch(`/useruploads/images`, {
+    fetch(`${backendPrefix}/useruploads/images`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -51,7 +52,7 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
   const handleExportForCombination = async (combo: any, index: number) => {
     updateCombination(index, { status: "exporting" });
     try {
-      const response = await fetch(`/generatevideo/kenburnsswipe`, {
+      const response = await fetch(`${backendPrefix}/generatevideo/kenburnsswipe`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -69,7 +70,7 @@ export const KenBurnsSwipeBatchRendering: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",

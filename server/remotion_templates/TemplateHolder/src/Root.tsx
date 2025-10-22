@@ -1,4 +1,4 @@
-import { Composition, staticFile } from "remotion";
+import { Composition } from "remotion";
 import factscardconfig from "../data/factscardsconfig.json";
 import { FactsCardVideo } from "./components/FactsCardTemplate";
 import bargraphconfig from "../data/bargraphconfig.json";
@@ -52,16 +52,6 @@ const HEIGHT = 1920;
 const FPS = 30;
 const TAIL_PADDING_SEC = 1.0;
 
-// const DEFAULT_PROPS: RootProps = {
-//   chatPath: "chat.json",
-//   bgVideo: "bg.mp4",
-//   chatAudio: "chat.mp3",
-//   musicAudio: "music.mp3",
-//   musicBase: 0.12,
-//   musicWhileTalking: 0.06,
-//   duckAttackMs: 120,
-//   duckReleaseMs: 240,
-// };
 
 export const RemotionRoot: React.FC = () => {
   const fps = 30;
@@ -194,7 +184,7 @@ export const RemotionRoot: React.FC = () => {
 
           // 1. Check chat JSON timestamps
           try {
-            const res = await fetch(staticFile(chatPath));
+            const res = await fetch(chatPath);
             const json = await res.json();
 
             if (Array.isArray((json as any)?.segments)) {
@@ -226,7 +216,7 @@ export const RemotionRoot: React.FC = () => {
           // 2. Check audio duration
           let audioDuration = 0;
           try {
-            const audioData = await getAudioData(staticFile(p.chatAudio));
+            const audioData = await getAudioData(p.chatAudio);
             audioDuration = audioData.durationInSeconds;
           } catch {
             audioDuration = 0;
@@ -261,7 +251,7 @@ export const RemotionRoot: React.FC = () => {
           sentenceBgColor: redditProps.sentenceBgColor,
           backgroundOverlayColor: "rgba(0,0,0,0.6)",
           backgroundVideo: redditProps.backgroundVideo,
-          backgroundMusicPath: staticFile(redditProps.backgroundMusicPath),
+          backgroundMusicPath: redditProps.backgroundMusicPath,
           musicVolume: 0.2,
         }}
       />
@@ -281,9 +271,7 @@ export const RemotionRoot: React.FC = () => {
           sentenceBgColor: storytellingprops.sentenceBgColor,
           backgroundOverlayColor: "rgba(0,0,0,0.6)",
           backgroundVideo: storytellingprops.backgroundVideo,
-          backgroundMusicPath: staticFile(
-            storytellingprops.backgroundMusicPath,
-          ),
+          backgroundMusicPath: storytellingprops.backgroundMusicPath,
           musicVolume: 0.2,
         }}
       />

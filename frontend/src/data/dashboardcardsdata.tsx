@@ -40,7 +40,7 @@ export const templateCategories = {
     {
       name: "Split Screen",
       description: "Compare visuals side by side with smooth transitions.",
-      url: "/template_previews/SplitScreen.mp4"
+      url: "https://res.cloudinary.com/dnxc1lw18/video/upload/v1760964357/splitscreenVideo-1760963733064_dkczll.mp4"
     },
     {
       name: "Fact Cards",
@@ -86,7 +86,7 @@ export function templateUrlFinder (template: string){
       case "Fact Cards":
         return "https://res.cloudinary.com/dnxc1lw18/video/upload/v1760794239/FactCards_rgtdfm.mp4";
       case "Split Screen":
-        return "/template_previews/SplitScreen.mp4";
+        return "https://res.cloudinary.com/dnxc1lw18/video/upload/v1760964357/splitscreenVideo-1760963733064_dkczll.mp4";
       case "Curve Line Trend":
         return "https://res.cloudinary.com/dnxc1lw18/video/upload/v1760794251/CurveLineTrend_ymo1il.mp4";
       case "Kpi Flip Cards":

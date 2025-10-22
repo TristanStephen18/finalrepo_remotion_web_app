@@ -22,6 +22,7 @@ import {
   FiType,
   FiX,
 } from "react-icons/fi";
+import { backendPrefix } from "../../config";
 // import { useFileUpload } from "../../hooks/uploads/handleimageupload";
 
 export const QuoteSpotlightBatchRendering: React.FC = () => {
@@ -101,7 +102,7 @@ export const QuoteSpotlightBatchRendering: React.FC = () => {
   const fetchAIDataset = async (quantity: number) => {
     setLoading(true);
     try {
-      const res = await fetch(`/api/batch-quotejson-trial`, {
+      const res = await fetch(`${backendPrefix}/api/batch-quotejson-trial`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ quantity }),
@@ -132,7 +133,7 @@ export const QuoteSpotlightBatchRendering: React.FC = () => {
       }
 
       const response = await fetch(
-        `/generatevideo/quotetemplatewchoices`,
+        `${backendPrefix}/generatevideo/quotetemplatewchoices`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -156,7 +157,7 @@ export const QuoteSpotlightBatchRendering: React.FC = () => {
       const data = await response.json();
       const renderUrl = data.url;
       if (renderUrl) {
-        const saveResponse = await fetch(`/renders`, {
+        const saveResponse = await fetch(`${backendPrefix}/renders`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -459,9 +460,9 @@ export const QuoteSpotlightBatchRendering: React.FC = () => {
               <QouteTemplateBatchRenderingInidicator
                 currentIndex={currentIndex}
                 isRendering={isRendering}
-                renderQueue={[]} // add your renderQueue prop
+                renderQueue={renderQueue} // add your renderQueue prop
                 setActiveSection={setActiveSection}
-                setShowProgressCard={() => {}}
+                setShowProgressCard={setShowProgressCard}
               />
             )}
 

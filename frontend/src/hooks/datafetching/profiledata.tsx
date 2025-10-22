@@ -1,4 +1,5 @@
 import { useState } from "react"
+import { backendPrefix } from "../../config";
 
 export const useProfileHooks = () => {
     const [userData, setUserData] = useState<any>(null);
@@ -8,7 +9,7 @@ export const useProfileHooks = () => {
 
     const fetchProfileDetails = () => {
     setLoadingUserData(true);
-    fetch(`/auth`, {
+    fetch(`${backendPrefix}/auth`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token") || ""}`,
       },
